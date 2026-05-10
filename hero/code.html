@@ -149,5 +149,21 @@
         </div>
     </div>
     <script src="../global.js"></script>
+    <script>
+        // Check for existing session and redirect to dashboard if found
+        function checkSession() {
+            if (typeof supabase === 'undefined' || !window.supabaseClient) {
+                setTimeout(checkSession, 100);
+                return;
+            }
+            window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
+                if (session) {
+                    // Smoothly redirect if already logged in
+                    window.location.href = '../traveloop_dashboard/code.html';
+                }
+            });
+        }
+        checkSession();
+    </script>
 </body>
 </html>
