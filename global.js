@@ -393,7 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // === SUPABASE CONFIGURATION ===
 const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ic3hzb3Fjdnd3anZjanlrbWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzOTgwMDMsImV4cCI6MjA5Mzk3NDAwM30.eDOAWdOxLmlD_1902eSl75zeKk1M-evtPkrEUCyUSCY";
+const SUPABASE_ANON_KEY = "sb_publishable_0pbHnA-R_xySPtvY3uGZCA_nlzUefvq";
 
 // 1. DYNAMICALLY LOAD SUPABASE SCRIPT (if not already present)
 function loadSupabaseScript(callback) {
