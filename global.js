@@ -14,6 +14,21 @@ async function getTrips() {
     }
 }
 
+// Subscribe to Realtime Updates
+function subscribeToTrips(callback) {
+    return window.supabaseClient
+        .channel('trips-realtime')
+        .on('postgres_changes', { 
+            event: '*', 
+            schema: 'public', 
+            table: 'trips' 
+        }, (payload) => {
+            console.log('Realtime change detected:', payload);
+            if (callback) callback(payload);
+        })
+        .subscribe();
+}
+
 async function saveTrip(trip) {
     try {
         // Get current user ID for ownership
@@ -165,47 +180,88 @@ async function initMyTrips() {
     const tripsContainer = document.getElementById('trips-container');
     if (!tripsContainer) return;
 
-    const trips = await getTrips();
-    if (trips.length === 0) {
-        return; // Use default hardcoded trips
+    async function renderTrips() {
+        const trips = await getTrips();
+        if (trips.length === 0) return;
+
+        // Clear and render newest first
+        tripsContainer.innerHTML = '';
+        trips.forEach(trip => {
+            const card = createTripCard(trip);
+            tripsContainer.appendChild(card);
+        });
     }
 
-    // Append new trips to the container
-    let html = '';
-    // Reverse array to show newest first
-    trips.slice().reverse().forEach(trip => {
-        html += `
-        <div class="bg-white rounded-xl border border-divider-gray shadow-[0px_3px_6px_0px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)] mb-4" style="animation: fadeIn 0.5s ease-out forwards;">
-            <div class="md:w-1/3 h-48 md:h-auto relative bg-pale-gray">
-                <div class="absolute inset-0 bg-center bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgbuAgBFgn56-QqFSl0ROg2JFO3KxIbZfHI0YeSksGnJpy1R09-3YGA-r-6q9QVa36vw-drNbQvepGX4sk2Bpx86x6Man3k4gauvU2DnsJ1ZHpLZng3soR1g-bSuCAamlVbfndpWidsawbiUgNjnGWvEpjNL860y75k2HRAUelqOiYn5M4tVyK8BRos3PUONQ5FtGQy0J4FCAqmkVMCr7rqB9XdgMpz-W1hC7t66UvjTugeF8LYB-M47Fb61qlqKjEW6Bs9Ta7PzI");'></div>
-            </div>
-            <div class="p-lg flex-1 flex flex-col justify-between">
-                <div>
-                    <div class="flex justify-between items-start">
-                        <h3 class="text-xl font-bold text-deep-charcoal">${trip.name}</h3>
-                        <span class="bg-purple-heritage/10 text-purple-heritage px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">${trip.status}</span>
-                    </div>
-                    <p class="text-neutral-charcoal mt-2 flex items-center gap-2 text-sm">
-                        <span class="material-symbols-outlined text-[16px]">calendar_today</span>
-                        ${trip.date}
-                    </p>
-                    <p class="text-neutral-charcoal mt-4 text-sm line-clamp-2">${trip.description || 'No description provided.'}</p>
-                </div>
-                <div class="mt-lg flex gap-3">
-                    <button onclick="window.location.href='../itinerary_builder/code.html'" class="flex-1 bg-pale-gray text-purple-heritage font-bold py-2 rounded hover:bg-divider-gray transition-colors text-sm">Edit</button>
-                    <button onclick="window.location.href='../traveloop_dashboard/code.html'" class="flex-1 bg-purple-heritage text-white font-bold py-2 rounded hover:bg-purple-dark transition-colors shadow-sm text-sm">View</button>
-                </div>
+    // Initial render
+    await renderTrips();
+
+    // Subscribe to realtime changes
+    subscribeToTrips(() => {
+        console.log('Refreshing trips due to realtime change...');
+        renderTrips();
+    });
+}
+
+// Helper to create a trip card (Premium UI)
+function createTripCard(trip) {
+    const div = document.createElement('div');
+    div.className = "group bg-white rounded-2xl border border-divider-gray overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer mb-6";
+    
+    const mediaHtml = trip.video_url 
+        ? `<video src="${trip.video_url}" class="w-full h-48 object-cover" muted loop onmouseover="this.play()" onmouseout="this.pause()"></video>`
+        : `<img src="${trip.image_url || 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=800&q=80'}" class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500">`;
+
+    div.innerHTML = `
+        <div class="relative">
+            ${mediaHtml}
+            <div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-purple-heritage">
+                ${trip.status || 'Upcoming'}
             </div>
         </div>
-        `;
-    });
-    // Add new trips to the top of the container
-    tripsContainer.insertAdjacentHTML('afterbegin', html);
+        <div class="p-5">
+            <h3 class="text-lg font-bold text-deep-charcoal mb-1">${trip.name}</h3>
+            <p class="text-sm text-neutral-charcoal line-clamp-2 mb-4">${trip.description || 'No description provided.'}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-divider-gray">
+                <div class="flex items-center gap-2 text-outline">
+                    <span class="material-symbols-outlined text-sm">calendar_today</span>
+                    <span class="text-xs font-medium">${trip.date || 'TBD'}</span>
+                </div>
+                <button class="text-purple-heritage text-sm font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    View Details
+                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+    `;
+    return div;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initCreateTrip();
-    initMyTrips();
+    const path = window.location.pathname;
+    
+    // 1. Initialize Page Features
+    if (path.includes('plan_a_new_trip')) {
+        initCreateTrip();
+    } else if (path.includes('my_trips')) {
+        initMyTrips();
+    }
+
+    // 2. Initialize UI Components
+    if (typeof initThemeToggler === 'function') initThemeToggler();
+    if (typeof initMacDock === 'function') initMacDock();
+
+    // 3. Refresh avatar logic
+    if (window.supabaseClient) {
+        window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session && session.user) {
+                const metadata = session.user.user_metadata;
+                const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
+                profileImages.forEach(img => {
+                    if (metadata.avatar_url) img.style.backgroundImage = `url('${metadata.avatar_url}')`;
+                });
+            }
+        });
+    }
 });
 
 // Add basic fade-in animation to all pages
@@ -430,12 +486,10 @@ function initThemeToggler() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initThemeToggler();
-});
+
 
 // MacOS Dock Magnification Logic
-document.addEventListener('DOMContentLoaded', () => {
+function initMacDock() {
     const dock = document.querySelector('.mac-dock');
     if (!dock) return;
     
@@ -492,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-});
+}
 
 // === SUPABASE CONFIGURATION ===
 const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
@@ -535,28 +589,5 @@ loadSupabaseScript(() => {
         });
     } else {
         console.warn("⚠️ Traveloop: Supabase is not configured yet! Please add your URL and Key in global.js");
-    }
-});// 3. AUTO-INITIALIZE FEATURES ON PAGE LOAD
-document.addEventListener('DOMContentLoaded', () => {
-    const path = window.location.pathname;
-    
-    if (path.includes('plan_a_new_trip')) {
-        initCreateTrip();
-    } else if (path.includes('my_trips')) {
-        initMyTrips();
-    }
-    
-    // Refresh avatar logic if auth script already loaded
-    if (window.supabaseClient) {
-        window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
-            if (session && session.user) {
-                // Update UI elements manually once if listener missed it
-                const metadata = session.user.user_metadata;
-                const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
-                profileImages.forEach(img => {
-                    if (metadata.avatar_url) img.style.backgroundImage = `url('${metadata.avatar_url}')`;
-                });
-            }
-        });
     }
 });
