@@ -391,86 +391,46 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// === FIREBASE AUTHENTICATION ===
+// === SUPABASE CONFIGURATION ===
+const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ic3hzb3Fjdnd3anZjanlrbWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzOTgwMDMsImV4cCI6MjA5Mzk3NDAwM30.eDOAWdOxLmlD_1902eSl75zeKk1M-evtPkrEUCyUSCY";
 
-// 1. DYNAMICALLY LOAD FIREBASE SCRIPTS
-function loadFirebaseScripts(callback) {
-    if (window.firebase) { callback(); return; }
-    
-    const appScript = document.createElement('script');
-    appScript.src = "https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js";
-    
-    const authScript = document.createElement('script');
-    authScript.src = "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js";
-
-    document.head.appendChild(appScript);
-    
-    appScript.onload = () => {
-        document.head.appendChild(authScript);
-        authScript.onload = callback;
-    };
+// 1. DYNAMICALLY LOAD SUPABASE SCRIPT (if not already present)
+function loadSupabaseScript(callback) {
+    if (window.supabase) { callback(); return; }
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
+    script.onload = callback;
+    document.head.appendChild(script);
 }
 
-// 2. YOUR FIREBASE CONFIGURATION
-const firebaseConfig = {
-  apiKey: "AIzaSyAwdMf_z7LvbCRf9pTd3dV0zZqHA3tkjw0",
-  authDomain: "traveloop-3cc59.firebaseapp.com",
-  projectId: "traveloop-3cc59",
-  storageBucket: "traveloop-3cc59.firebasestorage.app",
-  messagingSenderId: "602600395669",
-  appId: "1:602600395669:web:6b7e0fb03508a608565c9c",
-  measurementId: "G-ZLZ7ZFY1NS"
-};
+// 2. INITIALIZE SUPABASE & AUTH LISTENER
+loadSupabaseScript(() => {
+    if (SUPABASE_URL !== "YOUR_SUPABASE_URL") {
+        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// 3. INITIALIZE FIREBASE & AUTH LISTENER
-loadFirebaseScripts(() => {
-    // Check if config has been replaced (don't crash if it's the placeholder)
-    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-
-        // Handle successful redirect logins
-        firebase.auth().getRedirectResult().then((result) => {
-            if (result && result.user && window.location.pathname.includes('auth')) {
-                window.location.href = '../traveloop_dashboard/code.html';
-            }
-        }).catch((error) => {
-            console.error("Firebase Redirect Error: ", error);
-        });
-
-        // Listen for user login state across the entire app!
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) {
-                // User is logged in! Update UI elements automatically
+        // Listen for user login state
+        window.supabaseClient.auth.onAuthStateChange((event, session) => {
+            if (session && session.user) {
+                const user = session.user;
+                const metadata = user.user_metadata;
+                
+                // Update UI elements automatically (Avatars)
                 const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
-                const nameElements = document.querySelectorAll('.font-bold.text-deep-charcoal.leading-tight.tracking-\\[-0\\.015em\\]'); // targets profile name
-
-                // Update Avatars
                 profileImages.forEach(img => {
-                    img.style.backgroundImage = `url('${user.photoURL}')`;
+                    if (metadata.avatar_url) {
+                        img.style.backgroundImage = `url('${metadata.avatar_url}')`;
+                    }
                 });
                 
-                // If on Profile page, update name and email
+                // Update Name on Profile page
                 const profileNameHeader = document.querySelector('.text-2xl.font-bold');
                 if (profileNameHeader && window.location.pathname.includes('profile')) {
-                    profileNameHeader.innerText = user.displayName;
+                    profileNameHeader.innerText = metadata.full_name || user.email;
                 }
             }
         });
     } else {
-        console.warn("⚠️ Traveloop: Firebase is not configured yet! Please replace the placeholder config in global.js");
+        console.warn("⚠️ Traveloop: Supabase is not configured yet! Please add your URL and Key in global.js");
     }
 });
-
-// 4. GOOGLE SIGN IN FUNCTION (Updated to Redirect to bypass Popup Blockers)
-window.signInWithGoogle = function() {
-    if (!window.firebase) {
-        alert("Firebase is still loading. Please try again in a second.");
-        return;
-    }
-
-    const provider = new firebase.auth.GoogleAuthProvider();
-    // Using redirect instead of popup to bypass strict browser popup blockers
-    firebase.auth().signInWithRedirect(provider);
-};
