@@ -14,6 +14,13 @@ if (window.supabase) {
             });
             const nameHeader = document.querySelector('.text-2xl.font-bold, .text-deep-charcoal.text-xl.font-bold');
             if (nameHeader) nameHeader.innerText = metadata.full_name || session.user.email;
+
+            // Auto-redirect if on login/signup pages
+            const path = window.location.pathname;
+            if (path.includes('/auth/') || path.includes('/signup/')) {
+                console.log("Session detected, redirecting to dashboard...");
+                window.location.href = '../traveloop_dashboard/code.html';
+            }
         }
     });
 }
@@ -55,19 +62,39 @@ async function saveTrip(trip) {
         const tripToSave = {
             ...trip,
             user_id: userId,
-            created_at: new Date().toISOString()
+            created_at: trip.created_at || new Date().toISOString(),
+            updated_at: new Date().toISOString()
         };
 
-        const id = await db.trips.add(tripToSave);
-        console.log("Trip saved to Local DB with ID:", id);
+        let id;
+        if (trip.id) {
+            id = Number(trip.id);
+            await db.trips.put({ ...tripToSave, id });
+            console.log("Trip updated in Local DB with ID:", id);
+        } else {
+            id = await db.trips.add(tripToSave);
+            console.log("Trip added to Local DB with ID:", id);
+        }
         
-        // Notify any listeners that data has changed
         localDataEvents.dispatchEvent(new Event('tripsChanged'));
-        
         return { id, ...tripToSave };
     } catch (err) {
         console.error('Failed to save trip to Local DB:', err);
         alert('Error saving trip locally: ' + err.message);
+    }
+}
+
+async function updateTrip(id, updates) {
+    try {
+        await db.trips.update(Number(id), {
+            ...updates,
+            updated_at: new Date().toISOString()
+        });
+        localDataEvents.dispatchEvent(new Event('tripsChanged'));
+        return true;
+    } catch (err) {
+        console.error('Failed to update trip:', err);
+        return false;
     }
 }
 

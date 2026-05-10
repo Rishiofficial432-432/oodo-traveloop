@@ -244,43 +244,106 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 <!-- Navigation is excluded from Create Trip flow as per "The Relevance Test" rule for Focused Views -->
 <script src="../global.js"></script>
 <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const editTripId = urlParams.get('edit');
     let selectedMediaUrl = null;
+    let existingTrip = null;
 
-    // Handle Media Selection
+    // UI Elements
     const uploadArea = document.getElementById('upload-area');
     const mediaInput = document.getElementById('media-input');
     const imagePreview = document.getElementById('image-preview');
     const videoPreview = document.getElementById('video-preview');
     const placeholder = document.getElementById('upload-placeholder');
+    const createBtn = document.getElementById('create-trip-btn');
+    const pageTitle = document.querySelector('h1');
+    const startInput = document.getElementById('start-date');
+    const endInput = document.getElementById('end-date');
+    const rangeText = document.getElementById('selected-date-range');
+    const nameInput = document.getElementById('trip-name');
+    const descInput = document.getElementById('trip-desc');
 
+    // Detect Edit Mode
+    async function checkEditMode() {
+        if (editTripId) {
+            pageTitle.innerText = "Edit Your Trip";
+            createBtn.querySelector('span:last-child').innerText = "Save Changes";
+            
+            existingTrip = await db.trips.get(Number(editTripId));
+            if (existingTrip) {
+                nameInput.value = existingTrip.name;
+                descInput.value = existingTrip.description || '';
+                
+                // Parse date range if possible
+                if (existingTrip.date && existingTrip.date.includes(' - ')) {
+                    const [start, end] = existingTrip.date.split(' - ');
+                    startInput.value = start;
+                    endInput.value = end;
+                    rangeText.innerText = existingTrip.date;
+                }
+
+                // Show existing media
+                if (existingTrip.video_url) {
+                    selectedMediaUrl = existingTrip.video_url;
+                    videoPreview.src = selectedMediaUrl;
+                    videoPreview.classList.remove('hidden');
+                    placeholder.classList.add('opacity-0');
+                } else if (existingTrip.image_url) {
+                    selectedMediaUrl = existingTrip.image_url;
+                    imagePreview.src = selectedMediaUrl;
+                    imagePreview.classList.remove('hidden');
+                    placeholder.classList.add('opacity-0');
+                }
+            }
+        }
+    }
+
+    let selectedMediaType = null; // 'image' or 'video'
+
+    // Handle Media Selection
     uploadArea.addEventListener('click', () => mediaInput.click());
 
     mediaInput.addEventListener('change', async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Use the global uploadMedia function (which returns local blob URL)
-        selectedMediaUrl = await uploadMedia(file);
+        selectedMediaType = file.type.startsWith('video/') ? 'video' : 'image';
+        
+        createBtn.disabled = true;
+        placeholder.innerHTML = '<span class="material-symbols-outlined animate-spin text-purple-heritage text-4xl">sync</span><p class="mt-2 text-sm">Processing Media...</p>';
+        placeholder.classList.remove('opacity-0');
 
-        if (file.type.startsWith('image/')) {
-            imagePreview.src = selectedMediaUrl;
-            imagePreview.classList.remove('hidden');
-            videoPreview.classList.add('hidden');
-        } else if (file.type.startsWith('video/')) {
-            videoPreview.src = selectedMediaUrl;
-            videoPreview.classList.remove('hidden');
-            imagePreview.classList.add('hidden');
+        try {
+            selectedMediaUrl = await uploadMedia(file);
+
+            if (selectedMediaType === 'image') {
+                imagePreview.src = selectedMediaUrl;
+                imagePreview.classList.remove('hidden');
+                videoPreview.classList.add('hidden');
+            } else {
+                videoPreview.src = selectedMediaUrl;
+                videoPreview.classList.remove('hidden');
+                imagePreview.classList.add('hidden');
+            }
+            placeholder.classList.add('opacity-0');
+        } catch (err) {
+            alert("Media upload failed: " + err.message);
+        } finally {
+            createBtn.disabled = false;
+            placeholder.innerHTML = `<div class="size-14 bg-white rounded-full flex items-center justify-center mx-auto mb-md shadow-sm">
+                <span class="material-symbols-outlined text-purple-heritage">add_a_photo</span>
+                </div>
+                <p class="text-deep-charcoal font-semibold">Upload a cover image or video</p>
+                <p class="text-neutral-charcoal text-sm mt-1">PNG, JPG, WEBP or MP4 (Max. 50MB)</p>`;
         }
-        placeholder.classList.add('opacity-0');
     });
 
-    // Handle Create Trip
-    const createBtn = document.getElementById('create-trip-btn');
+    // Handle Create/Save Trip
     createBtn.addEventListener('click', async () => {
-        const name = document.getElementById('trip-name').value.trim();
-        const desc = document.getElementById('trip-desc').value.trim();
-        const startDate = document.getElementById('start-date').value;
-        const endDate = document.getElementById('end-date').value;
+        const name = nameInput.value.trim();
+        const desc = descInput.value.trim();
+        const startDate = startInput.value;
+        const endDate = endInput.value;
 
         if (!name) {
             alert('Please enter a trip name.');
@@ -288,35 +351,46 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
         }
 
         createBtn.disabled = true;
-        createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Saving...</span>';
+        createBtn.innerHTML = `<span class="material-symbols-outlined animate-spin">refresh</span> <span>${editTripId ? 'Saving Changes...' : 'Creating Trip...'}</span>`;
 
-        const newTrip = {
+        const tripData = {
+            ...(existingTrip || {}),
             name: name,
             description: desc,
             date: `${startDate} - ${endDate}`,
-            status: 'Upcoming',
-            image_url: selectedMediaUrl,
-            poi: []
+            status: existingTrip ? existingTrip.status : 'Upcoming',
+            poi: existingTrip ? existingTrip.poi : []
         };
 
-        const result = await saveTrip(newTrip);
+        // Assign media correctly
+        if (selectedMediaUrl) {
+            if (selectedMediaType === 'video') {
+                tripData.video_url = selectedMediaUrl;
+                tripData.image_url = ''; // Clear image if video is selected
+            } else {
+                tripData.image_url = selectedMediaUrl;
+                tripData.video_url = ''; // Clear video if image is selected
+            }
+        }
+
+        if (editTripId) tripData.id = Number(editTripId);
+
+        const result = await saveTrip(tripData);
         if (result) {
             window.location.href = '../my_trips/code.html';
         } else {
             createBtn.disabled = false;
-            createBtn.innerHTML = '<span class="material-symbols-outlined">save</span> <span>Create Trip</span>';
+            createBtn.innerHTML = `<span class="material-symbols-outlined">save</span> <span>${editTripId ? 'Save Changes' : 'Create Trip'}</span>`;
         }
     });
-
-    // Update range text dynamically
-    const startInput = document.getElementById('start-date');
-    const endInput = document.getElementById('end-date');
-    const rangeText = document.getElementById('selected-date-range');
 
     function updateRange() {
         rangeText.innerText = `${startInput.value} - ${endInput.value}`;
     }
     startInput.addEventListener('change', updateRange);
     endInput.addEventListener('change', updateRange);
+
+    // Initialize
+    checkEditMode();
 </script>
 </body></html>
