@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#d1c3ca",
+                        "on-error": "#ffffff",
+                        "primary-container": "#714b67",
+                        "secondary-fixed": "#95f1f8",
+                        "pale-gray": "#F3F4F6",
+                        "error-container": "#ffdad6",
+                        "gold-amber": "#FBB130",
+                        "on-tertiary": "#ffffff",
+                        "border-subtle": "#D8DADD",
+                        "surface-container-lowest": "#ffffff",
+                        "purple-heritage": "#714B67",
+                        "on-secondary-fixed": "#002022",
+                        "on-primary-container": "#f0bfe0",
+                        "success-green": "#28A745",
+                        "primary": "#57344f",
+                        "purple-dark": "#5A3C52",
+                        "inverse-primary": "#e9b8d9",
+                        "teal-accent": "#00A09D",
+                        "on-surface-variant": "#4e444a",
+                        "inverse-on-surface": "#edf0ff",
+                        "tertiary-fixed-dim": "#b9ce9a",
+                        "neutral-charcoal": "#374151",
+                        "on-tertiary-fixed-variant": "#3b4c24",
+                        "off-white": "#FAFAFA",
+                        "lavender": "#B18AA7",
+                        "error-red": "#DC3545",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#006e73",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#d5eab4",
+                        "secondary-container": "#92eff5",
+                        "on-primary-fixed-variant": "#5f3b56",
+                        "on-background": "#141b2b",
+                        "surface-container-highest": "#dce2f7",
+                        "deep-charcoal": "#111827",
+                        "tertiary": "#34451e",
+                        "secondary": "#00696e",
+                        "primary-fixed": "#ffd7f1",
+                        "on-tertiary-container": "#c0d5a0",
+                        "error": "#ba1a1a",
+                        "gold-highlight": "#FFC107",
+                        "purple-medium": "#65435C",
+                        "inverse-surface": "#293040",
+                        "teal-primary": "#017E84",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#78d5db",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-high": "#e1e8fd",
+                        "off-white-light": "#F9FAFB",
+                        "outline": "#80747a",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d3daef",
+                        "on-tertiary-fixed": "#112000",
+                        "tertiary-container": "#4b5d33",
+                        "surface-container-low": "#f1f3ff",
+                        "primary-fixed-dim": "#e9b8d9",
+                        "on-primary-fixed": "#2f1029",
+                        "surface-container": "#e9edff",
+                        "surface-variant": "#dce2f7",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "light-gray": "#F9F9F9",
+                        "divider-gray": "#DEE2E6",
+                        "surface-tint": "#79526f",
+                        "on-surface": "#141b2b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "micro": "4px",
+                        "sm": "12px",
+                        "section-v": "60px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "container-h": "40px",
+                        "lg": "24px",
+                        "xs": "8px",
+                        "md": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 23px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #DEE2E6;
+        }
+        .dark .timeline-line::before {
+            background-color: #333;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+
+<style>
+.dark body { background-color: #000000; color: #f3f4f6; }
+.dark .bg-white { background-color: #111111; border-color: #333333; color: #f3f4f6; }
+.dark .text-deep-charcoal { color: #f9fafb; }
+.dark .text-neutral-charcoal { color: #d1d5db; }
+.dark .bg-off-white { background-color: #000000; }
+.dark .bg-pale-gray { background-color: #222222; color: #f3f4f6;}
+.dark header { background-color: #111111; border-color: #333333; }
+.dark nav { background-color: #111111 !important; border-color: #333333; }
+</style>
+</head>
+<body class="bg-off-white font-[Inter]">
+<header class="sticky top-0 z-50 flex items-center justify-between h-16 bg-white border-b border-divider-gray px-container-h">
+<div class="flex items-center gap-4">
+<button onclick="goBack()" class="flex items-center text-purple-heritage hover:text-purple-dark">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-heading-h4 font-bold text-deep-charcoal">Itinerary Builder</h1>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-xs px-md py-xs rounded-lg bg-off-white-light text-purple-heritage border border-border-subtle font-semibold text-button-reg cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">share</span>
+                Share
+            </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-lg bg-purple-heritage text-white hover:bg-purple-dark font-semibold text-button-reg transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                Save Trip
+            </button>
+<button class="theme-toggle-btn flex items-center justify-center rounded h-10 w-10 bg-transparent text-deep-charcoal hover:bg-pale-gray transition-colors cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dark_mode</span>
+</button>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-container-h py-section-v">
+<div class="mb-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<span id="trip-badge" class="bg-primary-fixed text-on-primary-fixed px-sm py-micro rounded-full text-label-sm font-semibold uppercase tracking-wider">TRIP</span>
+<h2 id="trip-name-display" class="text-[32px] font-bold text-deep-charcoal mt-xs">Loading trip...</h2>
+<p id="trip-date-display" class="text-neutral-charcoal mt-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                        Loading dates...
+                    </p>
+</div>
+<div class="flex items-center gap-md">
+<div class="text-right">
+<p class="text-label-sm text-neutral-charcoal">Estimated Budget</p>
+<p class="text-heading-h4 font-bold text-success-green">$0.00</p>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<aside class="lg:col-span-3">
+<div class="bg-white rounded-xl border border-divider-gray shadow-sm overflow-hidden sticky top-24">
+<div class="p-md border-b border-divider-gray bg-off-white-light">
+<h3 class="font-bold text-deep-charcoal">Daily Schedule</h3>
+</div>
+<div class="max-h-[600px] overflow-y-auto">
+<nav id="day-nav" class="flex flex-col p-xs">
+    <div class="p-md text-sm text-neutral-charcoal">Day 1: Arrival</div>
+</nav>
+<button class="w-full flex items-center justify-center gap-xs p-md text-purple-heritage font-semibold hover:bg-lavender/10 transition-colors cursor-pointer">
+<span class="material-symbols-outlined">add_circle</span>
+                            Add Day
+                        </button>
+</div>
+</div>
+</aside>
+<section class="lg:col-span-6">
+<div class="flex items-center justify-between mb-lg">
+<h3 id="current-day-title" class="text-heading-h4 font-bold text-deep-charcoal">Main Timeline</h3>
+<div class="flex gap-xs">
+<button class="p-xs hover:bg-pale-gray rounded transition-colors text-neutral-charcoal cursor-pointer">
+<span class="material-symbols-outlined">edit</span>
+</button>
+</div>
+</div>
+<div id="timeline-items" class="relative timeline-line">
+    <!-- Items injected here -->
+    <div class="animate-pulse flex flex-col gap-4">
+        <div class="h-20 bg-pale-gray rounded-xl w-full"></div>
+        <div class="h-20 bg-pale-gray rounded-xl w-full"></div>
+    </div>
+</div>
+<div class="mt-lg pt-lg border-t border-divider-gray flex justify-center">
+<button onclick="window.location.href='../explore/code.html'" class="flex items-center gap-xs px-xl py-md rounded-full bg-purple-heritage text-white font-bold shadow-lg hover:shadow-xl hover:bg-purple-dark transition-all cursor-pointer">
+<span class="material-symbols-outlined">add_location_alt</span>
+                        Add Next Stop
+                    </button>
+</div>
+</section>
+<aside class="lg:col-span-3 space-y-xl">
+<div class="bg-white rounded-xl border border-divider-gray shadow-sm overflow-hidden">
+<div class="aspect-video relative overflow-hidden">
+<img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-md">
+<p class="text-white text-sm font-bold">Route View</p>
+</div>
+</div>
+<div class="p-md">
+<button class="w-full py-xs rounded-lg border border-purple-heritage text-purple-heritage font-semibold text-sm hover:bg-off-white-light cursor-pointer">
+                            Open Interactive Map
+                        </button>
+</div>
+</div>
+<div class="bg-primary-container p-md rounded-xl text-white shadow-md">
+<h4 class="font-bold mb-xs">Plan together</h4>
+<p class="text-xs text-on-primary-container leading-relaxed mb-md">Invite friends to vote on activities or add their own stops.</p>
+</div>
+</aside>
+</div>
+</main>
+<script src="../global.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tripId = urlParams.get('id');
+
+        if (!tripId) {
+            console.error('No trip ID found');
+            return;
+        }
+
+        const trip = await db.trips.get(Number(tripId));
+        if (!trip) {
+            document.getElementById('trip-name-display').innerText = 'Trip not found';
+            return;
+        }
+
+        document.getElementById('trip-name-display').innerText = trip.name;
+        document.getElementById('trip-date-display').innerText = trip.date;
+        document.getElementById('trip-badge').innerText = trip.name.split(' ')[0].toUpperCase();
+
+        const timelineContainer = document.getElementById('timeline-items');
+        timelineContainer.innerHTML = '';
+
+        if (trip.poi && trip.poi.length > 0) {
+            trip.poi.forEach((poi, index) => {
+                const itemHtml = `
+                    <div class="relative pl-12 mb-lg">
+                        <div class="absolute left-3 top-2 size-6 rounded-full bg-purple-heritage border border-white flex items-center justify-center z-10">
+                            <span class="material-symbols-outlined text-[14px] text-white">location_on</span>
+                        </div>
+                        <div class="bg-white p-md rounded-xl border border-divider-gray shadow-sm hover:border-purple-heritage transition-all group">
+                            <div class="flex gap-md">
+                                <div class="w-16 shrink-0 text-center">
+                                    <p class="text-xs font-bold text-neutral-charcoal">STOP ${index + 1}</p>
+                                </div>
+                                <div class="flex-1">
+                                    <h5 class="font-bold text-deep-charcoal">${poi.name}</h5>
+                                    <p class="text-[11px] text-neutral-charcoal">${poi.lat.toFixed(4)}, ${poi.lon.toFixed(4)}</p>
+                                    <div class="mt-2 flex gap-2">
+                                        <button onclick="window.location.href='../traveloop_dashboard/code.html?lat=${poi.lat}&lon=${poi.lon}&name=${encodeURIComponent(poi.name)}'" class="text-[10px] font-bold text-purple-heritage hover:underline">VIEW IN 3D</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                timelineContainer.insertAdjacentHTML('beforeend', itemHtml);
+            });
+        } else {
+            timelineContainer.innerHTML = `
+                <div class="text-center py-12 text-neutral-charcoal">
+                    <span class="material-symbols-outlined text-4xl mb-2">map</span>
+                    <p>No stops added to this trip yet.</p>
+                </div>
+            `;
+        }
+    });
+
+    function goBack() {
+        window.location.href = '../my_trips/code.html';
+    }
+</script>
+    <!-- Bottom Navigation (MacOS Dock Style) -->
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <nav class="mac-dock flex h-[58px] items-center justify-center gap-2 rounded-2xl border border-divider-gray bg-white/80 dark:bg-black/80 dark:border-neutral-charcoal p-2 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+            <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../traveloop_dashboard/code.html">
+                <span class="material-symbols-outlined text-[24px]">home</span>
+            </a>
+            <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../my_trips/code.html">
+                <span class="material-symbols-outlined text-[24px]">work</span>
+            </a>
+            <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../explore/code.html">
+                <span class="material-symbols-outlined text-[24px]">explore</span>
+            </a>
+            <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../budget_planner/code.html">
+                <span class="material-symbols-outlined text-[24px]">payments</span>
+            </a>
+            <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../profile/code.html">
+                <span class="material-symbols-outlined text-[24px]">person</span>
+            </a>
+        </nav>
+    </div>
+</body></html>

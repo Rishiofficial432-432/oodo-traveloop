@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sign Up | Traveloop</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "purple-heritage": "#714B67",
+                        "purple-dark": "#5A3C52",
+                        "pale-gray": "#F3F4F6",
+                        "border-subtle": "#D8DADD",
+                        "divider-gray": "#DEE2E6",
+                        "deep-charcoal": "#111827",
+                        "neutral-charcoal": "#374151"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="bg-[#faf9fa] font-['Inter'] text-deep-charcoal min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col bg-[#faf9fa] group/design-root overflow-x-hidden">
+    <!-- Header -->
+    <div class="flex items-center bg-[#faf9fa] p-4 pb-2 justify-between">
+        <button onclick="window.location.href='../auth/code.html'" class="text-deep-charcoal flex size-12 shrink-0 items-center justify-center hover:bg-pale-gray rounded-full transition-colors">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h2 class="text-deep-charcoal text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center pr-12">Sign Up</h2>
+    </div>
+
+    <main class="flex-1 max-w-[480px] mx-auto w-full px-4">
+        <div class="pt-6 pb-4">
+            <h1 class="text-deep-charcoal tracking-tight text-[32px] font-bold leading-tight">Create your account</h1>
+            <p class="text-neutral-charcoal mt-2 text-sm">Join Traveloop to start planning your next professional journey.</p>
+        </div>
+
+        <form id="signup-form" class="space-y-4 pt-4">
+            <div class="flex flex-col w-full">
+                <label class="text-deep-charcoal text-base font-medium pb-2">Full Name</label>
+                <input id="fullName" class="form-input flex w-full rounded border border-[#ded8dd] bg-[#faf9fa] focus:border-purple-heritage h-14 px-4 text-base" placeholder="Enter your name" type="text" required/>
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="text-deep-charcoal text-base font-medium pb-2">Email Address</label>
+                <input id="email" class="form-input flex w-full rounded border border-[#ded8dd] bg-[#faf9fa] focus:border-purple-heritage h-14 px-4 text-base" placeholder="email@traveloop.com" type="email" required/>
+            </div>
+            <div class="flex flex-col w-full">
+                <label class="text-deep-charcoal text-base font-medium pb-2">Password</label>
+                <div class="relative flex items-stretch">
+                    <input id="password" class="form-input flex w-full rounded border border-[#ded8dd] bg-[#faf9fa] focus:border-purple-heritage h-14 px-4 pr-12 text-base" placeholder="••••••••" type="password" required/>
+                    <button type="button" onclick="togglePassword()" class="absolute right-0 top-0 h-full px-4 text-[#7c6a77]">
+                        <span id="eye-icon" class="material-symbols-outlined">visibility</span>
+                    </button>
+                </div>
+
+            <div class="flex items-start gap-3 py-2">
+                <input class="mt-1 size-5 rounded border-border-subtle text-purple-heritage focus:ring-purple-heritage" id="terms" type="checkbox" required/>
+                <label class="text-sm text-neutral-charcoal leading-snug" for="terms">
+                    I agree to Traveloop's <a class="text-purple-heritage font-semibold hover:underline" href="#">Terms of Service</a> and <a class="text-purple-heritage font-semibold hover:underline" href="#">Privacy Policy</a>.
+                </label>
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" id="signup-btn" class="w-full h-[50px] bg-purple-heritage text-white font-semibold rounded hover:bg-purple-dark transition-colors shadow-sm">
+                    Create Account
+                </button>
+            </div>
+        </form>
+
+        <div class="flex items-center gap-4 py-8">
+            <div class="h-[1px] flex-1 bg-divider-gray"></div>
+            <span class="text-sm text-neutral-charcoal font-medium">Or sign up with</span>
+            <div class="h-[1px] flex-1 bg-divider-gray"></div>
+        </div>
+
+        <div class="flex flex-col gap-3">
+            <button onclick="signInWithGoogle()" id="google-signin-btn" class="w-full h-12 border border-border-subtle rounded flex items-center justify-center bg-white hover:bg-pale-gray transition-colors">
+                <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5 mr-2">
+                <span class="text-sm font-medium text-deep-charcoal">Google</span>
+            </button>
+            <button onclick="continueAsGuest()" class="w-full h-12 border border-divider-gray rounded flex items-center justify-center bg-transparent hover:bg-pale-gray transition-colors">
+                <span class="material-symbols-outlined text-neutral-charcoal mr-2 text-[20px]">person_outline</span>
+                <span class="text-sm font-medium text-neutral-charcoal">Continue as Guest</span>
+            </button>
+        </div>
+
+        <div class="mt-10 mb-12 text-center">
+            <p class="text-neutral-charcoal text-sm">
+                Already have an account? 
+                <a class="text-purple-heritage font-bold hover:underline ml-1" href="../auth/code.html">Log In</a>
+            </p>
+        </div>
+    </main>
+
+    <!-- Promotional Section (Large screens) -->
+    <div class="hidden lg:block fixed right-0 top-0 bottom-0 w-1/3 bg-purple-heritage overflow-hidden">
+        <div class="relative h-full flex flex-col justify-center px-12 text-white">
+            <div class="z-10">
+                <h3 class="text-4xl font-bold mb-4 font-['Caveat']">Traveloop</h3>
+                <p class="text-lg opacity-80 max-w-sm">The ultimate platform for unified business travel management and enterprise-grade workflows.</p>
+            </div>
+            <img class="absolute inset-0 object-cover w-full h-full opacity-20" src="https://images.unsplash.com/photo-1436491865332-7a61a109c0f3?auto=format&fit=crop&q=80">
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+    function togglePassword() {
+        const pass = document.getElementById('password');
+        const icon = document.getElementById('eye-icon');
+        if (pass.type === 'password') {
+            pass.type = 'text';
+            icon.innerText = 'visibility_off';
+        } else {
+            pass.type = 'password';
+            icon.innerText = 'visibility';
+        }
+    }
+
+    // Sign Up Logic
+    document.getElementById('signup-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('signup-btn');
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const fullName = document.getElementById('fullName').value;
+
+        btn.disabled = true;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> Creating...';
+
+        const { error } = await window.supabaseClient.auth.signUp({
+            email,
+            password,
+            options: {
+                data: {
+                    full_name: fullName,
+                },
+                emailRedirectTo: window.location.origin + '/traveloop_dashboard/code.html'
+            }
+        });
+
+        if (error) {
+            alert("Sign Up Failed: " + error.message);
+            btn.disabled = false;
+            btn.innerHTML = 'Create Account';
+        } else {
+            // Frictionless: Redirect immediately to hero (which will then go to dashboard)
+            window.location.href = "../hero/code.html";
+        }
+    });
+
+    // Google Login Logic
+    window.signInWithGoogle = async function() {
+        const btn = document.getElementById('google-signin-btn');
+        const originalContent = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> Connecting...';
+        btn.classList.add('opacity-70', 'pointer-events-none');
+
+        const currentUrl = new URL(window.location.href);
+        const redirectUrl = currentUrl.origin + currentUrl.pathname.replace(/\/(auth|signup)\/code\.html$/, '/traveloop_dashboard/code.html');
+
+        const { error } = await window.supabaseClient.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: redirectUrl
+            }
+        });
+
+        if (error) {
+            alert("Google Login Failed: " + error.message);
+            btn.innerHTML = originalContent;
+            btn.classList.remove('opacity-70', 'pointer-events-none');
+        }
+    };
+
+    window.handleForgotPassword = async function() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert("Please enter your email address first.");
+            return;
+        }
+        
+        const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/auth/code.html',
+        });
+
+        if (error) {
+            alert("Error: " + error.message);
+        } else {
+            alert("Password reset email sent! Check your inbox.");
+        }
+    };
+</script>
+<script src="../global.js"></script>
+</body>
+</html>

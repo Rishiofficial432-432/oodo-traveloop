@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Planner - Traveloop</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'purple-heritage': '#714B67',
+                        'deep-charcoal': '#111827',
+                        'pale-gray': '#F3F4F6',
+                        'teal-primary': '#00A09D',
+                        'divider-gray': '#E5E7EB'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .glass-card { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3); }
+        .mac-dock {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-[#F8F9FA] min-h-screen pb-32">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-divider-gray px-6 py-4 flex items-center justify-between">
+        <button onclick="history.back()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+            <span class="material-symbols-outlined text-deep-charcoal">arrow_back</span>
+        </button>
+        <div class="flex-1 text-center pr-10 flex flex-col items-center">
+            <h1 class="text-xl font-bold text-deep-charcoal">Trip Budget Planner</h1>
+            <div class="flex items-center gap-1 mt-1 bg-teal-primary/10 px-2 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px] text-teal-primary">star</span>
+                <span class="text-[10px] font-bold text-teal-primary uppercase tracking-tighter">Open Source</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 mt-8">
+        <!-- Selector -->
+        <div class="mb-8">
+            <label class="block text-sm font-semibold text-deep-charcoal mb-2">Select Trip to Plan</label>
+            <select id="trip-selector" class="w-full bg-white border border-divider-gray rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-heritage/20 transition-all">
+                <option value="">Choose a trip...</option>
+            </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Left: Inputs -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl p-6 border border-divider-gray shadow-sm">
+                    <h2 class="text-lg font-bold text-deep-charcoal mb-4 flex items-center gap-2">
+                        <span class="material-symbols-outlined text-purple-heritage">payments</span>
+                        Expense Details
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-neutral-400 uppercase mb-1">Category</label>
+                            <select id="category" class="w-full bg-pale-gray border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-heritage">
+                                <option value="Transport">Transport</option>
+                                <option value="Stay">Stay</option>
+                                <option value="Food">Food</option>
+                                <option value="Leisure">Leisure</option>
+                                <option value="Others">Others</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-neutral-400 uppercase mb-1">Amount ($)</label>
+                            <input type="number" id="amount" placeholder="0.00" class="w-full bg-pale-gray border-none rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-heritage">
+                        </div>
+                        <button onclick="addExpense()" class="w-full bg-purple-heritage text-white font-bold py-3 rounded-xl hover:bg-purple-dark transition-colors shadow-lg shadow-purple-heritage/20 flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            Add Expense
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 border border-divider-gray shadow-sm overflow-hidden">
+                    <h2 class="text-lg font-bold text-deep-charcoal mb-4">Summary</h2>
+                    <div id="expense-list" class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                        <!-- Items injected here -->
+                        <p class="text-sm text-neutral-400 italic">No expenses added yet.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-divider-gray flex justify-between items-center">
+                        <span class="font-bold text-deep-charcoal">Total</span>
+                        <span id="total-amount" class="text-xl font-bold text-teal-primary">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Visualization -->
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl p-6 border border-divider-gray shadow-sm flex flex-col items-center justify-center min-h-[400px]">
+                    <h2 class="text-lg font-bold text-deep-charcoal mb-6 w-full text-left">Budget Allocation</h2>
+                    <div class="relative w-full max-w-[280px]">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                </div>
+
+                <button onclick="saveBudget()" id="save-btn" class="w-full bg-teal-primary text-white font-bold py-4 rounded-2xl hover:brightness-110 transition-all shadow-xl shadow-teal-primary/20 flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">save</span>
+                    Save Budget to Trip
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <!-- MacOS style dock -->
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+        <div class="mac-dock flex items-end gap-2 px-4 py-3 h-[70px]">
+            <a href="../traveloop_dashboard/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-white/40 hover:bg-white/80 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-deep-charcoal">dashboard</span>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">Dashboard</span>
+            </a>
+            <a href="../explore/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-white/40 hover:bg-white/80 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-deep-charcoal">explore</span>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">Explore</span>
+            </a>
+            <a href="../plan_a_new_trip/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-white/40 hover:bg-white/80 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-deep-charcoal">add_circle</span>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">Plan</span>
+            </a>
+            <a href="../my_trips/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-white/40 hover:bg-white/80 transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-deep-charcoal">luggage</span>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">My Trips</span>
+            </a>
+            <a href="../budget_planner/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-teal-primary text-white scale-110 shadow-lg shadow-teal-primary/20 transition-all cursor-pointer">
+                <span class="material-symbols-outlined">payments</span>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">Budget</span>
+            </a>
+            <div class="w-[1px] h-8 bg-black/10 mx-1 mb-1"></div>
+            <a href="../profile/code.html" class="dock-item group relative flex items-center justify-center rounded-xl bg-white/40 hover:bg-white/80 transition-all cursor-pointer overflow-hidden">
+                <div id="profile-avatar" class="w-full h-full bg-center bg-no-repeat bg-cover" style="background-image: url('https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=100&q=80')"></div>
+                <span class="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-deep-charcoal text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="../global.js"></script>
+    <script>
+        let expenses = [];
+        let chart;
+
+        const ctx = document.getElementById('budgetChart').getContext('2d');
+        
+        function initChart() {
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Transport', 'Stay', 'Food', 'Leisure', 'Others'],
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: ['#714B67', '#00A09D', '#FBB130', '#BA1A1A', '#92EFF5'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            });
+        }
+
+        async function loadTrips() {
+            const trips = await getTrips();
+            const selector = document.getElementById('trip-selector');
+            trips.forEach(trip => {
+                const opt = document.createElement('option');
+                opt.value = trip.id;
+                opt.textContent = trip.name;
+                selector.appendChild(opt);
+            });
+
+            selector.addEventListener('change', async (e) => {
+                if (e.target.value) {
+                    const trip = await db.trips.get(Number(e.target.value));
+                    expenses = trip.budget || [];
+                    updateUI();
+                }
+            });
+        }
+
+        function addExpense() {
+            const cat = document.getElementById('category').value;
+            const amt = parseFloat(document.getElementById('amount').value);
+            
+            if (!amt || amt <= 0) return;
+
+            expenses.push({ category: cat, amount: amt, id: Date.now() });
+            document.getElementById('amount').value = '';
+            updateUI();
+        }
+
+        function deleteExpense(id) {
+            expenses = expenses.filter(e => e.id !== id);
+            updateUI();
+        }
+
+        function updateUI() {
+            const list = document.getElementById('expense-list');
+            const totalEl = document.getElementById('total-amount');
+            
+            list.innerHTML = '';
+            let total = 0;
+            const categoryTotals = { Transport: 0, Stay: 0, Food: 0, Leisure: 0, Others: 0 };
+
+            if (expenses.length === 0) {
+                list.innerHTML = '<p class="text-sm text-neutral-400 italic">No expenses added yet.</p>';
+            } else {
+                expenses.forEach(exp => {
+                    total += exp.amount;
+                    categoryTotals[exp.category] += exp.amount;
+
+                    const div = document.createElement('div');
+                    div.className = "flex items-center justify-between p-3 bg-pale-gray rounded-xl group";
+                    div.innerHTML = `
+                        <div class="flex items-center gap-3">
+                            <span class="w-2 h-2 rounded-full ${getColor(exp.category)}"></span>
+                            <span class="text-sm font-medium text-deep-charcoal">${exp.category}</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="text-sm font-bold text-deep-charcoal">$${exp.amount.toFixed(2)}</span>
+                            <button onclick="deleteExpense(${exp.id})" class="text-neutral-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-all">
+                                <span class="material-symbols-outlined text-sm">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+
+            totalEl.innerText = `$${total.toFixed(2)}`;
+            
+            // Update Chart
+            chart.data.datasets[0].data = Object.values(categoryTotals);
+            chart.update();
+        }
+
+        function getColor(cat) {
+            const colors = {
+                Transport: 'bg-purple-heritage',
+                Stay: 'bg-teal-primary',
+                Food: 'bg-gold-amber',
+                Leisure: 'bg-error-red',
+                Others: 'bg-secondary-container'
+            };
+            return colors[cat];
+        }
+
+        async function saveBudget() {
+            const tripId = document.getElementById('trip-selector').value;
+            if (!tripId) {
+                alert("Please select a trip first!");
+                return;
+            }
+
+            const btn = document.getElementById('save-btn');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+            
+            await updateTrip(tripId, { budget: expenses });
+            
+            setTimeout(() => {
+                btn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Budget Saved!';
+                setTimeout(() => {
+                    btn.innerHTML = '<span class="material-symbols-outlined">save</span> Save Budget to Trip';
+                }, 2000);
+            }, 800);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            loadTrips();
+            if (typeof initMacDock === 'function') initMacDock();
+        });
+    </script>
+</body>
+</html>

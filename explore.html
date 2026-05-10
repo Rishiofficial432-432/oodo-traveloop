@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Explore Destinations | Traveloop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            "colors": {
+              "purple-heritage": "#714B67",
+              "teal-primary": "#017E84",
+              "deep-charcoal": "#111827",
+              "neutral-charcoal": "#374151",
+              "divider-gray": "#DEE2E6",
+              "off-white": "#F9F9FF",
+              "pale-gray": "#F3F4F6",
+              "success-green": "#28A745",
+              "error-red": "#DC3545"
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+<!-- Header -->
+<header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
+<button onclick="window.location.href='traveloop_dashboard.html'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+<span class="material-symbols-outlined text-deep-charcoal">arrow_back</span>
+</button>
+<div class="flex-1 px-4">
+<div class="relative max-w-xl mx-auto">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-charcoal">search</span>
+<input id="city-search" class="w-full bg-pale-gray border-none rounded-xl py-2 pl-10 pr-4 text-sm focus:ring-2 focus:ring-purple-heritage transition-all" placeholder="Search cities, landmarks, or cultures..." type="text"/>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+<span class="material-symbols-outlined text-deep-charcoal">tune</span>
+</button>
+</header>
+<main class="max-w-7xl mx-auto p-6 space-y-10">
+<!-- Featured Grid -->
+<section>
+<h2 class="text-2xl font-bold text-deep-charcoal mb-6">Trending Destinations</h2>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<!-- City Card -->
+<div class="group cursor-pointer" onclick="goToCity('Tokyo', 35.6812, 139.7671)">
+<div class="relative h-64 rounded-3xl overflow-hidden mb-3 shadow-sm">
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&q=80&w=1000");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-lg">Tokyo</h3>
+<p class="text-white/80 text-xs">Japan • Futuristic &amp; Zen</p>
+</div>
+</div>
+</div>
+<!-- City Card -->
+<div class="group cursor-pointer" onclick="goToCity('Paris', 48.8566, 2.3522)">
+<div class="relative h-64 rounded-3xl overflow-hidden mb-3 shadow-sm">
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=1000");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-lg">Paris</h3>
+<p class="text-white/80 text-xs">France • City of Light</p>
+</div>
+</div>
+</div>
+<!-- City Card -->
+<div class="group cursor-pointer" onclick="goToCity('New York', 40.7128, -74.0060)">
+<div class="relative h-64 rounded-3xl overflow-hidden mb-3 shadow-sm">
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&q=80&w=1000");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-lg">New York</h3>
+<p class="text-white/80 text-xs">USA • The Big Apple</p>
+</div>
+</div>
+</div>
+<!-- City Card -->
+<div class="group cursor-pointer" onclick="goToCity('London', 51.5074, -0.1278)">
+<div class="relative h-64 rounded-3xl overflow-hidden mb-3 shadow-sm">
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-700 group-hover:scale-110" style='background-image: url("https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&q=80&w=1000");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+<div class="absolute bottom-4 left-4 right-4">
+<h3 class="text-white font-bold text-lg">London</h3>
+<p class="text-white/80 text-xs">UK • Heritage &amp; Modernity</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Categories -->
+<section>
+<h2 class="text-xl font-bold text-deep-charcoal mb-4">Explore by Interest</h2>
+<div class="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-divider-gray rounded-2xl whitespace-nowrap hover:border-purple-heritage transition-colors shadow-sm">
+<span class="material-symbols-outlined text-purple-heritage">beach_access</span>
+<span class="font-medium">Beaches</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-divider-gray rounded-2xl whitespace-nowrap hover:border-purple-heritage transition-colors shadow-sm">
+<span class="material-symbols-outlined text-teal-primary">landscape</span>
+<span class="font-medium">Mountains</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-divider-gray rounded-2xl whitespace-nowrap hover:border-purple-heritage transition-colors shadow-sm">
+<span class="material-symbols-outlined text-gold-amber">restaurant</span>
+<span class="font-medium">Culinary</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-divider-gray rounded-2xl whitespace-nowrap hover:border-purple-heritage transition-colors shadow-sm">
+<span class="material-symbols-outlined text-deep-charcoal">museum</span>
+<span class="font-medium">History</span>
+</button>
+<button class="flex items-center gap-2 px-6 py-3 bg-white border border-divider-gray rounded-2xl whitespace-nowrap hover:border-purple-heritage transition-colors shadow-sm">
+<span class="material-symbols-outlined text-success-green">eco</span>
+<span class="font-medium">Nature</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation (MacOS Dock Style) -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+<nav class="flex h-[58px] items-center justify-center gap-2 rounded-2xl border border-divider-gray bg-white/80 p-2 backdrop-blur-md shadow-lg">
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="traveloop_dashboard.html">
+<span class="material-symbols-outlined">home</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="my_trips.html">
+<span class="material-symbols-outlined">work</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-purple-heritage bg-purple-heritage/10" href="explore.html">
+<span class="material-symbols-outlined">explore</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="budget_planner.html">
+<span class="material-symbols-outlined">payments</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="profile.html">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+</div>
+<script src="global.js"></script>
+<script>
+        function goToCity(name, lat, lon) {
+            window.location.href = `traveloop_dashboard.html?city=${name}&lat=${lat}&lon=${lon}`;
+        }
+
+        // Live Search Mockup
+        const searchInput = document.getElementById('city-search');
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const query = searchInput.value;
+                if (query) {
+                    alert(`Searching for: ${query}\n(In a real app, this would query a travel API!)`);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

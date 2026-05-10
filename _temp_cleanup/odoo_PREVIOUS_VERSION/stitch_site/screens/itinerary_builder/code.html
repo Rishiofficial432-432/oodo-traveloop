@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#d1c3ca",
+                        "on-error": "#ffffff",
+                        "primary-container": "#714b67",
+                        "secondary-fixed": "#95f1f8",
+                        "pale-gray": "#F3F4F6",
+                        "error-container": "#ffdad6",
+                        "gold-amber": "#FBB130",
+                        "on-tertiary": "#ffffff",
+                        "border-subtle": "#D8DADD",
+                        "surface-container-lowest": "#ffffff",
+                        "purple-heritage": "#714B67",
+                        "on-secondary-fixed": "#002022",
+                        "on-primary-container": "#f0bfe0",
+                        "success-green": "#28A745",
+                        "primary": "#57344f",
+                        "purple-dark": "#5A3C52",
+                        "inverse-primary": "#e9b8d9",
+                        "teal-accent": "#00A09D",
+                        "on-surface-variant": "#4e444a",
+                        "inverse-on-surface": "#edf0ff",
+                        "tertiary-fixed-dim": "#b9ce9a",
+                        "neutral-charcoal": "#374151",
+                        "on-tertiary-fixed-variant": "#3b4c24",
+                        "off-white": "#FAFAFA",
+                        "lavender": "#B18AA7",
+                        "error-red": "#DC3545",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#006e73",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#d5eab4",
+                        "secondary-container": "#92eff5",
+                        "on-primary-fixed-variant": "#5f3b56",
+                        "on-background": "#141b2b",
+                        "surface-container-highest": "#dce2f7",
+                        "deep-charcoal": "#111827",
+                        "tertiary": "#34451e",
+                        "secondary": "#00696e",
+                        "primary-fixed": "#ffd7f1",
+                        "on-tertiary-container": "#c0d5a0",
+                        "error": "#ba1a1a",
+                        "gold-highlight": "#FFC107",
+                        "purple-medium": "#65435C",
+                        "inverse-surface": "#293040",
+                        "teal-primary": "#017E84",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#78d5db",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-high": "#e1e8fd",
+                        "off-white-light": "#F9FAFB",
+                        "outline": "#80747a",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d3daef",
+                        "on-tertiary-fixed": "#112000",
+                        "tertiary-container": "#4b5d33",
+                        "surface-container-low": "#f1f3ff",
+                        "primary-fixed-dim": "#e9b8d9",
+                        "on-primary-fixed": "#2f1029",
+                        "surface-container": "#e9edff",
+                        "surface-variant": "#dce2f7",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "light-gray": "#F9F9F9",
+                        "divider-gray": "#DEE2E6",
+                        "surface-tint": "#79526f",
+                        "on-surface": "#141b2b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "micro": "4px",
+                        "sm": "12px",
+                        "section-v": "60px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "container-h": "40px",
+                        "lg": "24px",
+                        "xs": "8px",
+                        "md": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .timeline-line::before {
+            content: '';
+            position: absolute;
+            left: 23px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #DEE2E6;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-off-white font-[Inter]">
+<!-- Shared Header Replacement for Focused View -->
+<header class="sticky top-0 z-50 flex items-center justify-between h-16 bg-white border-b border-divider-gray px-container-h">
+<div class="flex items-center gap-4">
+<a class="flex items-center text-purple-heritage hover:text-purple-dark" href="#">
+<span class="material-symbols-outlined">arrow_back</span>
+</a>
+<h1 class="text-heading-h4 font-bold text-deep-charcoal">Itinerary Builder</h1>
+</div>
+<div class="flex items-center gap-sm">
+<button class="flex items-center gap-xs px-md py-xs rounded-lg bg-off-white-light text-purple-heritage border border-border-subtle font-semibold text-button-reg">
+<span class="material-symbols-outlined text-[20px]">share</span>
+                Share
+            </button>
+<button class="flex items-center gap-xs px-md py-xs rounded-lg bg-purple-heritage text-white hover:bg-purple-dark font-semibold text-button-reg transition-colors">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                Save Trip
+            </button>
+</div>
+</header>
+<main class="max-w-[1280px] mx-auto px-container-h py-section-v">
+<!-- Trip Context Header -->
+<div class="mb-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<span class="bg-primary-fixed text-on-primary-fixed px-sm py-micro rounded-full text-label-sm font-semibold uppercase tracking-wider">Europe 2023</span>
+<h2 class="text-[32px] font-bold text-deep-charcoal mt-xs">Autumn in Paris &amp; Rome</h2>
+<p class="text-neutral-charcoal mt-xs flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                        Oct 12 - Oct 25, 2023 (14 Days)
+                    </p>
+</div>
+<div class="flex items-center gap-md">
+<div class="text-right">
+<p class="text-label-sm text-neutral-charcoal">Estimated Budget</p>
+<p class="text-heading-h4 font-bold text-success-green">$4,250.00</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Builder Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- Left Sidebar: Day Navigation -->
+<aside class="lg:col-span-3">
+<div class="bg-white rounded-xl border border-divider-gray shadow-sm overflow-hidden sticky top-24">
+<div class="p-md border-b border-divider-gray bg-off-white-light">
+<h3 class="font-bold text-deep-charcoal">Daily Schedule</h3>
+</div>
+<div class="max-h-[600px] overflow-y-auto">
+<nav class="flex flex-col p-xs">
+<a class="flex items-center justify-between p-md rounded-lg bg-purple-heritage text-white font-semibold mb-xs" href="#">
+<span>Day 1: Arrival</span>
+<span class="text-xs opacity-80 italic">Oct 12</span>
+</a>
+<a class="flex items-center justify-between p-md rounded-lg hover:bg-off-white text-neutral-charcoal font-medium mb-xs border border-transparent hover:border-divider-gray" href="#">
+<span>Day 2: Louvre &amp; Seine</span>
+<span class="text-xs opacity-60 italic">Oct 13</span>
+</a>
+<a class="flex items-center justify-between p-md rounded-lg hover:bg-off-white text-neutral-charcoal font-medium mb-xs border border-transparent hover:border-divider-gray" href="#">
+<span>Day 3: Montmartre</span>
+<span class="text-xs opacity-60 italic">Oct 14</span>
+</a>
+<a class="flex items-center justify-between p-md rounded-lg hover:bg-off-white text-neutral-charcoal font-medium mb-xs border border-transparent hover:border-divider-gray" href="#">
+<span>Day 4: Travel to Rome</span>
+<span class="text-xs opacity-60 italic">Oct 15</span>
+</a>
+</nav>
+<button class="w-full flex items-center justify-center gap-xs p-md text-purple-heritage font-semibold hover:bg-lavender/10 transition-colors">
+<span class="material-symbols-outlined">add_circle</span>
+                            Add Day
+                        </button>
+</div>
+</div>
+</aside>
+<!-- Center: Timeline Builder -->
+<section class="lg:col-span-6">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="text-heading-h4 font-bold text-deep-charcoal">Day 1: Paris Arrival</h3>
+<div class="flex gap-xs">
+<button class="p-xs hover:bg-pale-gray rounded transition-colors text-neutral-charcoal">
+<span class="material-symbols-outlined">edit</span>
+</button>
+<button class="p-xs hover:bg-pale-gray rounded transition-colors text-neutral-charcoal">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<div class="relative timeline-line">
+<!-- City Header -->
+<div class="relative pl-12 mb-lg">
+<div class="absolute left-0 top-0 size-12 rounded-full bg-white border-2 border-purple-heritage flex items-center justify-center z-10 shadow-sm">
+<span class="material-symbols-outlined text-purple-heritage">location_on</span>
+</div>
+<div class="bg-white p-lg rounded-xl border border-divider-gray shadow-sm">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="text-lg font-bold text-deep-charcoal">Arrive in Paris, France</h4>
+<p class="text-body-sm text-neutral-charcoal">CDG Airport • Thursday, Oct 12</p>
+</div>
+<button class="text-purple-heritage text-sm font-semibold hover:underline">Change City</button>
+</div>
+</div>
+</div>
+<!-- Activity Block: Flight -->
+<div class="relative pl-12 mb-lg">
+<div class="absolute left-3 top-2 size-6 rounded-full bg-pale-gray border border-divider-gray flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[16px] text-neutral-charcoal">flight_land</span>
+</div>
+<div class="bg-white p-md rounded-xl border border-divider-gray shadow-sm hover:border-purple-heritage/30 transition-colors group">
+<div class="flex gap-md">
+<div class="w-20 shrink-0 text-center">
+<p class="text-sm font-bold text-deep-charcoal">09:00 AM</p>
+<span class="text-[10px] text-neutral-charcoal font-medium">EST. 3H</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h5 class="font-bold text-deep-charcoal">Landing at CDG</h5>
+<span class="material-symbols-outlined text-divider-gray group-hover:text-purple-heritage cursor-pointer">drag_indicator</span>
+</div>
+<p class="text-body-sm text-neutral-charcoal">AF123 from JFK. Terminal 2E.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Block: Hotel -->
+<div class="relative pl-12 mb-lg">
+<div class="absolute left-3 top-2 size-6 rounded-full bg-pale-gray border border-divider-gray flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[16px] text-neutral-charcoal">hotel</span>
+</div>
+<div class="bg-white p-md rounded-xl border border-divider-gray shadow-sm hover:border-purple-heritage/30 transition-colors group">
+<div class="flex gap-md">
+<div class="w-20 shrink-0 text-center">
+<p class="text-sm font-bold text-deep-charcoal">11:30 AM</p>
+</div>
+<div class="flex-1">
+<div class="flex justify-between">
+<h5 class="font-bold text-deep-charcoal">Check-in: Hotel Le Meurice</h5>
+<span class="material-symbols-outlined text-divider-gray group-hover:text-purple-heritage cursor-pointer">drag_indicator</span>
+</div>
+<p class="text-body-sm text-neutral-charcoal italic">228 Rue de Rivoli, 75001 Paris</p>
+<div class="mt-xs flex items-center gap-xs">
+<span class="bg-success-green/10 text-success-green px-xs py-1 rounded text-[10px] font-bold uppercase">Confirmed</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Activity Block: Suggestion -->
+<div class="relative pl-12 mb-lg">
+<div class="absolute left-3 top-2 size-6 rounded-full bg-gold-amber/20 border border-gold-amber/40 flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-[16px] text-gold-amber">restaurant</span>
+</div>
+<div class="bg-off-white-light p-md rounded-xl border-2 border-dashed border-divider-gray group hover:bg-white transition-all">
+<div class="flex gap-md opacity-60 group-hover:opacity-100 transition-opacity">
+<div class="w-20 shrink-0 text-center">
+<p class="text-sm font-bold text-deep-charcoal italic">Afternoon</p>
+</div>
+<div class="flex-1">
+<h5 class="font-bold text-deep-charcoal flex items-center gap-xs">
+                                        Quick Lunch near Louvre
+                                        <span class="text-xs bg-gold-amber text-white px-1.5 rounded-full">AI Tip</span>
+</h5>
+<p class="text-body-sm text-neutral-charcoal">Try 'Café Marly' for views of the pyramid.</p>
+<div class="mt-sm flex gap-xs">
+<button class="text-xs font-bold text-purple-heritage hover:underline">+ Add to Schedule</button>
+<button class="text-xs font-bold text-neutral-charcoal hover:underline">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Add Activity Control -->
+<div class="relative pl-12 pb-xl">
+<div class="absolute left-3 top-2 size-6 rounded-full bg-white border border-purple-heritage flex items-center justify-center z-10 cursor-pointer hover:bg-purple-heritage hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</div>
+<button class="w-full flex items-center gap-md p-md rounded-xl border-2 border-dashed border-divider-gray text-neutral-charcoal hover:text-purple-heritage hover:border-purple-heritage transition-all group">
+<span class="font-bold text-button-reg">Add Activity or Note</span>
+</button>
+</div>
+</div>
+<!-- Footer Action for Timeline -->
+<div class="mt-lg pt-lg border-t border-divider-gray flex justify-center">
+<button class="flex items-center gap-xs px-xl py-md rounded-full bg-purple-heritage text-white font-bold shadow-lg hover:shadow-xl hover:bg-purple-dark transition-all">
+<span class="material-symbols-outlined">add_location_alt</span>
+                        Add Next Stop (New City)
+                    </button>
+</div>
+</section>
+<!-- Right Sidebar: Exploration & Tools -->
+<aside class="lg:col-span-3 space-y-xl">
+<!-- Mini Map -->
+<div class="bg-white rounded-xl border border-divider-gray shadow-sm overflow-hidden">
+<div class="aspect-video relative overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A detailed digital map interface showing a travel route through Western Europe with focus on Paris and Rome. The map uses a sophisticated minimalist style with soft cream backgrounds, deep purple markers for cities, and thin teal lines connecting the travel path. Elegant typography labels key landmarks and the lighting is even and clear." data-location="Paris, France" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBx9YhLkYud4_QPYt0UhyHJSstYMhGzivHjdi7hskYP6ymk9QGKbv2TuOy_m6S_zPpH1rhV0sf6uS7Errtv-DJQQDDvC9TtvIIktiqLB6q9CkriANye_s50I75CD-7SYh7aUxUrGz3zOExw1gAz34dy-GwhmdCw4huWxN_lfXQKqQYdUnrjpt5eQtpRG2LesT8rG7NZnO6dR1O50ATTf1JxQzfCyhnQW3adf70sjMlc8CHQKv1k1S8g3TAWlouHc8PJ0TMu31lXcpg"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent flex items-end p-md">
+<p class="text-white text-sm font-bold">Route View: France to Italy</p>
+</div>
+</div>
+<div class="p-md">
+<button class="w-full py-xs rounded-lg border border-purple-heritage text-purple-heritage font-semibold text-sm hover:bg-off-white-light">
+                            Open Interactive Map
+                        </button>
+</div>
+</div>
+<!-- Quick Discovery Search -->
+<div class="bg-white rounded-xl border border-divider-gray shadow-sm p-md">
+<h4 class="font-bold text-deep-charcoal mb-md">Explore Paris</h4>
+<div class="relative mb-lg">
+<input class="w-full pl-10 pr-4 py-2 bg-off-white-light border-divider-gray rounded-lg focus:ring-purple-heritage focus:border-purple-heritage text-sm" placeholder="Search sights, food..." type="text"/>
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-charcoal text-[20px]">search</span>
+</div>
+<div class="space-y-md">
+<div class="flex gap-sm group cursor-pointer">
+<div class="size-16 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A stunning wide-angle photograph of the Eiffel Tower at sunset with a warm golden sky and deep purple hues in the clouds. The lighting is dramatic and romantic, capturing the iconic iron structure against a vibrant Paris skyline. The overall aesthetic is clean and professional, suitable for a high-end travel application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHarLCDHVBWyl2XusKYgPVQQGwNy-cXel5mmsm-02n8KR40Lt1plw4EOWK528TqCOr6Bh_hNy9LPY-jVQbgo_8rd9yVKADDJCRg0Wi9_K8U8qtuTJ260ImZZVM0XyF1UlDP0qmOXn8VjV5vqneXvCy9jzldxdmHxxXcyFE4W7CWtJX8TV2IGuUCJkViIvJxz5dZhGBUTOwJ2ROMOkD1026oNcP-8UelaUFWpDtYe8vGWFBvt5yJ4-LNg62Jhg4p-z9zO5nNC5RHnw"/>
+</div>
+<div>
+<h5 class="text-sm font-bold text-deep-charcoal group-hover:text-purple-heritage transition-colors">Eiffel Tower Tour</h5>
+<p class="text-[11px] text-neutral-charcoal">Must-visit • Landmark</p>
+<div class="mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-gold-amber" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[11px] font-bold">4.9</span>
+</div>
+</div>
+</div>
+<div class="flex gap-sm group cursor-pointer">
+<div class="size-16 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="An interior shot of the Louvre museum in Paris, specifically showing the grand gallery with classical paintings lining the walls and elegant marble floors. The lighting is soft and diffused through the glass pyramid, creating a bright and scholarly atmosphere. The color palette is composed of rich golds, deep browns, and bright whites." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8GEec8u50CkelokI7uueFvbSy84T52BgFwoufKhwzLH_fgpKCKZYpGWyx4QzPPwBDazicvd28bAJEnQRtweS2z2YEoVy0dr-WcN53ParGwtCLVZPPKNRBmRBHMGNRwU4o9ZL0SZ26Gc3gv9rsd8HezKPLo3MJ4y0a7si6CIe8Ox-kfwxJe9KPjPeqxkOIHrqBYx1P5p_1TZYOjqLllweZEn2t-EPzVZgTK8A3_r1cF8QFq9Ped8sAr_VYGjCF-C-xbh9S4VvABWA"/>
+</div>
+<div>
+<h5 class="text-sm font-bold text-deep-charcoal group-hover:text-purple-heritage transition-colors">Louvre Museum</h5>
+<p class="text-[11px] text-neutral-charcoal">Art • 2.5 hours</p>
+<div class="mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-gold-amber" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[11px] font-bold">4.7</span>
+</div>
+</div>
+</div>
+</div>
+<button class="w-full mt-lg text-purple-heritage text-xs font-bold hover:underline">View More Suggestions</button>
+</div>
+<!-- Collaborative Tools -->
+<div class="bg-primary-container p-md rounded-xl text-white shadow-md">
+<h4 class="font-bold mb-xs">Plan together</h4>
+<p class="text-xs text-on-primary-container leading-relaxed mb-md">Invite friends to vote on activities or add their own stops to the timeline.</p>
+<div class="flex -space-x-2 mb-md">
+<div class="size-8 rounded-full border-2 border-primary-container bg-lavender flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="size-8 rounded-full border-2 border-primary-container bg-teal-accent flex items-center justify-center text-[10px] font-bold">MK</div>
+<button class="size-8 rounded-full border-2 border-primary-container bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
+<span class="material-symbols-outlined text-[16px]">add</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Bottom Action Bar (Floating for Mobile/Tablets) -->
+<div class="fixed bottom-0 left-0 right-0 p-md lg:hidden z-50">
+<div class="bg-white border border-divider-gray shadow-2xl rounded-2xl flex justify-around p-xs">
+<button class="flex flex-col items-center gap-1 p-2 text-purple-heritage">
+<span class="material-symbols-outlined">map</span>
+<span class="text-[10px] font-bold">Map</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-neutral-charcoal">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="text-[10px] font-bold">Timeline</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-neutral-charcoal">
+<span class="material-symbols-outlined">explore</span>
+<span class="text-[10px] font-bold">Explore</span>
+</button>
+<button class="flex flex-col items-center gap-1 p-2 text-neutral-charcoal">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold">Shared</span>
+</button>
+</div>
+</div>
+</body></html>

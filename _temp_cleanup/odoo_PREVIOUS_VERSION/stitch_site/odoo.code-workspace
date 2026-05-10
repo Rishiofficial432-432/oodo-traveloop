@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../../Downloads/stitch_odoo_design_system_framework"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "stitch_odoo_design_system_framework"
+	}
+}

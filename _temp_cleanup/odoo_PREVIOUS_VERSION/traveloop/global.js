@@ -32,13 +32,13 @@ if (window.supabase) {
         if (window.supabaseClient) {
             await window.supabaseClient.auth.signOut();
         }
-        window.location.href = 'auth.html';
+        window.location.href = '../auth/code.html';
     };
 
     // Guest Mode
     window.continueAsGuest = function() {
         localStorage.setItem('isGuest', 'true');
-        window.location.href = 'traveloop_dashboard.html';
+        window.location.href = '../traveloop_dashboard/code.html';
     };
 
     // Check for existing session or guest mode
@@ -49,11 +49,11 @@ if (window.supabase) {
             updateProfileUI(session.user);
         } else if (!isGuest) {
             // If not logged in and not a guest, and trying to access protected pages
-            const protectedPages = ['traveloop_dashboard.html', 'my_trips.html', 'plan_a_new_trip.html', 'profile.html', 'itinerary_builder.html'];
+            const protectedPages = ['/traveloop_dashboard/', '/my_trips/', '/plan_a_new_trip/', '/profile/', '/itinerary_builder/'];
             const currentPath = window.location.pathname;
             if (protectedPages.some(page => currentPath.includes(page))) {
                 console.log("No session or guest mode, redirecting to login...");
-                window.location.href = 'auth.html';
+                window.location.href = '../auth/code.html';
             }
         }
     });
@@ -283,7 +283,7 @@ function initCreateTrip() {
                 console.log("Trip saved successfully:", result);
                 createBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> <span>Success!</span>';
                 setTimeout(() => {
-                    window.location.href = 'my_trips.html';
+                    window.location.href = '../my_trips/code.html';
                 }, 1000);
             } else {
                 throw new Error("Database returned no data. Check your RLS policies.");
@@ -670,4 +670,3 @@ function initMacDock() {
         });
     });
 }
-

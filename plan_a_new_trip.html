@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Plan New Trip | Traveloop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            "colors": {
+              "purple-heritage": "#714B67",
+              "teal-primary": "#017E84",
+              "deep-charcoal": "#111827",
+              "neutral-charcoal": "#374151",
+              "divider-gray": "#DEE2E6",
+              "off-white": "#F9F9FF",
+              "pale-gray": "#F3F4F6",
+              "success-green": "#28A745",
+              "error-red": "#DC3545"
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+<!-- Header -->
+<header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
+<button onclick="window.location.href='my_trips.html'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+<span class="material-symbols-outlined text-deep-charcoal">close</span>
+</button>
+<div class="flex-1 text-center pr-10">
+<h1 class="text-xl font-bold text-deep-charcoal" id="page-title">Create New Adventure</h1>
+</div>
+</header>
+<main class="max-w-3xl mx-auto p-6">
+<div class="bg-white rounded-3xl border border-divider-gray shadow-sm overflow-hidden">
+<div class="h-48 bg-purple-heritage/10 flex flex-col items-center justify-center text-purple-heritage relative group overflow-hidden">
+<div id="image-preview" class="absolute inset-0 bg-center bg-cover hidden"></div>
+<span class="material-symbols-outlined text-5xl mb-2">add_a_photo</span>
+<p class="font-bold text-sm">Upload Cover Media</p>
+<input id="media-upload" type="file" accept="image/*,video/*" class="absolute inset-0 opacity-0 cursor-pointer"/>
+</div>
+<form id="trip-form" class="p-8 space-y-6">
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-bold text-deep-charcoal mb-2">Trip Name</label>
+<input id="tripName" class="w-full rounded-xl border-divider-gray bg-pale-gray focus:ring-purple-heritage focus:border-purple-heritage h-14 px-4" placeholder="e.g. Summer in Tokyo" required="" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-sm font-bold text-deep-charcoal mb-2">Destination</label>
+<input id="destination" class="w-full rounded-xl border-divider-gray bg-pale-gray focus:ring-purple-heritage focus:border-purple-heritage h-14 px-4" placeholder="City or Country" required="" type="text"/>
+</div>
+<div>
+<label class="block text-sm font-bold text-deep-charcoal mb-2">Dates</label>
+<input id="tripDate" class="w-full rounded-xl border-divider-gray bg-pale-gray focus:ring-purple-heritage focus:border-purple-heritage h-14 px-4" placeholder="e.g. July 12 - 28" required="" type="text"/>
+</div>
+</div>
+<div>
+<label class="block text-sm font-bold text-deep-charcoal mb-2">Description</label>
+<textarea id="description" class="w-full rounded-xl border-divider-gray bg-pale-gray focus:ring-purple-heritage focus:border-purple-heritage p-4 min-h-[120px]" placeholder="What are your goals for this trip?"></textarea>
+</div>
+</div>
+<button class="w-full h-16 bg-purple-heritage text-white font-bold rounded-2xl hover:bg-purple-dark transition-all shadow-lg flex items-center justify-center gap-2 text-xl" id="save-btn" type="submit">
+<span class="material-symbols-outlined">save</span>
+<span id="btn-text">Save Adventure</span>
+</button>
+</form>
+</div>
+</main>
+<script src="global.js"></script>
+<script>
+        let editId = null;
+        let uploadedMediaUrl = null;
+        let isVideo = false;
+
+        async function initForm() {
+            const params = new URLSearchParams(window.location.search);
+            editId = params.get('edit');
+
+            if (editId && window.db) {
+                const trip = await window.db.trips.get(parseInt(editId));
+                if (trip) {
+                    document.getElementById('page-title').innerText = "Edit Adventure";
+                    document.getElementById('btn-text').innerText = "Update Trip";
+                    document.getElementById('tripName').value = trip.name;
+                    document.getElementById('destination').value = trip.destination || "";
+                    document.getElementById('tripDate').value = trip.date || "";
+                    document.getElementById('description').value = trip.description || "";
+                    
+                    if (trip.image_url || trip.video_url) {
+                        const preview = document.getElementById('image-preview');
+                        preview.classList.remove('hidden');
+                        preview.style.backgroundImage = `url('${trip.image_url || ""}')`;
+                        uploadedMediaUrl = trip.image_url || trip.video_url;
+                    }
+                }
+            }
+        }
+
+        // Handle Media Upload
+        document.getElementById('media-upload').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('media', file);
+
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> Uploading...';
+
+            try {
+                // Point to your local server.js
+                const response = await fetch('http://localhost:3000/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                
+                if (result.url) {
+                    uploadedMediaUrl = result.url;
+                    isVideo = file.type.startsWith('video/');
+                    
+                    const preview = document.getElementById('image-preview');
+                    preview.classList.remove('hidden');
+                    if (!isVideo) {
+                        preview.style.backgroundImage = `url('${uploadedMediaUrl}')`;
+                    } else {
+                        preview.innerHTML = `<video src="${uploadedMediaUrl}" autoplay muted loop class="w-full h-full object-cover"></video>`;
+                    }
+                }
+            } catch (err) {
+                console.error("Upload failed:", err);
+                alert("Upload failed. Make sure 'node server.js' is running!");
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<span class="material-symbols-outlined">save</span> <span>${editId ? 'Update Trip' : 'Save Adventure'}</span>`;
+            }
+        });
+
+        document.getElementById('trip-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const tripData = {
+                name: document.getElementById('tripName').value,
+                destination: document.getElementById('destination').value,
+                date: document.getElementById('tripDate').value,
+                description: document.getElementById('description').value,
+                image_url: isVideo ? null : uploadedMediaUrl,
+                video_url: isVideo ? uploadedMediaUrl : null,
+                status: 'Upcoming'
+            };
+
+            if (editId) {
+                await window.db.trips.update(parseInt(editId), tripData);
+            } else {
+                await window.db.trips.add(tripData);
+            }
+
+            window.location.href = 'my_trips.html';
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(initForm, 500);
+        });
+    </script>
+</body>
+</html>

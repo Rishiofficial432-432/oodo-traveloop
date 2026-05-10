@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Budget Planner | Traveloop</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "purple-heritage": "#714B67",
+              "teal-primary": "#017E84",
+              "deep-charcoal": "#111827",
+              "neutral-charcoal": "#374151",
+              "divider-gray": "#DEE2E6",
+              "off-white": "#F9F9FF",
+              "pale-gray": "#F3F4F6",
+              "success-green": "#28A745",
+              "error-red": "#DC3545"
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+        .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+    <!-- Header -->
+    <header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
+        <button onclick="history.back()" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+            <span class="material-symbols-outlined text-deep-charcoal">arrow_back</span>
+        </button>
+        <div class="flex-1 text-center pr-10 flex flex-col items-center">
+            <h1 class="text-xl font-bold text-deep-charcoal">Trip Budget Planner</h1>
+            <div class="flex items-center gap-1 mt-1 bg-teal-primary/10 px-2 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-[12px] text-teal-primary">star</span>
+                <span class="text-[10px] font-bold text-teal-primary uppercase tracking-tighter">Open Source</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-6 space-y-8">
+        <!-- Trip Selector -->
+        <section class="bg-white p-6 rounded-3xl border border-divider-gray shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-bold text-deep-charcoal">Link to Trip</h2>
+                <select id="trip-selector" class="rounded-xl border-divider-gray text-sm focus:ring-purple-heritage focus:border-purple-heritage min-w-[200px]">
+                    <option value="">Select a Trip...</option>
+                </select>
+            </div>
+            <p class="text-xs text-neutral-charcoal italic">Your budget will be automatically saved to the selected trip in your local browser database.</p>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Input Column -->
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-divider-gray shadow-sm space-y-4">
+                    <h3 class="font-bold text-deep-charcoal flex items-center gap-2">
+                        <span class="material-symbols-outlined text-purple-heritage">payments</span>
+                        Expense Breakdown
+                    </h3>
+                    
+                    <div class="space-y-4" id="budget-inputs">
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wider">Flights & Transport</label>
+                            <input type="number" data-category="Transport" value="0" class="budget-input w-full rounded-xl border-divider-gray focus:ring-purple-heritage h-12 px-4"/>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wider">Accommodation</label>
+                            <input type="number" data-category="Stay" value="0" class="budget-input w-full rounded-xl border-divider-gray focus:ring-purple-heritage h-12 px-4"/>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wider">Food & Dining</label>
+                            <input type="number" data-category="Food" value="0" class="budget-input w-full rounded-xl border-divider-gray focus:ring-purple-heritage h-12 px-4"/>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wider">Sightseeing & Fun</label>
+                            <input type="number" data-category="Activities" value="0" class="budget-input w-full rounded-xl border-divider-gray focus:ring-purple-heritage h-12 px-4"/>
+                        </div>
+                        <div class="space-y-1">
+                            <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wider">Miscellaneous</label>
+                            <input type="number" data-category="Misc" value="0" class="budget-input w-full rounded-xl border-divider-gray focus:ring-purple-heritage h-12 px-4"/>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-purple-heritage text-white p-6 rounded-3xl shadow-lg space-y-2">
+                    <p class="text-sm opacity-80">Estimated Total</p>
+                    <p class="text-4xl font-bold" id="total-amount">$0.00</p>
+                </div>
+            </div>
+
+            <!-- Chart Column -->
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-3xl border border-divider-gray shadow-sm h-full flex flex-col items-center justify-center min-h-[400px]">
+                    <h3 class="font-bold text-deep-charcoal mb-6">Budget Distribution</h3>
+                    <div class="w-full max-w-[280px] aspect-square">
+                        <canvas id="budgetChart"></canvas>
+                    </div>
+                    <div id="chart-legend" class="mt-6 grid grid-cols-2 gap-4 w-full"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+        <nav class="flex h-[58px] items-center justify-center gap-2 rounded-2xl border border-divider-gray bg-white/80 p-2 backdrop-blur-md shadow-lg">
+            <a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="../traveloop_dashboard/code.html">
+                <span class="material-symbols-outlined">home</span>
+            </a>
+            <a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="../my_trips/code.html">
+                <span class="material-symbols-outlined">work</span>
+            </a>
+            <a class="flex aspect-square size-10 items-center justify-center rounded-full text-purple-heritage bg-purple-heritage/10" href="code.html">
+                <span class="material-symbols-outlined">payments</span>
+            </a>
+            <a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="../profile/code.html">
+                <span class="material-symbols-outlined">person</span>
+            </a>
+        </nav>
+    </div>
+
+    <script src="../global.js"></script>
+    <script>
+        let budgetChart;
+        const categories = ["Transport", "Stay", "Food", "Activities", "Misc"];
+        const colors = ["#714B67", "#017E84", "#FBB130", "#DC3545", "#374151"];
+
+        function initChart() {
+            const ctx = document.getElementById('budgetChart').getContext('2d');
+            budgetChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: [0, 0, 0, 0, 0],
+                        backgroundColor: colors,
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '75%'
+                }
+            });
+            updateLegend();
+        }
+
+        function updateLegend() {
+            const legendEl = document.getElementById('chart-legend');
+            legendEl.innerHTML = categories.map((cat, i) => `
+                <div class="flex items-center gap-2">
+                    <div class="size-3 rounded-full" style="background-color: ${colors[i]}"></div>
+                    <span class="text-xs font-medium text-neutral-charcoal">${cat}</span>
+                </div>
+            `).join('');
+        }
+
+        function updateBudget() {
+            const inputs = document.querySelectorAll('.budget-input');
+            const data = Array.from(inputs).map(input => parseFloat(input.value) || 0);
+            const total = data.reduce((a, b) => a + b, 0);
+
+            document.getElementById('total-amount').innerText = `$${total.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            
+            budgetChart.data.datasets[0].data = data;
+            budgetChart.update();
+
+            saveBudgetToSelectedTrip();
+        }
+
+        async function populateTrips() {
+            if (!window.db) {
+                setTimeout(populateTrips, 500);
+                return;
+            }
+            const trips = await window.db.trips.toArray();
+            const selector = document.getElementById('trip-selector');
+            trips.forEach(trip => {
+                const opt = document.createElement('option');
+                opt.value = trip.id;
+                opt.textContent = trip.name;
+                selector.appendChild(opt);
+            });
+
+            selector.addEventListener('change', loadBudgetForTrip);
+        }
+
+        async function loadBudgetForTrip() {
+            const tripId = parseInt(document.getElementById('trip-selector').value);
+            if (!tripId) return;
+
+            const trip = await window.db.trips.get(tripId);
+            if (trip.budget) {
+                const inputs = document.querySelectorAll('.budget-input');
+                inputs.forEach(input => {
+                    const cat = input.dataset.category;
+                    input.value = trip.budget[cat] || 0;
+                });
+                updateBudget();
+            }
+        }
+
+        async function saveBudgetToSelectedTrip() {
+            const tripId = parseInt(document.getElementById('trip-selector').value);
+            if (!tripId) return;
+
+            const inputs = document.querySelectorAll('.budget-input');
+            const budgetData = {};
+            inputs.forEach(input => {
+                budgetData[input.dataset.category] = parseFloat(input.value) || 0;
+            });
+
+            await window.db.trips.update(tripId, { budget: budgetData });
+            console.log("Budget saved to trip:", tripId);
+        }
+
+        document.querySelectorAll('.budget-input').forEach(input => {
+            input.addEventListener('input', updateBudget);
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initChart();
+            populateTrips();
+        });
+    </script>
+</body>
+</html>

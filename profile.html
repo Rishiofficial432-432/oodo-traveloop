@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Profile | Traveloop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        theme: {
+          extend: {
+            "colors": {
+              "purple-heritage": "#714B67",
+              "teal-primary": "#017E84",
+              "deep-charcoal": "#111827",
+              "neutral-charcoal": "#374151",
+              "divider-gray": "#DEE2E6",
+              "off-white": "#F9F9FF",
+              "pale-gray": "#F3F4F6",
+              "success-green": "#28A745",
+              "error-red": "#DC3545"
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+    </style>
+</head>
+<body class="min-h-screen pb-24">
+<!-- Header -->
+<header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
+<button onclick="window.location.href='traveloop_dashboard.html'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
+<span class="material-symbols-outlined text-deep-charcoal">arrow_back</span>
+</button>
+<div class="flex-1 text-center pr-10">
+<h1 class="text-xl font-bold text-deep-charcoal">Account Settings</h1>
+</div>
+</header>
+<main class="max-w-3xl mx-auto p-6 space-y-8">
+<!-- Profile Header -->
+<section class="flex flex-col items-center text-center space-y-4">
+<div class="relative">
+<div class="size-32 rounded-full bg-purple-heritage/10 flex items-center justify-center text-purple-heritage border-2 border-white shadow-xl overflow-hidden">
+<span id="profile-initials" class="text-4xl font-bold">JD</span>
+<img id="profile-image" class="absolute inset-0 w-full h-full object-cover hidden" src=""/>
+</div>
+<button class="absolute bottom-0 right-0 size-10 bg-white rounded-full shadow-lg border border-divider-gray flex items-center justify-center hover:bg-pale-gray transition-colors">
+<span class="material-symbols-outlined text-purple-heritage">photo_camera</span>
+</button>
+</div>
+<div>
+<h2 id="profile-name" class="text-2xl font-bold text-deep-charcoal">John Doe</h2>
+<p id="profile-email" class="text-neutral-charcoal">john.doe@example.com</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-teal-primary/10 text-teal-primary text-xs font-bold rounded-full uppercase tracking-widest">Explorer Plus</span>
+<span id="guest-badge" class="px-3 py-1 bg-neutral-charcoal/10 text-neutral-charcoal text-xs font-bold rounded-full uppercase tracking-widest hidden">Guest Session</span>
+</div>
+</section>
+<!-- Settings Groups -->
+<div class="space-y-6">
+<div class="bg-white rounded-3xl border border-divider-gray shadow-sm divide-y divide-divider-gray overflow-hidden">
+<div class="p-6 flex items-center justify-between hover:bg-pale-gray transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-pale-gray rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-heritage">person</span>
+</div>
+<div>
+<p class="font-bold text-deep-charcoal">Personal Info</p>
+<p class="text-xs text-neutral-charcoal">Update your name and profile photo</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-neutral-charcoal">chevron_right</span>
+</div>
+<div class="p-6 flex items-center justify-between hover:bg-pale-gray transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-pale-gray rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-heritage">security</span>
+</div>
+<div>
+<p class="font-bold text-deep-charcoal">Security</p>
+<p class="text-xs text-neutral-charcoal">Manage your password and MFA</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-neutral-charcoal">chevron_right</span>
+</div>
+</div>
+<div class="bg-white rounded-3xl border border-divider-gray shadow-sm divide-y divide-divider-gray overflow-hidden">
+<div class="p-6 flex items-center justify-between hover:bg-pale-gray transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-pale-gray rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-heritage">notifications</span>
+</div>
+<div>
+<p class="font-bold text-deep-charcoal">Notifications</p>
+<p class="text-xs text-neutral-charcoal">Travel alerts and email settings</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-neutral-charcoal">chevron_right</span>
+</div>
+<div class="p-6 flex items-center justify-between hover:bg-pale-gray transition-colors cursor-pointer">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-pale-gray rounded-xl flex items-center justify-center">
+<span class="material-symbols-outlined text-purple-heritage">database</span>
+</div>
+<div>
+<p class="font-bold text-deep-charcoal">Cloud Sync</p>
+<p class="text-xs text-neutral-charcoal">Backup your local trips to Supabase</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-neutral-charcoal">chevron_right</span>
+</div>
+</div>
+<button onclick="handleSignOut()" class="w-full bg-white border border-error-red text-error-red font-bold py-4 rounded-3xl hover:bg-error-red hover:text-white transition-all shadow-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">logout</span>
+            Sign Out
+        </button>
+</div>
+</main>
+<!-- Bottom Navigation (MacOS Dock Style) -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+<nav class="flex h-[58px] items-center justify-center gap-2 rounded-2xl border border-divider-gray bg-white/80 p-2 backdrop-blur-md shadow-lg">
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="traveloop_dashboard.html">
+<span class="material-symbols-outlined">home</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="my_trips.html">
+<span class="material-symbols-outlined">work</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="explore.html">
+<span class="material-symbols-outlined">explore</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray" href="budget_planner.html">
+<span class="material-symbols-outlined">payments</span>
+</a>
+<a class="flex aspect-square size-10 items-center justify-center rounded-full text-purple-heritage bg-purple-heritage/10" href="profile.html">
+<span class="material-symbols-outlined">person</span>
+</a>
+</nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="global.js"></script>
+<script>
+        async function updateProfileUI() {
+            const { data: { session } } = await window.supabaseClient.auth.getSession();
+            const isGuest = localStorage.getItem('isGuest') === 'true';
+
+            if (session) {
+                const user = session.user;
+                document.getElementById('profile-name').innerText = user.user_metadata.full_name || user.email.split('@')[0];
+                document.getElementById('profile-email').innerText = user.email;
+                document.getElementById('profile-initials').innerText = (user.user_metadata.full_name || user.email).substring(0, 2).toUpperCase();
+                
+                if (user.user_metadata.avatar_url) {
+                    const img = document.getElementById('profile-image');
+                    img.src = user.user_metadata.avatar_url;
+                    img.classList.remove('hidden');
+                }
+            } else if (isGuest) {
+                document.getElementById('profile-name').innerText = "Guest Traveler";
+                document.getElementById('profile-email').innerText = "Not signed in";
+                document.getElementById('profile-initials').innerText = "GT";
+                document.getElementById('guest-badge').classList.remove('hidden');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', updateProfileUI);
+    </script>
+</body>
+</html>
