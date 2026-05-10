@@ -5,8 +5,11 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Traveloop Dashboard</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;family=Caveat:wght@700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="global.js"></script>
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -153,10 +156,7 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     .mapboxgl-canvas { outline: none !important; }
     #map-3d { width: 100%; height: 100%; border-radius: 1rem; }
 </style>
-<!-- Dexie.js for Local Browser Database -->
-<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
-<!-- Supabase Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- Scripts moved to head -->
 </head>
 <body class="bg-off-white font-['Inter'] text-deep-charcoal">
 <div class="relative flex min-h-screen w-full flex-col bg-off-white overflow-x-hidden">
@@ -412,10 +412,8 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
         <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="profile.html">
             <span class="material-symbols-outlined text-[24px]">person</span>
         </a>
-    </nav>
 </div>
-</div>
-<script src="global.js"></script>
+<!-- global.js moved to head -->
 <script>
     // 3D MapLibre Initialization (Open Source)
     let map;

@@ -7,6 +7,8 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js"></script>
+<script src="global.js"></script>
 <script id="tailwind-config">
       tailwind.config = {
         theme: {
@@ -146,7 +148,6 @@
 </a>
 </nav>
 </div>
-<script src="global.js"></script>
 <script>
         async function loadTripData() {
             const urlParams = new URLSearchParams(window.location.search);
