@@ -430,6 +430,15 @@ loadFirebaseScripts(() => {
             firebase.initializeApp(firebaseConfig);
         }
 
+        // Handle successful redirect logins
+        firebase.auth().getRedirectResult().then((result) => {
+            if (result && result.user && window.location.pathname.includes('auth')) {
+                window.location.href = '../traveloop_dashboard/code.html';
+            }
+        }).catch((error) => {
+            console.error("Firebase Redirect Error: ", error);
+        });
+
         // Listen for user login state across the entire app!
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
@@ -454,21 +463,14 @@ loadFirebaseScripts(() => {
     }
 });
 
-// 4. GOOGLE SIGN IN FUNCTION
+// 4. GOOGLE SIGN IN FUNCTION (Updated to Redirect to bypass Popup Blockers)
 window.signInWithGoogle = function() {
-    if (!window.firebase || firebaseConfig.apiKey === "YOUR_API_KEY") {
-        alert("Firebase is not connected yet! Please add your Firebase Config to global.js");
+    if (!window.firebase) {
+        alert("Firebase is still loading. Please try again in a second.");
         return;
     }
 
     const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider)
-        .then((result) => {
-            // Success! Redirect to Dashboard
-            window.location.href = '../traveloop_dashboard/code.html';
-        })
-        .catch((error) => {
-            console.error("Error signing in with Google: ", error);
-            alert("Login Failed: " + error.message);
-        });
+    // Using redirect instead of popup to bypass strict browser popup blockers
+    firebase.auth().signInWithRedirect(provider);
 };
