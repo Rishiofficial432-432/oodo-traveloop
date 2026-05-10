@@ -145,9 +145,9 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 
 <!-- Model Viewer for 3D Artifacts -->
 <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
-<!-- Mapbox for 3D Interactive Map -->
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+<!-- MapLibre for 3D Interactive Map (Open Source) -->
+<link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
 
 <style>
     .mapboxgl-canvas { outline: none !important; }
@@ -416,26 +416,16 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 <script src="../global.js"></script>
 <script>
-    // 3D Mapbox Initialization
-    // Note: Using a public token for demonstration. In production, use your own restricted token.
-    mapboxgl.accessToken = 'pk.eyJ1IjoicmlzaGlvZmZpY2lhbCIsImEiOiJjbHF5NDZ5NHAwMGFtMmtzM3V6OXJzZ2F5In0.9H1r-5r8-6-7-8-9'; 
-    
+    // 3D MapLibre Initialization (Open Source)
     let map;
     
     function initMap() {
         const loader = document.getElementById('map-loader');
         
-        // Safety timeout: Hide loader if map takes too long
-        const mapTimeout = setTimeout(() => {
-            if (loader) {
-                loader.innerHTML = '<div class="p-6 bg-white/10 backdrop-blur rounded-xl border border-white/20"><p class="text-white font-bold mb-2">Map Connection Delayed</p><p class="text-white/60 text-sm">Please check your Mapbox Access Token in code.html</p><button onclick="location.reload()" class="mt-4 px-4 py-2 bg-white/20 rounded-lg text-white text-xs">Retry</button></div>';
-            }
-        }, 8000);
-
         try {
-            map = new mapboxgl.Map({
+            map = new maplibregl.Map({
                 container: 'map-3d',
-                style: 'mapbox://styles/mapbox/satellite-streets-v12',
+                style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', // Premium Open Source Style
                 center: [2.2945, 48.8584], // Paris Eiffel Tower
                 zoom: 15.5,
                 pitch: 60,
@@ -443,48 +433,22 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
                 antialias: true
             });
 
-            map.on('style.load', () => {
-                clearTimeout(mapTimeout); // Map loaded successfully!
-                
-                // Add 3D building layer
-                map.addLayer({
-                    'id': 'add-3d-buildings',
-                    'source': 'composite',
-                    'source-layer': 'building',
-                    'filter': ['==', 'extrude', 'true'],
-                    'type': 'fill-extrusion',
-                    'minzoom': 15,
-                    'paint': {
-                        'fill-extrusion-color': '#aaa',
-                        'fill-extrusion-height': ['get', 'height'],
-                        'fill-extrusion-base': ['get', 'min_height'],
-                        'fill-extrusion-opacity': 0.6
-                    }
-                });
-
-                // Add 3D terrain
-                map.addSource('mapbox-dem', {
-                    'type': 'raster-dem',
-                    'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-                    'tileSize': 512,
-                    'maxzoom': 14
-                });
-                map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+            map.on('load', () => {
+                // Add 3D building layer (if supported by style)
+                if (map.getLayer('building')) {
+                    map.setPaintProperty('building', 'fill-extrusion-opacity', 0.6);
+                }
 
                 if (loader) loader.classList.add('opacity-0', 'pointer-events-none');
             });
 
             map.on('error', (e) => {
-                console.error("Mapbox error:", e);
-                clearTimeout(mapTimeout);
-                if (loader) {
-                    loader.innerHTML = `<p class="text-error-red font-bold">Map Error: ${e.error.message || 'Invalid Token'}</p>`;
-                }
+                console.error("MapLibre error:", e);
+                if (loader) loader.innerHTML = `<p class="text-error-red font-bold">Map Error: Open Source Style Load Failed</p>`;
             });
         } catch (e) {
-            console.error("Mapbox failed to load:", e);
-            clearTimeout(mapTimeout);
-            if (loader) loader.innerHTML = '<p class="text-error-red">Map failed to load. Check API key.</p>';
+            console.error("MapLibre failed to load:", e);
+            if (loader) loader.innerHTML = '<p class="text-error-red">Map failed to load. Check connection.</p>';
         }
     }
 

@@ -138,9 +138,7 @@ function initCreateTrip() {
             return;
         }
 
-        // Change button to show loading state
         const originalText = createBtn.innerHTML;
-        createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Saving...</span>';
         createBtn.disabled = true;
 
         try {
@@ -149,6 +147,7 @@ function initCreateTrip() {
 
             // 1. Upload media if present
             if (mediaInput.files.length > 0) {
+                createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">cloud_upload</span> <span>Uploading Media...</span>';
                 const file = mediaInput.files[0];
                 const publicUrl = await uploadMedia(file);
                 if (file.type.startsWith('video/')) {
@@ -156,24 +155,37 @@ function initCreateTrip() {
                 } else {
                     imageUrl = publicUrl;
                 }
+                console.log("Media uploaded successfully:", publicUrl);
             }
 
             // 2. Save trip data
-            await saveTrip({
+            createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> <span>Syncing Trip...</span>';
+            console.log("Attempting to save trip to Supabase...");
+            
+            const tripData = {
                 name: nameInput.value,
                 description: descInput ? descInput.value : '',
                 status: 'Upcoming',
-                date: dateRangeLabel.innerText,
+                date: dateRangeLabel ? dateRangeLabel.innerText : 'TBD',
                 image_url: imageUrl,
                 video_url: videoUrl
-            });
+            };
 
-            alert('Trip created successfully!');
-            window.location.href = '../my_trips/code.html';
+            const result = await saveTrip(tripData);
+            
+            if (result) {
+                console.log("Trip saved successfully:", result);
+                createBtn.innerHTML = '<span class="material-symbols-outlined">check_circle</span> <span>Success!</span>';
+                setTimeout(() => {
+                    window.location.href = '../my_trips/code.html';
+                }, 1000);
+            } else {
+                throw new Error("Database returned no data. Check your RLS policies.");
+            }
+
         } catch (err) {
-            console.error('Error creating trip:', err);
-            alert('Failed to create trip: ' + err.message);
-        } finally {
+            console.error('CRITICAL ERROR during trip creation:', err);
+            alert('Failed to create trip: ' + err.message + '\n\nCheck the browser console (F12) for details.');
             createBtn.innerHTML = originalText;
             createBtn.disabled = false;
         }
