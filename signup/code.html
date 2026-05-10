@@ -154,9 +154,9 @@
             alert("Sign Up Failed: " + error.message);
             btn.disabled = false;
             btn.innerHTML = 'Create Account';
-        } else {
-            alert("Account created! Please check your email for verification.");
-            window.location.href = '../auth/code.html';
+        }
+        if (data.user) {
+            window.location.href = "../hero/code.html";
         }
     });
 
