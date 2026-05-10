@@ -330,3 +330,63 @@ function initThemeToggler() {
 document.addEventListener('DOMContentLoaded', () => {
     initThemeToggler();
 });
+
+// MacOS Dock Magnification Logic
+document.addEventListener('DOMContentLoaded', () => {
+    const dock = document.querySelector('.mac-dock');
+    if (!dock) return;
+    
+    const dockItems = Array.from(dock.querySelectorAll('.dock-item'));
+    const defaultSize = 40;
+    const magnification = 60;
+    const distanceLimit = 140;
+
+    dockItems.forEach(item => {
+        item.style.width = `${defaultSize}px`;
+        item.style.height = `${defaultSize}px`;
+        item.style.transition = 'width 0.15s ease-out, height 0.15s ease-out';
+        
+        const icon = item.querySelector('.material-symbols-outlined');
+        if(icon) {
+            icon.style.transition = 'transform 0.15s ease-out';
+        }
+    });
+
+    dock.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX;
+
+        dockItems.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            const itemCenterX = rect.left + rect.width / 2;
+            const distance = Math.abs(mouseX - itemCenterX);
+
+            let newSize = defaultSize;
+            if (distance < distanceLimit) {
+                const scale = 1 - (distance / distanceLimit);
+                const easeScale = Math.sin(scale * Math.PI / 2);
+                newSize = defaultSize + (magnification - defaultSize) * easeScale;
+            }
+
+            item.style.width = `${newSize}px`;
+            item.style.height = `${newSize}px`;
+            
+            const icon = item.querySelector('.material-symbols-outlined');
+            if (icon) {
+                const iconScale = newSize / defaultSize;
+                icon.style.transform = `scale(${iconScale})`;
+            }
+        });
+    });
+
+    dock.addEventListener('mouseleave', () => {
+        dockItems.forEach(item => {
+            item.style.width = `${defaultSize}px`;
+            item.style.height = `${defaultSize}px`;
+            
+            const icon = item.querySelector('.material-symbols-outlined');
+            if (icon) {
+                icon.style.transform = 'scale(1)';
+            }
+        });
+    });
+});

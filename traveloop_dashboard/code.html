@@ -327,34 +327,22 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </button>
 </section>
 </main>
-<!-- Bottom Navigation (Shared Component Style) -->
-<nav class="sticky bottom-0 w-full border-t border-divider-gray bg-white/90 backdrop-blur-md px-4 pb-3 pt-2 z-50">
-<div class="max-w-[1280px] mx-auto flex gap-2">
-<a class="flex flex-1 flex-col items-center justify-center gap-1 rounded-full text-purple-heritage" href="../traveloop_dashboard/code.html">
-<div class="flex h-8 items-center justify-center" data-icon="House" data-weight="fill">
-<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<!-- Bottom Navigation (MacOS Dock Style) -->
+<div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+    <nav class="mac-dock flex h-[58px] items-center justify-center gap-2 rounded-2xl border border-divider-gray bg-white/80 dark:bg-black/80 dark:border-neutral-charcoal p-2 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+        <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../traveloop_dashboard/code.html">
+            <span class="material-symbols-outlined text-[24px]">home</span>
+        </a>
+        <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../my_trips/code.html">
+            <span class="material-symbols-outlined text-[24px]">work</span>
+        </a>
+        <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../explore/code.html">
+            <span class="material-symbols-outlined text-[24px]">explore</span>
+        </a>
+        <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="../profile/code.html">
+            <span class="material-symbols-outlined text-[24px]">person</span>
+        </a>
+    </nav>
 </div>
-<p class="text-xs font-bold leading-normal tracking-[0.015em]">Home</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../my_trips/code.html">
-<div class="flex h-8 items-center justify-center" data-icon="Suitcase" data-weight="regular">
-<span class="material-symbols-outlined">work</span>
-</div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">My Trips</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../explore/code.html">
-<div class="flex h-8 items-center justify-center" data-icon="Compass" data-weight="regular">
-<span class="material-symbols-outlined">explore</span>
-</div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Explore</p>
-</a>
-<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../profile/code.html">
-<div class="flex h-8 items-center justify-center" data-icon="User" data-weight="regular">
-<span class="material-symbols-outlined">person</span>
-</div>
-<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
-</a>
-</div>
-</nav>
 </div>
 <script src="../global.js"></script></body></html>
