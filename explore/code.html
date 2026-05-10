@@ -166,16 +166,80 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 </header>
 <main class="flex-1 max-w-[1280px] mx-auto w-full px-container-h py-lg space-y-lg">
-<section class="flex flex-col items-center justify-center h-[60vh] text-center gap-4">
-<div class="size-24 rounded-full bg-purple-heritage/10 flex items-center justify-center text-purple-heritage">
-<span class="material-symbols-outlined text-[48px]">explore</span>
+<section class="flex flex-col items-center pt-8 gap-4 w-full">
+<h1 class="text-deep-charcoal text-[32px] font-bold leading-tight tracking-tight">Explore the World</h1>
+<p class="text-neutral-charcoal text-body-reg mb-4">Search for destinations, flights, and travel inspiration.</p>
+
+<div class="w-full max-w-2xl relative">
+    <input type="text" id="searchInput" placeholder="e.g. Best hotels in Tokyo..." class="w-full p-4 pl-12 rounded-xl border border-divider-gray shadow-sm focus:border-purple-heritage focus:ring-2 focus:ring-purple-heritage/20 text-deep-charcoal bg-white outline-none transition-all text-lg">
+    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-neutral-charcoal">search</span>
+    <button id="searchBtn" class="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-purple-heritage text-white font-bold rounded-lg hover:bg-purple-dark transition-colors shadow-sm text-button-reg cursor-pointer">
+        Search
+    </button>
 </div>
-<h1 class="text-deep-charcoal text-[32px] font-bold leading-tight tracking-tight">Explore</h1>
-<p class="text-neutral-charcoal text-body-reg">This section is currently under development.</p>
-<button class="mt-4 px-6 py-3 bg-purple-heritage text-white font-bold rounded hover:bg-purple-dark transition-colors cursor-pointer" onclick="window.location.href='../traveloop_dashboard/code.html'">
-            Return Home
-        </button>
+
+<!-- Loading State -->
+<div id="loadingIndicator" class="hidden mt-8">
+    <span class="material-symbols-outlined animate-spin text-[32px] text-purple-heritage">progress_activity</span>
+</div>
+
+<!-- Results Container -->
+<div id="resultsContainer" class="w-full mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Results will be injected here -->
+</div>
 </section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const loadingIndicator = document.getElementById('loadingIndicator');
+
+    async function performSearch() {
+        const query = searchInput.value.trim();
+        if (!query) return;
+
+        // Show loading
+        loadingIndicator.classList.remove('hidden');
+        resultsContainer.innerHTML = '';
+
+        try {
+            const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            const data = await response.json();
+            
+            loadingIndicator.classList.add('hidden');
+
+            if (data.organic_results && data.organic_results.length > 0) {
+                data.organic_results.forEach(result => {
+                    const card = document.createElement('a');
+                    card.href = result.link;
+                    card.target = "_blank";
+                    card.className = "bg-white p-4 rounded-xl border border-divider-gray hover:border-purple-heritage hover:shadow-lg transition-all group flex flex-col gap-2";
+                    
+                    card.innerHTML = `
+                        <h3 class="font-bold text-lg text-deep-charcoal group-hover:text-purple-heritage transition-colors line-clamp-2">${result.title}</h3>
+                        <p class="text-sm text-neutral-charcoal line-clamp-3">${result.snippet}</p>
+                        <span class="text-xs text-teal-primary mt-auto pt-2">${result.source || 'Visit site'}</span>
+                    `;
+                    resultsContainer.appendChild(card);
+                });
+            } else {
+                resultsContainer.innerHTML = `<p class="text-neutral-charcoal col-span-full text-center py-8">No results found for "${query}". Try another search.</p>`;
+            }
+        } catch (err) {
+            console.error(err);
+            loadingIndicator.classList.add('hidden');
+            resultsContainer.innerHTML = `<p class="text-error-red col-span-full text-center py-8">Failed to fetch results. Please try again.</p>`;
+        }
+    }
+
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+    });
+});
+</script>
 </main>
 <!-- Bottom Navigation (Shared Component Style) -->
 <nav class="sticky bottom-0 w-full border-t border-divider-gray bg-white/90 backdrop-blur-md px-4 pb-3 pt-2 z-50">
