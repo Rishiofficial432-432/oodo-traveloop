@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Traveloop Explore</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&amp;family=Caveat:wght@700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#d1c3ca",
+                        "on-error": "#ffffff",
+                        "primary-container": "#714b67",
+                        "secondary-fixed": "#95f1f8",
+                        "pale-gray": "#F3F4F6",
+                        "error-container": "#ffdad6",
+                        "gold-amber": "#FBB130",
+                        "on-tertiary": "#ffffff",
+                        "border-subtle": "#D8DADD",
+                        "surface-container-lowest": "#ffffff",
+                        "purple-heritage": "#714B67",
+                        "on-secondary-fixed": "#002022",
+                        "on-primary-container": "#f0bfe0",
+                        "success-green": "#28A745",
+                        "primary": "#57344f",
+                        "purple-dark": "#5A3C52",
+                        "inverse-primary": "#e9b8d9",
+                        "teal-accent": "#00A09D",
+                        "on-surface-variant": "#4e444a",
+                        "inverse-on-surface": "#edf0ff",
+                        "tertiary-fixed-dim": "#b9ce9a",
+                        "neutral-charcoal": "#374151",
+                        "on-tertiary-fixed-variant": "#3b4c24",
+                        "off-white": "#FAFAFA",
+                        "lavender": "#B18AA7",
+                        "error-red": "#DC3545",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#006e73",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#d5eab4",
+                        "secondary-container": "#92eff5",
+                        "on-primary-fixed-variant": "#5f3b56",
+                        "on-background": "#141b2b",
+                        "surface-container-highest": "#dce2f7",
+                        "deep-charcoal": "#111827",
+                        "tertiary": "#34451e",
+                        "secondary": "#00696e",
+                        "primary-fixed": "#ffd7f1",
+                        "on-tertiary-container": "#c0d5a0",
+                        "error": "#ba1a1a",
+                        "gold-highlight": "#FFC107",
+                        "purple-medium": "#65435C",
+                        "inverse-surface": "#293040",
+                        "teal-primary": "#017E84",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#78d5db",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-high": "#e1e8fd",
+                        "off-white-light": "#F9FAFB",
+                        "outline": "#80747a",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d3daef",
+                        "on-tertiary-fixed": "#112000",
+                        "tertiary-container": "#4b5d33",
+                        "surface-container-low": "#f1f3ff",
+                        "primary-fixed-dim": "#e9b8d9",
+                        "on-primary-fixed": "#2f1029",
+                        "surface-container": "#e9edff",
+                        "surface-variant": "#dce2f7",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "light-gray": "#F9F9F9",
+                        "divider-gray": "#DEE2E6",
+                        "surface-tint": "#79526f",
+                        "on-surface": "#141b2b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "micro": "4px",
+                        "sm": "12px",
+                        "section-v": "60px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "container-h": "40px",
+                        "lg": "24px",
+                        "xs": "8px",
+                        "md": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+
+<style>
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-magicui-theme-vt="active"]::view-transition-group(root) {
+  animation-duration: var(--magicui-theme-toggle-vt-duration);
+}
+.dark body { background-color: #000000; color: #f3f4f6; }
+.dark .bg-white { background-color: #111111; border-color: #333333; color: #f3f4f6; }
+.dark .text-deep-charcoal { color: #f9fafb; }
+.dark .text-neutral-charcoal { color: #d1d5db; }
+.dark .bg-off-white { background-color: #000000; }
+.dark .bg-pale-gray { background-color: #222222; color: #f3f4f6;}
+.dark header { background-color: #111111; border-color: #333333; }
+.dark nav { background-color: #111111 !important; border-color: #333333; }
+</style>
+</head>
+<body class="bg-off-white font-['Inter'] text-deep-charcoal">
+<div class="relative flex min-h-screen w-full flex-col bg-off-white overflow-x-hidden">
+<!-- Shared Header Fragment -->
+<header class="flex items-center bg-off-white px-container-h py-4 border-b border-divider-gray justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm border border-divider-gray" data-alt="A professional circular profile picture of a cheerful young traveler wearing a stylish hat, set against a bright, sun-drenched outdoor background with soft bokeh. The lighting is warm and natural, following a high-quality lifestyle photography aesthetic that complements the modern purple and teal branding. The overall mood is welcoming and adventurous." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIXzDJVjhKjFS0bd3s4xGhgu-AeLvQmegtc9tKpaxXGawEWIKUWYVHGlly2oUQ6RuyycIqcRm6M4cQVnDWfwRgc6O0h__acRYLOK2Ax2EUDPKP59cnXdomKQBTX1PeDIbpYPU7yf_uLSk36djFknXyH26xncGcZphRTP42ffnYF15hAe9AB7OmRgzGF1DCZzWhKhYtGqDdCHtvu3batgl6povfE6sTjo_jiSDkMtNsWDID81Oqw-GRMmb8EVEmIBbIvYVCpqdsyUc");'></div>
+<h2 class="text-deep-charcoal text-xl font-bold leading-tight tracking-[-0.015em]">Traveloop</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center rounded h-10 w-10 bg-transparent text-deep-charcoal hover:bg-pale-gray transition-colors cursor-pointer" onclick="window.location.href='../explore/code.html'">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">search</span>
+</button>
+<button class="flex items-center justify-center rounded h-10 w-10 bg-transparent text-deep-charcoal hover:bg-pale-gray transition-colors cursor-pointer" onclick="alert('You have no new notifications!');">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+
+<button class="theme-toggle-btn flex items-center justify-center rounded h-10 w-10 bg-transparent text-deep-charcoal hover:bg-pale-gray transition-colors cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dark_mode</span>
+</button>
+</div>
+</header>
+<main class="flex-1 max-w-[1280px] mx-auto w-full px-container-h py-lg space-y-lg">
+<section class="flex flex-col items-center justify-center h-[60vh] text-center gap-4">
+<div class="size-24 rounded-full bg-purple-heritage/10 flex items-center justify-center text-purple-heritage">
+<span class="material-symbols-outlined text-[48px]">explore</span>
+</div>
+<h1 class="text-deep-charcoal text-[32px] font-bold leading-tight tracking-tight">Explore</h1>
+<p class="text-neutral-charcoal text-body-reg">This section is currently under development.</p>
+<button class="mt-4 px-6 py-3 bg-purple-heritage text-white font-bold rounded hover:bg-purple-dark transition-colors cursor-pointer" onclick="window.location.href='../traveloop_dashboard/code.html'">
+            Return Home
+        </button>
+</section>
+</main>
+<!-- Bottom Navigation (Shared Component Style) -->
+<nav class="sticky bottom-0 w-full border-t border-divider-gray bg-white/90 backdrop-blur-md px-4 pb-3 pt-2 z-50">
+<div class="max-w-[1280px] mx-auto flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 rounded-full text-purple-heritage" href="../traveloop_dashboard/code.html">
+<div class="flex h-8 items-center justify-center" data-icon="House" data-weight="fill">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+</div>
+<p class="text-xs font-bold leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../my_trips/code.html">
+<div class="flex h-8 items-center justify-center" data-icon="Suitcase" data-weight="regular">
+<span class="material-symbols-outlined">work</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">My Trips</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../explore/code.html">
+<div class="flex h-8 items-center justify-center" data-icon="Compass" data-weight="regular">
+<span class="material-symbols-outlined">explore</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-neutral-charcoal hover:text-purple-heritage transition-colors" href="../profile/code.html">
+<div class="flex h-8 items-center justify-center" data-icon="User" data-weight="regular">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</nav>
+</div>
+<script src="../global.js"></script></body></html>

@@ -1,0 +1,332 @@
+// Backend API URLs
+const API_URL = '/api/trips';
+
+async function getTrips() {
+    try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('Network response was not ok');
+        return await res.json();
+    } catch (err) {
+        console.error('Failed to fetch trips:', err);
+        return [];
+    }
+}
+
+async function saveTrip(trip) {
+    try {
+        const res = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(trip)
+        });
+        if (!res.ok) throw new Error('Network response was not ok');
+        return await res.json();
+    } catch (err) {
+        console.error('Failed to save trip:', err);
+    }
+}
+
+// Logic for plan_a_new_trip page
+function initCreateTrip() {
+    const createBtn = document.getElementById('create-trip-btn');
+    if (!createBtn) return;
+
+    createBtn.addEventListener('click', async () => {
+        const nameInput = document.getElementById('trip-name');
+        const descInput = document.getElementById('trip-desc');
+        
+        if (!nameInput.value.trim()) {
+            alert('Please enter a trip name');
+            return;
+        }
+
+        // Change button to show loading state
+        const originalText = createBtn.innerHTML;
+        createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Saving...</span>';
+        createBtn.disabled = true;
+
+        await saveTrip({
+            name: nameInput.value,
+            description: descInput ? descInput.value : '',
+            status: 'Upcoming',
+            date: 'July 5 - July 12, 2024'
+        });
+
+        alert('Trip created successfully!');
+        window.location.href = '../my_trips/code.html';
+    });
+}
+
+// Logic for my_trips page
+async function initMyTrips() {
+    const tripsContainer = document.getElementById('trips-container');
+    if (!tripsContainer) return;
+
+    const trips = await getTrips();
+    if (trips.length === 0) {
+        return; // Use default hardcoded trips
+    }
+
+    // Append new trips to the container
+    let html = '';
+    // Reverse array to show newest first
+    trips.slice().reverse().forEach(trip => {
+        html += `
+        <div class="bg-white rounded-xl border border-divider-gray shadow-[0px_3px_6px_0px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)] mb-4" style="animation: fadeIn 0.5s ease-out forwards;">
+            <div class="md:w-1/3 h-48 md:h-auto relative bg-pale-gray">
+                <div class="absolute inset-0 bg-center bg-cover" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCgbuAgBFgn56-QqFSl0ROg2JFO3KxIbZfHI0YeSksGnJpy1R09-3YGA-r-6q9QVa36vw-drNbQvepGX4sk2Bpx86x6Man3k4gauvU2DnsJ1ZHpLZng3soR1g-bSuCAamlVbfndpWidsawbiUgNjnGWvEpjNL860y75k2HRAUelqOiYn5M4tVyK8BRos3PUONQ5FtGQy0J4FCAqmkVMCr7rqB9XdgMpz-W1hC7t66UvjTugeF8LYB-M47Fb61qlqKjEW6Bs9Ta7PzI");'></div>
+            </div>
+            <div class="p-lg flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-xl font-bold text-deep-charcoal">${trip.name}</h3>
+                        <span class="bg-purple-heritage/10 text-purple-heritage px-3 py-1 rounded text-xs font-bold uppercase tracking-wider">${trip.status}</span>
+                    </div>
+                    <p class="text-neutral-charcoal mt-2 flex items-center gap-2 text-sm">
+                        <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                        ${trip.date}
+                    </p>
+                    <p class="text-neutral-charcoal mt-4 text-sm line-clamp-2">${trip.description || 'No description provided.'}</p>
+                </div>
+                <div class="mt-lg flex gap-3">
+                    <button onclick="window.location.href='../itinerary_builder/code.html'" class="flex-1 bg-pale-gray text-purple-heritage font-bold py-2 rounded hover:bg-divider-gray transition-colors text-sm">Edit</button>
+                    <button onclick="window.location.href='../traveloop_dashboard/code.html'" class="flex-1 bg-purple-heritage text-white font-bold py-2 rounded hover:bg-purple-dark transition-colors shadow-sm text-sm">View</button>
+                </div>
+            </div>
+        </div>
+        `;
+    });
+    // Add new trips to the top of the container
+    tripsContainer.insertAdjacentHTML('afterbegin', html);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initCreateTrip();
+    initMyTrips();
+});
+
+// Add basic fade-in animation to all pages
+const style = document.createElement('style');
+style.innerHTML = `
+    body {
+        animation: fadeIn 0.4s ease-out forwards;
+        opacity: 0;
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+`;
+document.head.appendChild(style);
+
+
+function polygonCollapsed(cx, cy, vertexCount) {
+  const pairs = Array.from(
+    { length: vertexCount },
+    () => `${cx}px ${cy}px`
+  ).join(", ")
+  return `polygon(${pairs})`
+}
+
+function getThemeTransitionClipPaths(variant, cx, cy, maxRadius, viewportWidth, viewportHeight) {
+  switch (variant) {
+    case "circle":
+      return [
+        `circle(0px at ${cx}px ${cy}px)`,
+        `circle(${maxRadius}px at ${cx}px ${cy}px)`,
+      ]
+    case "square": {
+      const halfW = Math.max(cx, viewportWidth - cx)
+      const halfH = Math.max(cy, viewportHeight - cy)
+      const halfSide = Math.max(halfW, halfH) * 1.05
+      const end = [
+        `${cx - halfSide}px ${cy - halfSide}px`,
+        `${cx + halfSide}px ${cy - halfSide}px`,
+        `${cx + halfSide}px ${cy + halfSide}px`,
+        `${cx - halfSide}px ${cy + halfSide}px`,
+      ].join(", ")
+      return [polygonCollapsed(cx, cy, 4), `polygon(${end})`]
+    }
+    case "triangle": {
+      const scale = maxRadius * 2.2
+      const dx = (Math.sqrt(3) / 2) * scale
+      const verts = [
+        `${cx}px ${cy - scale}px`,
+        `${cx + dx}px ${cy + 0.5 * scale}px`,
+        `${cx - dx}px ${cy + 0.5 * scale}px`,
+      ].join(", ")
+      return [polygonCollapsed(cx, cy, 3), `polygon(${verts})`]
+    }
+    case "diamond": {
+      const R = maxRadius * Math.SQRT2
+      const end = [
+        `${cx}px ${cy - R}px`,
+        `${cx + R}px ${cy}px`,
+        `${cx}px ${cy + R}px`,
+        `${cx - R}px ${cy}px`,
+      ].join(", ")
+      return [polygonCollapsed(cx, cy, 4), `polygon(${end})`]
+    }
+    case "hexagon": {
+      const R = maxRadius * Math.SQRT2
+      const verts = []
+      for (let i = 0; i < 6; i++) {
+        const a = -Math.PI / 2 + (i * Math.PI) / 3
+        verts.push(`${cx + R * Math.cos(a)}px ${cy + R * Math.sin(a)}px`)
+      }
+      return [polygonCollapsed(cx, cy, 6), `polygon(${verts.join(", ")})`]
+    }
+    case "rectangle": {
+      const halfW = Math.max(cx, viewportWidth - cx)
+      const halfH = Math.max(cy, viewportHeight - cy)
+      const end = [
+        `${cx - halfW}px ${cy - halfH}px`,
+        `${cx + halfW}px ${cy - halfH}px`,
+        `${cx + halfW}px ${cy + halfH}px`,
+        `${cx - halfW}px ${cy + halfH}px`,
+      ].join(", ")
+      return [polygonCollapsed(cx, cy, 4), `polygon(${end})`]
+    }
+    case "star": {
+      const R = maxRadius * Math.SQRT2 * 1.03
+      const innerRatio = 0.42
+      const starPolygon = (radius) => {
+        const verts = []
+        for (let i = 0; i < 5; i++) {
+          const outerA = -Math.PI / 2 + (i * 2 * Math.PI) / 5
+          verts.push(
+            `${cx + radius * Math.cos(outerA)}px ${cy + radius * Math.sin(outerA)}px`
+          )
+          const innerA = outerA + Math.PI / 5
+          verts.push(
+            `${cx + radius * innerRatio * Math.cos(innerA)}px ${cy + radius * innerRatio * Math.sin(innerA)}px`
+          )
+        }
+        return `polygon(${verts.join(", ")})`
+      }
+      const startR = Math.max(2, R * 0.025)
+      return [starPolygon(startR), starPolygon(R)]
+    }
+    default:
+      return [
+        `circle(0px at ${cx}px ${cy}px)`,
+        `circle(${maxRadius}px at ${cx}px ${cy}px)`,
+      ]
+  }
+}
+
+function initThemeToggler() {
+    const shape = "star"; // Using star as demo
+    const duration = 600;
+    const fromCenter = false;
+
+    if (localStorage.getItem("theme") === "dark") {
+        document.documentElement.classList.add("dark");
+    }
+
+    const buttons = document.querySelectorAll('.theme-toggle-btn');
+    
+    const updateIcons = () => {
+        const isDark = document.documentElement.classList.contains("dark");
+        buttons.forEach(btn => {
+            const icon = btn.querySelector('.material-symbols-outlined');
+            if(icon) {
+                icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+            }
+        });
+    }
+    
+    updateIcons();
+
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.contains("dark");
+            const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+            const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+
+            let x, y;
+            if (fromCenter) {
+                x = viewportWidth / 2;
+                y = viewportHeight / 2;
+            } else {
+                const { top, left, width, height } = button.getBoundingClientRect();
+                x = left + width / 2;
+                y = top + height / 2;
+            }
+
+            const maxRadius = Math.hypot(
+                Math.max(x, viewportWidth - x),
+                Math.max(y, viewportHeight - y)
+            );
+
+            const applyTheme = () => {
+                const newTheme = !isDark;
+                if (newTheme) {
+                    document.documentElement.classList.add("dark");
+                } else {
+                    document.documentElement.classList.remove("dark");
+                }
+                localStorage.setItem("theme", newTheme ? "dark" : "light");
+                updateIcons();
+            };
+
+            if (typeof document.startViewTransition !== "function") {
+                applyTheme();
+                return;
+            }
+
+            const root = document.documentElement;
+            root.dataset.magicuiThemeVt = "active";
+            root.style.setProperty("--magicui-theme-toggle-vt-duration", `${duration}ms`);
+            
+            const cleanup = () => {
+                delete root.dataset.magicuiThemeVt;
+                root.style.removeProperty("--magicui-theme-toggle-vt-duration");
+            };
+
+            const transition = document.startViewTransition(() => {
+                applyTheme();
+            });
+
+            if (typeof transition.finished?.finally === "function") {
+                transition.finished.finally(cleanup);
+            } else {
+                cleanup();
+            }
+
+            const ready = transition.ready;
+            if (ready && typeof ready.then === "function") {
+                const clipPath = getThemeTransitionClipPaths(
+                    shape,
+                    x,
+                    y,
+                    maxRadius,
+                    viewportWidth,
+                    viewportHeight
+                );
+                ready.then(() => {
+                    document.documentElement.animate(
+                        { clipPath },
+                        {
+                            duration,
+                            easing: shape === "star" ? "linear" : "ease-in-out",
+                            fill: "forwards",
+                            pseudoElement: "::view-transition-new(root)",
+                        }
+                    );
+                });
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    initThemeToggler();
+});

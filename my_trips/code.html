@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Trips - Traveloop</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "outline-variant": "#d1c3ca",
+                        "on-error": "#ffffff",
+                        "primary-container": "#714b67",
+                        "secondary-fixed": "#95f1f8",
+                        "pale-gray": "#F3F4F6",
+                        "error-container": "#ffdad6",
+                        "gold-amber": "#FBB130",
+                        "on-tertiary": "#ffffff",
+                        "border-subtle": "#D8DADD",
+                        "surface-container-lowest": "#ffffff",
+                        "purple-heritage": "#714B67",
+                        "on-secondary-fixed": "#002022",
+                        "on-primary-container": "#f0bfe0",
+                        "success-green": "#28A745",
+                        "primary": "#57344f",
+                        "purple-dark": "#5A3C52",
+                        "inverse-primary": "#e9b8d9",
+                        "teal-accent": "#00A09D",
+                        "on-surface-variant": "#4e444a",
+                        "inverse-on-surface": "#edf0ff",
+                        "tertiary-fixed-dim": "#b9ce9a",
+                        "neutral-charcoal": "#374151",
+                        "on-tertiary-fixed-variant": "#3b4c24",
+                        "off-white": "#FAFAFA",
+                        "lavender": "#B18AA7",
+                        "error-red": "#DC3545",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-container": "#006e73",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed": "#d5eab4",
+                        "secondary-container": "#92eff5",
+                        "on-primary-fixed-variant": "#5f3b56",
+                        "on-background": "#141b2b",
+                        "surface-container-highest": "#dce2f7",
+                        "deep-charcoal": "#111827",
+                        "tertiary": "#34451e",
+                        "secondary": "#00696e",
+                        "primary-fixed": "#ffd7f1",
+                        "on-tertiary-container": "#c0d5a0",
+                        "error": "#ba1a1a",
+                        "gold-highlight": "#FFC107",
+                        "purple-medium": "#65435C",
+                        "inverse-surface": "#293040",
+                        "teal-primary": "#017E84",
+                        "surface": "#f9f9ff",
+                        "secondary-fixed-dim": "#78d5db",
+                        "background": "#f9f9ff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-high": "#e1e8fd",
+                        "off-white-light": "#F9FAFB",
+                        "outline": "#80747a",
+                        "on-error-container": "#93000a",
+                        "surface-dim": "#d3daef",
+                        "on-tertiary-fixed": "#112000",
+                        "tertiary-container": "#4b5d33",
+                        "surface-container-low": "#f1f3ff",
+                        "primary-fixed-dim": "#e9b8d9",
+                        "on-primary-fixed": "#2f1029",
+                        "surface-container": "#e9edff",
+                        "surface-variant": "#dce2f7",
+                        "on-secondary-fixed-variant": "#004f53",
+                        "light-gray": "#F9F9F9",
+                        "divider-gray": "#DEE2E6",
+                        "surface-tint": "#79526f",
+                        "on-surface": "#141b2b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "micro": "4px",
+                        "sm": "12px",
+                        "section-v": "60px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "container-h": "40px",
+                        "lg": "24px",
+                        "xs": "8px",
+                        "md": "16px"
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #faf9fa;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+
+<style>
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-magicui-theme-vt="active"]::view-transition-group(root) {
+  animation-duration: var(--magicui-theme-toggle-vt-duration);
+}
+.dark body { background-color: #000000; color: #f3f4f6; }
+.dark .bg-white { background-color: #111111; border-color: #333333; color: #f3f4f6; }
+.dark .text-deep-charcoal { color: #f9fafb; }
+.dark .text-neutral-charcoal { color: #d1d5db; }
+.dark .bg-off-white { background-color: #000000; }
+.dark .bg-pale-gray { background-color: #222222; color: #f3f4f6;}
+.dark header { background-color: #111111; border-color: #333333; }
+.dark nav { background-color: #111111 !important; border-color: #333333; }
+</style>
+</head>
+<body class="flex flex-col min-h-screen text-on-surface">
+<!-- Top AppBar (Shared Component Logic) -->
+<header class="sticky top-0 z-50 flex items-center bg-white h-16 px-4 border-b border-divider-gray justify-between">
+<div class="flex items-center gap-3">
+<div class="text-purple-heritage flex size-10 shrink-0 items-center justify-center" data-icon="List" data-size="24px" data-weight="regular">
+<span class="material-symbols-outlined">List</span>
+</div>
+<h1 class="text-deep-charcoal text-xl font-bold tracking-tight">My Trips</h1>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center justify-center rounded-lg bg-purple-heritage text-white px-4 py-2 gap-2 text-sm font-bold shadow-sm hover:bg-purple-dark transition-colors cursor-pointer">
+<span class="material-symbols-outlined" style="font-size: 20px;">add</span>
+<span>Create New Trip</span>
+</button>
+
+<button class="theme-toggle-btn flex items-center justify-center rounded h-10 w-10 bg-transparent text-deep-charcoal hover:bg-pale-gray transition-colors cursor-pointer">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dark_mode</span>
+</button>
+</div>
+</header>
+<!-- Sub-navigation Tabs (Shared Component Logic) -->
+<nav class="bg-white border-b border-divider-gray">
+<div class="max-w-7xl mx-auto px-4 flex gap-8">
+<a class="flex flex-col items-center justify-center border-b-[3px] border-purple-heritage text-deep-charcoal pb-3 pt-4" href="#">
+<p class="text-sm font-bold tracking-wide">All Trips</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-neutral-charcoal hover:text-purple-heritage pb-3 pt-4" href="#">
+<p class="text-sm font-medium tracking-wide">Upcoming</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-neutral-charcoal hover:text-purple-heritage pb-3 pt-4" href="#">
+<p class="text-sm font-medium tracking-wide">Past</p>
+</a>
+<a class="flex flex-col items-center justify-center border-b-[3px] border-transparent text-neutral-charcoal hover:text-purple-heritage pb-3 pt-4" href="#">
+<p class="text-sm font-medium tracking-wide">Shared with Me</p>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow max-w-7xl mx-auto w-full px-4 py-8">
+<!-- Search and Filter Bar -->
+<div class="mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-neutral-charcoal">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-white border border-border-subtle rounded-lg focus:ring-2 focus:ring-purple-heritage focus:border-purple-heritage text-sm" placeholder="Search trips by name or destination..." type="text"/>
+</div>
+<div class="flex gap-2 w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border-subtle rounded-lg text-sm font-medium hover:bg-off-white-light cursor-pointer">
+<span class="material-symbols-outlined" style="font-size: 18px;">filter_list</span>
+<span>Filters</span>
+</button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-white border border-border-subtle rounded-lg text-sm font-medium hover:bg-off-white-light cursor-pointer">
+<span class="material-symbols-outlined" style="font-size: 18px;">sort</span>
+<span>Sort</span>
+</button>
+</div>
+</div>
+<!-- Trip Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Trip Card 1 -->
+<div class="flex flex-col bg-white border border-divider-gray rounded-xl overflow-hidden shadow-[0_3px_6px_0_rgba(0,0,0,0.05)] hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.1)] transition-shadow group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Summer in Paris" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A cinematic wide shot of the Eiffel Tower in Paris during a soft pink sunset. The sky is filled with wispy clouds, and the warm evening light reflects off the Seine river. The atmosphere is romantic and sophisticated, utilizing a high-key light mode aesthetic with deep purples and soft teals in the sky to align with the professional UI palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDS_kQsXZPWUqzn3iXxvTmsY2gyWGR0vxMwhAU4ait30VyyCJcQwCcitNDkWnZfWFfb2khfzYmngWvcWwWK5My30yJJx6B4pB4kSpxpqMmHpbvZr_Lkuas7mZ7BxBN6xSeGC5TgCj0S14AvNNXLGyFgT1KvVha3utfOfveKtqcpbBdNQ5TrEOau0_P9zIMRq6z1slMWoy9ga-1r_B6P2_yPYsU7_wg_-11GLrlcRPeeCdVZR0fHewVjZUjoUEVyNIO0RSh6Nx9h4qw"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-purple-heritage">Upcoming</div>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div>
+<h3 class="text-deep-charcoal text-lg font-bold leading-tight mb-1">Summer in Paris</h3>
+<p class="text-neutral-charcoal text-sm flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+                            Jul 15 - Jul 22, 2024
+                        </p>
+</div>
+<div class="flex items-center gap-4 text-xs text-neutral-charcoal font-medium">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">location_on</span>
+                            4 Destinations
+                        </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">confirmation_number</span>
+                            3 Activities
+                        </div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-pale-gray">
+<div class="flex gap-1">
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Edit">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Share">
+<span class="material-symbols-outlined" style="font-size: 20px;">share</span>
+</button>
+<button class="p-2 text-error-red hover:bg-error-container/20 rounded-lg transition-colors cursor-pointer" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+<button class="bg-purple-heritage text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-purple-dark transition-colors cursor-pointer">
+                            View Trip
+                        </button>
+</div>
+</div>
+</div>
+<!-- Trip Card 2 -->
+<div class="flex flex-col bg-white border border-divider-gray rounded-xl overflow-hidden shadow-[0_3px_6px_0_rgba(0,0,0,0.05)] hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.1)] transition-shadow group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Venice Weekend" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A breathtaking view of the Venice canals with traditional gondolas floating on shimmering turquoise water. The historic architecture is bathed in golden hour sunlight, creating a warm and inviting atmosphere. The overall style is clean and professional, matching the modern light-mode enterprise aesthetic with crisp details and a serene, focused mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuClUImvPFm-NYV7IhEXlLooH8A4v7MQq7iyJ3hi9AuU2Iz0wHaipaE_6WXSI3WWlUSVR8FD5pnSich5kxdH-1F45bAU_qN1Kn2FWlww7M5atuRFJz-ek1RCUjdjOOnTdPlXUf0OrWfwu58yc91N8ngeYhd3dnuocvda_aVVogcrGBVfpgNXuTXxZtEcBeoAVALBer3GnUnrw6VIUDmqZ5HitT7CWJzqQhzOTEDa2m83Agi2AKSGbtTP7JSz4WNeQRAEEZPzRs_g4Mw"/>
+<div class="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-neutral-charcoal">Past</div>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div>
+<h3 class="text-deep-charcoal text-lg font-bold leading-tight mb-1">Venice Weekend</h3>
+<p class="text-neutral-charcoal text-sm flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+                            May 12 - May 15, 2024
+                        </p>
+</div>
+<div class="flex items-center gap-4 text-xs text-neutral-charcoal font-medium">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">location_on</span>
+                            1 Destination
+                        </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">confirmation_number</span>
+                            5 Activities
+                        </div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-pale-gray">
+<div class="flex gap-1">
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Edit">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Share">
+<span class="material-symbols-outlined" style="font-size: 20px;">share</span>
+</button>
+<button class="p-2 text-error-red hover:bg-error-container/20 rounded-lg transition-colors cursor-pointer" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+<button class="bg-purple-heritage text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-purple-dark transition-colors cursor-pointer">
+                            View Trip
+                        </button>
+</div>
+</div>
+</div>
+<!-- Trip Card 3 -->
+<div class="flex flex-col bg-white border border-divider-gray rounded-xl overflow-hidden shadow-[0_3px_6px_0_rgba(0,0,0,0.05)] hover:shadow-[0_8px_16px_0_rgba(0,0,0,0.1)] transition-shadow group">
+<div class="relative h-48 w-full overflow-hidden">
+<img alt="Maldives Retreat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A lush tropical beach scene in the Maldives with crystal clear water and a white sandy shore. The lighting is bright and airy, typical of a professional high-key photography style. The scene is calm and luxurious, featuring subtle accents of teal and purple in the shadows to maintain branding consistency within a modern, data-driven travel application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBRVXvpZISemrQa9m_FJOaPrywsDrvFsKoZiarPqHR_WN9p_b-MoWXOK2osoFukqMQh5ndwCzUghWKYZeNtco_FasMvW4yQKfyx63ENuBgn4AzGW47Uh78F0VbY8PRB0W_rCK7PDdJsV5NlUI-o4o4lDO4YHXITdrwZIelPebikFCbUumEAJBkN5ZzvaJ0V4MxcGUcaFx6izTea2ymADEg8D04xoJwQ-94E8p9Uhhv8iOdEh4RvCKeByJIez9q8xPkgFvHK2FMWS8A"/>
+<div class="absolute top-4 right-4 bg-gold-amber text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">In Planning</div>
+</div>
+<div class="p-6 flex flex-col gap-4">
+<div>
+<h3 class="text-deep-charcoal text-lg font-bold leading-tight mb-1">Maldives Retreat</h3>
+<p class="text-neutral-charcoal text-sm flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 16px;">calendar_month</span>
+                            Oct 10 - Oct 20, 2024
+                        </p>
+</div>
+<div class="flex items-center gap-4 text-xs text-neutral-charcoal font-medium">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">location_on</span>
+                            2 Destinations
+                        </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">confirmation_number</span>
+                            2 Activities
+                        </div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-pale-gray">
+<div class="flex gap-1">
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Edit">
+<span class="material-symbols-outlined" style="font-size: 20px;">edit</span>
+</button>
+<button class="p-2 text-neutral-charcoal hover:bg-pale-gray rounded-lg transition-colors cursor-pointer" title="Share">
+<span class="material-symbols-outlined" style="font-size: 20px;">share</span>
+</button>
+<button class="p-2 text-error-red hover:bg-error-container/20 rounded-lg transition-colors cursor-pointer" title="Delete">
+<span class="material-symbols-outlined" style="font-size: 20px;">delete</span>
+</button>
+</div>
+<button class="bg-purple-heritage text-white px-5 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-purple-dark transition-colors cursor-pointer">
+                            View Trip
+                        </button>
+</div>
+</div>
+</div>
+<!-- Add Trip Placeholder Card -->
+<div class="flex flex-col items-center justify-center border-2 border-dashed border-divider-gray rounded-xl min-h-[400px] p-6 hover:border-purple-heritage hover:bg-purple-heritage/5 transition-all cursor-pointer group">
+<div class="size-16 rounded-full bg-pale-gray flex items-center justify-center text-neutral-charcoal group-hover:bg-purple-heritage group-hover:text-white transition-colors mb-4">
+<span class="material-symbols-outlined" style="font-size: 32px;">add</span>
+</div>
+<h3 class="text-deep-charcoal font-bold text-lg mb-2">Plan a new adventure</h3>
+<p class="text-neutral-charcoal text-sm text-center max-w-[200px]">Create a new itinerary and start exploring the world with Traveloop.</p>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Shared Component Integration) -->
+<footer class="sticky bottom-0 z-50 bg-white border-t border-divider-gray">
+<div class="flex gap-2 bg-white px-4 pb-3 pt-2 max-w-7xl mx-auto">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-neutral-charcoal hover:text-purple-heritage" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="House" data-size="24px" data-weight="regular">
+<span class="material-symbols-outlined">house</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-deep-charcoal" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="Suitcase" data-size="24px" data-weight="fill">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">luggage</span>
+</div>
+<p class="text-xs font-bold leading-normal tracking-[0.015em]">My Trips</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-neutral-charcoal hover:text-purple-heritage" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="Compass" data-size="24px" data-weight="regular">
+<span class="material-symbols-outlined">compass_calibration</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Explore</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-neutral-charcoal hover:text-purple-heritage" href="#">
+<div class="flex h-8 items-center justify-center" data-icon="User" data-size="24px" data-weight="regular">
+<span class="material-symbols-outlined">User</span>
+</div>
+<p class="text-xs font-medium leading-normal tracking-[0.015em]">Profile</p>
+</a>
+</div>
+</footer>
+<script src="../global.js"></script></body></html>
