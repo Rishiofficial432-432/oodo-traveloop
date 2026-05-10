@@ -420,37 +420,41 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     let map;
     
     function initMap() {
+        console.log("Initializing Open Source Map...");
         const loader = document.getElementById('map-loader');
         
         try {
             map = new maplibregl.Map({
                 container: 'map-3d',
-                style: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json', // Premium Open Source Style
-                center: [2.2945, 48.8584], // Paris Eiffel Tower
-                zoom: 15.5,
-                pitch: 60,
-                bearing: -17.6,
+                // Using a super-reliable open style from MapLibre's own demo server
+                style: 'https://demotiles.maplibre.org/style.json', 
+                center: [2.2945, 48.8584], 
+                zoom: 12,
+                pitch: 45,
+                bearing: 0,
                 antialias: true
             });
 
             map.on('load', () => {
-                // Add 3D building layer (if supported by style)
-                if (map.getLayer('building')) {
-                    map.setPaintProperty('building', 'fill-extrusion-opacity', 0.6);
+                console.log("MapLibre loaded successfully!");
+                if (loader) {
+                    loader.classList.add('opacity-0');
+                    setTimeout(() => loader.remove(), 500);
                 }
-
-                if (loader) loader.classList.add('opacity-0', 'pointer-events-none');
             });
 
             map.on('error', (e) => {
                 console.error("MapLibre error:", e);
-                if (loader) loader.innerHTML = `<p class="text-error-red font-bold">Map Error: Open Source Style Load Failed</p>`;
+                if (loader) loader.innerHTML = `<p class="text-white/50 text-xs">Offline Map Mode</p>`;
             });
         } catch (e) {
-            console.error("MapLibre failed to load:", e);
-            if (loader) loader.innerHTML = '<p class="text-error-red">Map failed to load. Check connection.</p>';
+            console.error("MapLibre failed:", e);
+            if (loader) loader.style.display = 'none';
         }
     }
+
+    // Start the map immediately
+    window.addEventListener('DOMContentLoaded', initMap);
 
     // Function to switch location and 3D Artifact
     window.updateExplorerView = function(city) {
