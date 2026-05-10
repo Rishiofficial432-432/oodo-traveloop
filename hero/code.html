@@ -128,7 +128,7 @@
 <body class="bg-off-white font-['Inter'] text-deep-charcoal overflow-hidden">
     <div class="relative w-full h-screen flex flex-col items-center justify-center text-center">
         <!-- Background Video -->
-        <video class="absolute inset-0 w-full h-full object-cover" style="filter: brightness(0.7);" autoplay loop muted playsinline>
+        <video class="absolute inset-0 w-full h-full object-cover bg-deep-charcoal" style="filter: brightness(0.7);" autoplay loop muted playsinline>
             <source src="../assets/hero_bg.mp4" type="video/mp4">
         </video>
         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent"></div>
@@ -158,12 +158,28 @@
             }
             window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
                 if (session) {
-                    // Smoothly redirect if already logged in
                     window.location.href = '../traveloop_dashboard/code.html';
                 }
             });
         }
         checkSession();
+
+        // Video Force-Play & Status Check
+        const heroVideo = document.querySelector('video');
+        if (heroVideo) {
+            heroVideo.addEventListener('loadedmetadata', () => {
+                heroVideo.play().catch(e => console.log("Autoplay prevented, waiting for interaction."));
+            });
+            
+            // Backup: Try playing every 500ms until successful
+            const playInterval = setInterval(() => {
+                if (heroVideo.paused) {
+                    heroVideo.play().then(() => clearInterval(playInterval)).catch(() => {});
+                } else {
+                    clearInterval(playInterval);
+                }
+            }, 500);
+        }
     </script>
 </body>
 </html>
