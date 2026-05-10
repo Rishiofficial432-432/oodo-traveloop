@@ -19,16 +19,16 @@ async function getTrips() {
     }
 }
 
-// Subscribe to Realtime Updates
-function subscribeToTrips(callback) {
+// Generic Realtime Subscription Engine
+function subscribeToTable(tableName, callback) {
     return window.supabaseClient
-        .channel('trips-realtime')
+        .channel(`${tableName}-realtime`)
         .on('postgres_changes', { 
             event: '*', 
             schema: 'public', 
-            table: 'trips' 
+            table: tableName 
         }, (payload) => {
-            console.log('Realtime change detected:', payload);
+            console.log(`Realtime change in ${tableName}:`, payload);
             if (callback) callback(payload);
         })
         .subscribe();
@@ -200,8 +200,8 @@ async function initMyTrips() {
     // Initial render
     await renderTrips();
 
-    // Subscribe to realtime changes
-    subscribeToTrips(() => {
+    // Subscribe to realtime changes on the 'trips' table
+    subscribeToTable('trips', () => {
         console.log('Refreshing trips due to realtime change...');
         renderTrips();
     });
