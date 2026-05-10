@@ -390,3 +390,85 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+// === FIREBASE AUTHENTICATION ===
+
+// 1. DYNAMICALLY LOAD FIREBASE SCRIPTS
+function loadFirebaseScripts(callback) {
+    if (window.firebase) { callback(); return; }
+    
+    const appScript = document.createElement('script');
+    appScript.src = "https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js";
+    
+    const authScript = document.createElement('script');
+    authScript.src = "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js";
+
+    document.head.appendChild(appScript);
+    
+    appScript.onload = () => {
+        document.head.appendChild(authScript);
+        authScript.onload = callback;
+    };
+}
+
+// 2. YOUR FIREBASE CONFIGURATION
+// ⚠️ REPLACE THIS OBJECT WITH YOUR ACTUAL FIREBASE CONFIG ⚠️
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// 3. INITIALIZE FIREBASE & AUTH LISTENER
+loadFirebaseScripts(() => {
+    // Check if config has been replaced (don't crash if it's the placeholder)
+    if (firebaseConfig.apiKey !== "YOUR_API_KEY") {
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+
+        // Listen for user login state across the entire app!
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                // User is logged in! Update UI elements automatically
+                const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
+                const nameElements = document.querySelectorAll('.font-bold.text-deep-charcoal.leading-tight.tracking-\\[-0\\.015em\\]'); // targets profile name
+
+                // Update Avatars
+                profileImages.forEach(img => {
+                    img.style.backgroundImage = `url('${user.photoURL}')`;
+                });
+                
+                // If on Profile page, update name and email
+                const profileNameHeader = document.querySelector('.text-2xl.font-bold');
+                if (profileNameHeader && window.location.pathname.includes('profile')) {
+                    profileNameHeader.innerText = user.displayName;
+                }
+            }
+        });
+    } else {
+        console.warn("⚠️ Traveloop: Firebase is not configured yet! Please replace the placeholder config in global.js");
+    }
+});
+
+// 4. GOOGLE SIGN IN FUNCTION
+window.signInWithGoogle = function() {
+    if (!window.firebase || firebaseConfig.apiKey === "YOUR_API_KEY") {
+        alert("Firebase is not connected yet! Please add your Firebase Config to global.js");
+        return;
+    }
+
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider)
+        .then((result) => {
+            // Success! Redirect to Dashboard
+            window.location.href = '../traveloop_dashboard/code.html';
+        })
+        .catch((error) => {
+            console.error("Error signing in with Google: ", error);
+            alert("Login Failed: " + error.message);
+        });
+};
