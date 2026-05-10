@@ -18,6 +18,7 @@ Traveloop is a high-performance, full-stack travel discovery and planning applic
 *   **Dynamic Profiles:** Automatically fetches and displays user profile pictures and names from Google across all app screens.
 *   **Redirect Logic:** Optimized for mobile and strict browsers to bypass popup blockers.
 
+
 ### 4. Travel Management
 *   **Itinerary Builder:** Plan your days with a modern, structured layout.
 *   **My Trips Hub:** A central location to view upcoming and past adventures.
