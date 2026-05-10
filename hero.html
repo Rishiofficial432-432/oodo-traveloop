@@ -47,15 +47,11 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center overflow-hidden">
 <video autoplay="" class="hero-video" loop="" muted="" playsinline="">
-<source src="https://cdn.pixabay.com/video/2019/12/17/30349-381015694_large.mp4" type="video/mp4"/>
+<source src="https://assets.mixkit.co/videos/preview/mixkit-panning-over-a-beautiful-tropical-beach-4556-large.mp4" type="video/mp4"/>
 </video>
 <div class="z-10 text-center px-6 max-w-4xl">
-<div class="mb-8 flex justify-center">
-<div class="w-20 h-20 bg-white/10 backdrop-blur-xl rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl animate-bounce">
-<span class="material-symbols-outlined text-white text-5xl">travel_explore</span>
-</div>
-</div>
-<h1 class="text-white text-5xl md:text-7xl font-bold tracking-tight mb-6">
+    <!-- Removed Bouncing Icon for a Cleaner Look -->
+    <h1 class="text-white text-5xl md:text-7xl font-bold tracking-tight mb-6">
             Travel <span class="text-purple-heritage italic font-['Caveat']">Redefined</span>
 </h1>
 <p class="text-white/80 text-xl md:text-2xl font-light mb-12 max-w-2xl mx-auto leading-relaxed">
@@ -89,11 +85,24 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="global.js"></script>
 <script>
-        // Hero specific logic to handle video play on mobile
-        document.addEventListener('click', () => {
-            const video = document.querySelector('video');
-            if (video.paused) video.play();
-        }, { once: true });
-    </script>
+    // Robust Force Play for Hero Video
+    window.addEventListener('load', () => {
+        const video = document.querySelector('.hero-video');
+        if (video) {
+            const playVideo = () => {
+                video.play().then(() => {
+                    console.log("Video playing successfully!");
+                }).catch(err => {
+                    console.log("Autoplay blocked, waiting for user interaction...");
+                });
+            };
+            playVideo();
+            // Also try playing on any user interaction to bypass strict browser rules
+            ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(evt => {
+                document.body.addEventListener(evt, playVideo, { once: true });
+            });
+        }
+    });
+</script>
 </body>
 </html>
