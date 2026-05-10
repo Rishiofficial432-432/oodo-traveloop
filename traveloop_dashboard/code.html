@@ -423,6 +423,15 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     let map;
     
     function initMap() {
+        const loader = document.getElementById('map-loader');
+        
+        // Safety timeout: Hide loader if map takes too long
+        const mapTimeout = setTimeout(() => {
+            if (loader) {
+                loader.innerHTML = '<div class="p-6 bg-white/10 backdrop-blur rounded-xl border border-white/20"><p class="text-white font-bold mb-2">Map Connection Delayed</p><p class="text-white/60 text-sm">Please check your Mapbox Access Token in code.html</p><button onclick="location.reload()" class="mt-4 px-4 py-2 bg-white/20 rounded-lg text-white text-xs">Retry</button></div>';
+            }
+        }, 8000);
+
         try {
             map = new mapboxgl.Map({
                 container: 'map-3d',
@@ -435,6 +444,8 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
             });
 
             map.on('style.load', () => {
+                clearTimeout(mapTimeout); // Map loaded successfully!
+                
                 // Add 3D building layer
                 map.addLayer({
                     'id': 'add-3d-buildings',
@@ -460,11 +471,20 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
                 });
                 map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
-                document.getElementById('map-loader').classList.add('opacity-0', 'pointer-events-none');
+                if (loader) loader.classList.add('opacity-0', 'pointer-events-none');
+            });
+
+            map.on('error', (e) => {
+                console.error("Mapbox error:", e);
+                clearTimeout(mapTimeout);
+                if (loader) {
+                    loader.innerHTML = `<p class="text-error-red font-bold">Map Error: ${e.error.message || 'Invalid Token'}</p>`;
+                }
             });
         } catch (e) {
             console.error("Mapbox failed to load:", e);
-            document.getElementById('map-loader').innerHTML = '<p class="text-error-red">Map failed to load. Check API key.</p>';
+            clearTimeout(mapTimeout);
+            if (loader) loader.innerHTML = '<p class="text-error-red">Map failed to load. Check API key.</p>';
         }
     }
 
