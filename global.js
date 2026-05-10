@@ -1,88 +1,91 @@
-// Database Operations using Supabase
+// === SUPABASE CONFIGURATION (FOR LOGIN ONLY) ===
+const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ic3hzb3Fjdnd3anZjanlrbWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzOTgwMDMsImV4cCI6MjA5Mzk3NDAwM30.eDOAWdOxLmlD_1902eSl75zeKk1M-evtPkrEUCyUSCY";
+
+if (window.supabase) {
+    window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("Supabase Auth Initialized 🔑");
+
+    window.supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session && session.user) {
+            const metadata = session.user.user_metadata;
+            document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full').forEach(img => {
+                if (metadata.avatar_url) img.style.backgroundImage = `url('${metadata.avatar_url}')`;
+            });
+            const nameHeader = document.querySelector('.text-2xl.font-bold, .text-deep-charcoal.text-xl.font-bold');
+            if (nameHeader) nameHeader.innerText = metadata.full_name || session.user.email;
+        }
+    });
+}
+
+// Initialize Local Browser Database (Dexie.js)
+const db = new Dexie("TraveloopDB");
+db.version(1).stores({
+    trips: '++id, user_id, name, date, created_at'
+});
+
+// Database Operations using Local Browser DB
 async function getTrips() {
     try {
-        // Get the current user
-        const { data: { user } } = await window.supabaseClient.auth.getUser();
-        if (!user) return [];
+        // Get only trips belonging to the current user (if logged in)
+        const { data: { user } } = window.supabaseClient ? await window.supabaseClient.auth.getUser() : { data: { user: null } };
+        const userId = user ? user.id : 'anonymous';
 
-        const { data, error } = await window.supabaseClient
-            .from('trips')
-            .select('*')
-            .eq('user_id', user.id) // Explicitly filter by your unique ID
-            .order('created_at', { ascending: false });
-        
-        if (error) throw error;
-        return data || [];
+        const trips = await db.trips
+            .where('user_id')
+            .equals(userId)
+            .reverse()
+            .toArray();
+            
+        return trips;
     } catch (err) {
-        console.error('Failed to fetch trips from Supabase:', err);
+        console.error('Failed to fetch trips from Local DB:', err);
         return [];
     }
 }
 
-// Generic Realtime Subscription Engine
-function subscribeToTable(tableName, callback) {
-    return window.supabaseClient
-        .channel(`${tableName}-realtime`)
-        .on('postgres_changes', { 
-            event: '*', 
-            schema: 'public', 
-            table: tableName 
-        }, (payload) => {
-            console.log(`Realtime change in ${tableName}:`, payload);
-            if (callback) callback(payload);
-        })
-        .subscribe();
-}
+// Local "Realtime" - We'll use a simple event system since it's local
+const localDataEvents = new EventTarget();
 
 async function saveTrip(trip) {
     try {
-        // Get current user ID for ownership
-        const { data: { user } } = await window.supabaseClient.auth.getUser();
-        if (!user) throw new Error('You must be logged in to save trips');
+        const { data: { user } } = window.supabaseClient ? await window.supabaseClient.auth.getUser() : { data: { user: null } };
+        const userId = user ? user.id : 'anonymous';
 
-        const { data, error } = await window.supabaseClient
-            .from('trips')
-            .insert([{ ...trip, user_id: user.id }])
-            .select();
+        const tripToSave = {
+            ...trip,
+            user_id: userId,
+            created_at: new Date().toISOString()
+        };
 
-        if (error) throw error;
-        return data[0];
+        const id = await db.trips.add(tripToSave);
+        console.log("Trip saved to Local DB with ID:", id);
+        
+        // Notify any listeners that data has changed
+        localDataEvents.dispatchEvent(new Event('tripsChanged'));
+        
+        return { id, ...tripToSave };
     } catch (err) {
-        console.error('Failed to save trip to Supabase:', err);
-        alert('Error saving trip: ' + err.message);
+        console.error('Failed to save trip to Local DB:', err);
+        alert('Error saving trip locally: ' + err.message);
     }
 }
 
 async function uploadMedia(file) {
-    try {
-        console.log("Starting upload for:", file.name);
-        const fileExt = file.name.split('.').pop();
-        // Create a more unique file name
-        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
-        const filePath = `uploads/${fileName}`;
+    // For local storage, we just return the file blob URL
+    // or we can convert to a permanent blob in the DB
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result); // Store as base64 for simplicity in this local version
+        reader.readAsDataURL(file);
+    });
+}
 
-        const { data, error } = await window.supabaseClient.storage
-            .from('trip-media')
-            .upload(filePath, file, {
-                cacheControl: '3600',
-                upsert: false
-            });
-
-        if (error) {
-            console.error("Supabase Storage Error:", error);
-            throw error;
-        }
-
-        console.log("File uploaded successfully, getting public URL...");
-        const { data: { publicUrl } } = window.supabaseClient.storage
-            .from('trip-media')
-            .getPublicUrl(filePath);
-
-        console.log("Public URL generated:", publicUrl);
-        return publicUrl;
-    } catch (err) {
-        console.error('Detailed Upload Failure:', err);
-        throw new Error(`Media upload failed: ${err.message || 'Check bucket name and permissions'}`);
+// Simplified Realtime for Local DB
+function subscribeToTable(tableName, callback) {
+    if (tableName === 'trips') {
+        localDataEvents.addEventListener('tripsChanged', callback);
+        return { unsubscribe: () => localDataEvents.removeEventListener('tripsChanged', callback) };
     }
 }
 
@@ -575,46 +578,3 @@ function initMacDock() {
     });
 }
 
-// === SUPABASE CONFIGURATION ===
-const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ic3hzb3Fjdnd3anZjanlrbWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzOTgwMDMsImV4cCI6MjA5Mzk3NDAwM30.eDOAWdOxLmlD_1902eSl75zeKk1M-evtPkrEUCyUSCY";
-
-// 1. DYNAMICALLY LOAD SUPABASE SCRIPT (if not already present)
-function loadSupabaseScript(callback) {
-    if (window.supabase) { callback(); return; }
-    const script = document.createElement('script');
-    script.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2";
-    script.onload = callback;
-    document.head.appendChild(script);
-}
-
-// 2. INITIALIZE SUPABASE & AUTH LISTENER
-loadSupabaseScript(() => {
-    if (SUPABASE_URL !== "YOUR_SUPABASE_URL") {
-        window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        // Listen for user login state
-        window.supabaseClient.auth.onAuthStateChange((event, session) => {
-            if (session && session.user) {
-                const user = session.user;
-                const metadata = user.user_metadata;
-                
-                // Update UI elements automatically (Avatars)
-                const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
-                profileImages.forEach(img => {
-                    if (metadata.avatar_url) {
-                        img.style.backgroundImage = `url('${metadata.avatar_url}')`;
-                    }
-                });
-                
-                // Update Name on Profile page
-                const profileNameHeader = document.querySelector('.text-2xl.font-bold');
-                if (profileNameHeader && window.location.pathname.includes('profile')) {
-                    profileNameHeader.innerText = metadata.full_name || user.email;
-                }
-            }
-        });
-    } else {
-        console.warn("⚠️ Traveloop: Supabase is not configured yet! Please add your URL and Key in global.js");
-    }
-});
