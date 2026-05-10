@@ -163,50 +163,24 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 <label class="text-neutral-charcoal text-sm font-semibold mb-xs">Trip Name</label>
 <input class="form-input h-14 w-full rounded border-border-subtle bg-white focus:border-purple-heritage placeholder:text-outline p-md" id="trip-name" placeholder="e.g. Summer in Tuscany" type="text"/>
 </div>
-<!-- Date Picker Section (Reference Shared Calendar Logic) -->
+<!-- Date Picker Section -->
 <div class="space-y-sm">
 <label class="text-neutral-charcoal text-sm font-semibold">Select Dates</label>
 <div class="border border-border-subtle rounded-xl p-md bg-light-gray">
-<div class="flex items-center justify-between mb-md">
-<button class="size-10 flex items-center justify-center rounded-full hover:bg-white transition-shadow cursor-pointer" onclick="window.history.back()">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<p class="font-bold text-deep-charcoal">July 2024</p>
-<button class="size-10 flex items-center justify-center rounded-full hover:bg-white transition-shadow cursor-pointer">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
+<div class="flex gap-md">
+    <div class="flex-1 flex flex-col">
+        <label class="text-[10px] uppercase tracking-wider text-outline mb-1 font-bold">Start Date</label>
+        <input type="date" id="start-date" class="form-input h-12 w-full rounded border-border-subtle bg-white p-2 text-sm" value="2024-07-05">
+    </div>
+    <div class="flex-1 flex flex-col">
+        <label class="text-[10px] uppercase tracking-wider text-outline mb-1 font-bold">End Date</label>
+        <input type="date" id="end-date" class="form-input h-12 w-full rounded border-border-subtle bg-white p-2 text-sm" value="2024-07-12">
+    </div>
 </div>
-<div class="grid grid-cols-7 text-center">
-<p class="text-xs font-bold text-outline py-xs">S</p>
-<p class="text-xs font-bold text-outline py-xs">M</p>
-<p class="text-xs font-bold text-outline py-xs">T</p>
-<p class="text-xs font-bold text-outline py-xs">W</p>
-<p class="text-xs font-bold text-outline py-xs">T</p>
-<p class="text-xs font-bold text-outline py-xs">F</p>
-<p class="text-xs font-bold text-outline py-xs">S</p>
-<!-- Simplified Calendar Representation -->
-<div class="col-start-2 h-10 flex items-center justify-center text-sm font-medium">1</div>
-<div class="h-10 flex items-center justify-center text-sm font-medium">2</div>
-<div class="h-10 flex items-center justify-center text-sm font-medium">3</div>
-<div class="h-10 flex items-center justify-center text-sm font-medium">4</div>
-<div class="h-10 flex items-center justify-center rounded-l-full bg-purple-heritage text-white text-sm font-medium">5</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">6</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">7</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">8</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">9</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">10</div>
-<div class="h-10 flex items-center justify-center bg-primary-container/20 text-deep-charcoal text-sm font-medium">11</div>
-<div class="h-10 flex items-center justify-center rounded-r-full bg-purple-heritage text-white text-sm font-medium">12</div>
-<div class="h-10 flex items-center justify-center text-sm font-medium">13</div>
-</div>
-<div class="mt-md flex gap-md">
+<div class="mt-md pt-md border-t border-divider-gray flex gap-md">
 <div class="flex-1">
-<p class="text-[10px] uppercase tracking-wider text-outline mb-1 font-bold">Start Date</p>
-<p class="text-sm font-semibold text-deep-charcoal">July 5, 2024</p>
-</div>
-<div class="flex-1">
-<p class="text-[10px] uppercase tracking-wider text-outline mb-1 font-bold">End Date</p>
-<p class="text-sm font-semibold text-deep-charcoal">July 12, 2024</p>
+<p class="text-[10px] uppercase tracking-wider text-outline mb-1 font-bold">Selected Range</p>
+<p class="text-sm font-semibold text-deep-charcoal" id="selected-date-range">July 5 - July 12, 2024</p>
 </div>
 </div>
 </div>
@@ -223,18 +197,20 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 <div class="lg:col-span-5 space-y-lg">
 <!-- Cover Photo Upload -->
 <section class="bg-white p-lg rounded-xl border border-divider-gray shadow-[0_3px_6px_0_rgba(0,0,0,0.05)]">
-<h2 class="text-heading-h4 text-deep-charcoal mb-md">Cover Photo</h2>
-<div class="group relative aspect-video w-full rounded-xl overflow-hidden border-2 border-dashed border-border-subtle bg-light-gray flex flex-col items-center justify-center cursor-pointer hover:border-purple-heritage transition-all">
-<img class="absolute inset-0 w-full h-full object-cover opacity-20 grayscale" data-alt="A serene landscape of mountains reflected in a still lake at dawn, with soft golden light warming the horizon. The composition is clean and expansive, evoking a sense of peaceful travel exploration and professional modern design. The colors are muted teals and purples, fitting a high-end enterprise travel application brand identity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgbuAgBFgn56-QqFSl0ROg2JFO3KxIbZfHI0YeSksGnJpy1R09-3YGA-r-6q9QVa36vw-drNbQvepGX4sk2Bpx86x6Man3k4gauvU2DnsJ1ZHpLZng3soR1g-bSuCAamlVbfndpWidsawbiUgNjnGWvEpjNL860y75k2HRAUelqOiYn5M4tVyK8BRos3PUONQ5FtGQy0J4FCAqmkVMCr7rqB9XdgMpz-W1hC7t66UvjTugeF8LYB-M47Fb61qlqKjEW6Bs9Ta7PzI"/>
-<div class="relative z-10 text-center px-lg">
+<h2 class="text-heading-h4 text-deep-charcoal mb-md">Cover Photo / Video</h2>
+<div id="upload-area" class="group relative aspect-video w-full rounded-xl overflow-hidden border-2 border-dashed border-border-subtle bg-light-gray flex flex-col items-center justify-center cursor-pointer hover:border-purple-heritage transition-all">
+<img id="image-preview" class="absolute inset-0 w-full h-full object-cover hidden" src=""/>
+<video id="video-preview" class="absolute inset-0 w-full h-full object-cover hidden" controls></video>
+<div id="upload-placeholder" class="relative z-10 text-center px-lg">
 <div class="size-14 bg-white rounded-full flex items-center justify-center mx-auto mb-md shadow-sm">
 <span class="material-symbols-outlined text-purple-heritage">add_a_photo</span>
 </div>
-<p class="text-deep-charcoal font-semibold">Upload a cover image</p>
-<p class="text-neutral-charcoal text-sm mt-1">PNG, JPG or WEBP (Max. 10MB)</p>
+<p class="text-deep-charcoal font-semibold">Upload a cover image or video</p>
+<p class="text-neutral-charcoal text-sm mt-1">PNG, JPG, WEBP or MP4 (Max. 50MB)</p>
 </div>
+<input type="file" id="media-input" class="hidden" accept="image/*,video/*">
 </div>
-<p class="text-sm text-outline mt-md italic">Tip: A great cover photo helps you get excited about your upcoming journey!</p>
+<p class="text-sm text-outline mt-md italic">Tip: A great cover media helps you get excited about your upcoming journey!</p>
 </section>
 <!-- Actions -->
 <section class="bg-white p-lg rounded-xl border border-divider-gray shadow-[0_3px_6px_0_rgba(0,0,0,0.05)]">

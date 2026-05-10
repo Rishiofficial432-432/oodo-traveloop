@@ -33,10 +33,81 @@ async function saveTrip(trip) {
     }
 }
 
+async function uploadMedia(file) {
+    try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        const filePath = `uploads/${fileName}`;
+
+        const { data, error } = await window.supabaseClient.storage
+            .from('trip-media')
+            .upload(filePath, file);
+
+        if (error) throw error;
+
+        const { data: { publicUrl } } = window.supabaseClient.storage
+            .from('trip-media')
+            .getPublicUrl(filePath);
+
+        return publicUrl;
+    } catch (err) {
+        console.error('Upload failed:', err);
+        throw err;
+    }
+}
+
 // Logic for plan_a_new_trip page
 function initCreateTrip() {
     const createBtn = document.getElementById('create-trip-btn');
+    const mediaInput = document.getElementById('media-input');
+    const uploadArea = document.getElementById('upload-area');
+    const imgPreview = document.getElementById('image-preview');
+    const videoPreview = document.getElementById('video-preview');
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+    const startDateInput = document.getElementById('start-date');
+    const endDateInput = document.getElementById('end-date');
+    const dateRangeLabel = document.getElementById('selected-date-range');
+
     if (!createBtn) return;
+
+    // Handle Upload Click
+    if (uploadArea && mediaInput) {
+        uploadArea.addEventListener('click', () => mediaInput.click());
+        
+        mediaInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const isVideo = file.type.startsWith('video/');
+            const url = URL.createObjectURL(file);
+
+            if (isVideo) {
+                videoPreview.src = url;
+                videoPreview.classList.remove('hidden');
+                imgPreview.classList.add('hidden');
+            } else {
+                imgPreview.src = url;
+                imgPreview.classList.remove('hidden');
+                videoPreview.classList.add('hidden');
+            }
+            uploadPlaceholder.classList.add('hidden');
+        });
+    }
+
+    // Handle Date Changes
+    function updateDateRange() {
+        if (!startDateInput.value || !endDateInput.value) return;
+        const start = new Date(startDateInput.value);
+        const end = new Date(endDateInput.value);
+        const options = { month: 'short', day: 'numeric' };
+        const year = start.getFullYear();
+        dateRangeLabel.innerText = `${start.toLocaleDateString('en-US', options)} - ${end.toLocaleDateString('en-US', options)}, ${year}`;
+    }
+
+    if (startDateInput && endDateInput) {
+        startDateInput.addEventListener('change', updateDateRange);
+        endDateInput.addEventListener('change', updateDateRange);
+    }
 
     createBtn.addEventListener('click', async () => {
         const nameInput = document.getElementById('trip-name');
@@ -52,15 +123,40 @@ function initCreateTrip() {
         createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Saving...</span>';
         createBtn.disabled = true;
 
-        await saveTrip({
-            name: nameInput.value,
-            description: descInput ? descInput.value : '',
-            status: 'Upcoming',
-            date: 'July 5 - July 12, 2024'
-        });
+        try {
+            let imageUrl = '';
+            let videoUrl = '';
 
-        alert('Trip created successfully!');
-        window.location.href = '../my_trips/code.html';
+            // 1. Upload media if present
+            if (mediaInput.files.length > 0) {
+                const file = mediaInput.files[0];
+                const publicUrl = await uploadMedia(file);
+                if (file.type.startsWith('video/')) {
+                    videoUrl = publicUrl;
+                } else {
+                    imageUrl = publicUrl;
+                }
+            }
+
+            // 2. Save trip data
+            await saveTrip({
+                name: nameInput.value,
+                description: descInput ? descInput.value : '',
+                status: 'Upcoming',
+                date: dateRangeLabel.innerText,
+                image_url: imageUrl,
+                video_url: videoUrl
+            });
+
+            alert('Trip created successfully!');
+            window.location.href = '../my_trips/code.html';
+        } catch (err) {
+            console.error('Error creating trip:', err);
+            alert('Failed to create trip: ' + err.message);
+        } finally {
+            createBtn.innerHTML = originalText;
+            createBtn.disabled = false;
+        }
     });
 }
 
@@ -439,5 +535,28 @@ loadSupabaseScript(() => {
         });
     } else {
         console.warn("⚠️ Traveloop: Supabase is not configured yet! Please add your URL and Key in global.js");
+    }
+});// 3. AUTO-INITIALIZE FEATURES ON PAGE LOAD
+document.addEventListener('DOMContentLoaded', () => {
+    const path = window.location.pathname;
+    
+    if (path.includes('plan_a_new_trip')) {
+        initCreateTrip();
+    } else if (path.includes('my_trips')) {
+        initMyTrips();
+    }
+    
+    // Refresh avatar logic if auth script already loaded
+    if (window.supabaseClient) {
+        window.supabaseClient.auth.getSession().then(({ data: { session } }) => {
+            if (session && session.user) {
+                // Update UI elements manually once if listener missed it
+                const metadata = session.user.user_metadata;
+                const profileImages = document.querySelectorAll('.bg-center.bg-no-repeat.aspect-square.bg-cover.rounded-full');
+                profileImages.forEach(img => {
+                    if (metadata.avatar_url) img.style.backgroundImage = `url('${metadata.avatar_url}')`;
+                });
+            }
+        });
     }
 });
