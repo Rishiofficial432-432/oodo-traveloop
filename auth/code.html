@@ -162,7 +162,7 @@
             </div>
             
             <div class="mt-6 flex gap-3">
-                <button class="flex-1 h-12 border border-border-subtle rounded-lg flex items-center justify-center gap-2 hover:bg-pale-gray transition-colors cursor-pointer" onclick="signInWithGoogle()">
+                <button id="google-signin-btn" class="flex-1 h-12 border border-border-subtle rounded-lg flex items-center justify-center gap-2 hover:bg-pale-gray transition-colors cursor-pointer" onclick="signInWithGoogle()">
                     <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5">
                     <span class="font-semibold text-sm">Google</span>
                 </button>
@@ -170,19 +170,38 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <script>
-        document.getElementById('auth-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Simulate auth delay
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin inline-block align-middle">refresh</span> Authenticating...';
-            
-            setTimeout(() => {
-                window.location.href = '../traveloop_dashboard/code.html';
-            }, 800);
-        });
+        // Initialize Firebase immediately if config is available in global scope
+        function initFirebaseOnPage() {
+            if (typeof firebaseConfig !== 'undefined' && !firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+        }
+        
+        window.signInWithGoogle = function() {
+            const btn = document.getElementById('google-signin-btn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> <span class="font-semibold text-sm">Connecting...</span>';
+            btn.classList.add('opacity-70', 'pointer-events-none');
+
+            if (!window.firebase || typeof firebaseConfig === 'undefined') {
+                alert("Auth system is still initializing...");
+                btn.innerHTML = originalContent;
+                btn.classList.remove('opacity-70', 'pointer-events-none');
+                return;
+            }
+
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+
+            const provider = new firebase.auth.GoogleAuthProvider();
+            firebase.auth().signInWithRedirect(provider);
+        };
     </script>
     <script src="../global.js"></script>
+    <script>initFirebaseOnPage();</script>
 </body>
 </html>
