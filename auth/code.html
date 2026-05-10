@@ -170,38 +170,64 @@
         </div>
     </div>
 
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
     <script>
-        // Initialize Firebase immediately if config is available in global scope
-        function initFirebaseOnPage() {
-            if (typeof firebaseConfig !== 'undefined' && !firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
+        // 1. Firebase Configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyAwdMf_z7LvbCRf9pTd3dV0zZqHA3tkjw0",
+          authDomain: "traveloop-3cc59.firebaseapp.com",
+          projectId: "traveloop-3cc59",
+          storageBucket: "traveloop-3cc59.firebasestorage.app",
+          messagingSenderId: "602600395669",
+          appId: "1:602600395669:web:6b7e0fb03508a608565c9c",
+          measurementId: "G-ZLZ7ZFY1NS"
+        };
+
+        // 2. Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
         }
-        
+
+        // 3. Handle Login
         window.signInWithGoogle = function() {
             const btn = document.getElementById('google-signin-btn');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> <span class="font-semibold text-sm">Connecting...</span>';
-            btn.classList.add('opacity-70', 'pointer-events-none');
-
-            if (!window.firebase || typeof firebaseConfig === 'undefined') {
-                alert("Auth system is still initializing...");
-                btn.innerHTML = originalContent;
-                btn.classList.remove('opacity-70', 'pointer-events-none');
-                return;
-            }
-
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> <span class="font-semibold text-sm">Redirecting...</span>';
+            btn.style.opacity = "0.7";
+            btn.style.pointerEvents = "none";
 
             const provider = new firebase.auth.GoogleAuthProvider();
             firebase.auth().signInWithRedirect(provider);
         };
+
+        // 4. Check for redirect result (when returning from Google)
+        firebase.auth().getRedirectResult()
+            .then((result) => {
+                if (result.user) {
+                    window.location.href = '../traveloop_dashboard/code.html';
+                }
+            })
+            .catch((error) => {
+                console.error("Auth Error:", error);
+                if (error.code !== 'auth/popup-closed-by-user') {
+                    alert("Login Error: " + error.message);
+                }
+                const btn = document.getElementById('google-signin-btn');
+                btn.innerHTML = '<img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" class="w-5 h-5"><span class="font-semibold text-sm">Google</span>';
+                btn.style.opacity = "1";
+                btn.style.pointerEvents = "auto";
+            });
+
+        // 5. Normal form simulation
+        document.getElementById('auth-form')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = '<span class="material-symbols-outlined animate-spin inline-block align-middle">refresh</span> Authenticating...';
+            setTimeout(() => { window.location.href = '../traveloop_dashboard/code.html'; }, 800);
+        });
     </script>
     <script src="../global.js"></script>
-    <script>initFirebaseOnPage();</script>
 </body>
 </html>
