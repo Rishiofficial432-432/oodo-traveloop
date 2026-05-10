@@ -1,9 +1,14 @@
 // Database Operations using Supabase
 async function getTrips() {
     try {
+        // Get the current user
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+        if (!user) return [];
+
         const { data, error } = await window.supabaseClient
             .from('trips')
             .select('*')
+            .eq('user_id', user.id) // Explicitly filter by your unique ID
             .order('created_at', { ascending: false });
         
         if (error) throw error;
@@ -550,7 +555,7 @@ function initMacDock() {
 
 // === SUPABASE CONFIGURATION ===
 const SUPABASE_URL = "https://nbsxsoqcvwwjvcjykmce.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_0pbHnA-R_xySPtvY3uGZCA_nlzUefvq";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ic3hzb3Fjdnd3anZjanlrbWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgzOTgwMDMsImV4cCI6MjA5Mzk3NDAwM30.eDOAWdOxLmlD_1902eSl75zeKk1M-evtPkrEUCyUSCY";
 
 // 1. DYNAMICALLY LOAD SUPABASE SCRIPT (if not already present)
 function loadSupabaseScript(callback) {
