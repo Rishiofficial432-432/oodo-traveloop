@@ -3,6 +3,11 @@ const cors = require('cors');
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+// Setup Gemini AI
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || 'AIzaSyBo3lbRJb4DGzZjjNLIm6hrETLcIqyKn54';
+const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -97,6 +102,48 @@ app.get('/api/poi', async (req, res) => {
     } catch (err) {
         console.error('OTM API error:', err.message);
         res.status(500).json({ error: 'Failed to fetch POIs' });
+    }
+});
+
+app.get('/api/ai-suggestions', async (req, res) => {
+    try {
+        const city = req.query.city;
+        if (!city) return res.status(400).json({ error: 'City is required' });
+
+        if (!GEMINI_API_KEY) {
+            return res.json({ 
+                city, 
+                suggestions: [
+                    { name: "Eiffel Tower", description: "The iconic iron lady of Paris.", coords: [2.2945, 48.8584] },
+                    { name: "Louvre Museum", description: "World's largest art museum.", coords: [2.3376, 48.8606] }
+                ],
+                note: "Add GEMINI_API_KEY to enable live AI suggestions"
+            });
+        }
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const prompt = `Suggest 5 must-visit landmarks in ${city}. 
+        For each landmark, provide: 
+        1. name
+        2. short_description
+        3. latitude (number)
+        4. longitude (number)
+        
+        Return ONLY a JSON array of objects. No Markdown formatting, no extra text.
+        Example format: [{"name": "Landmark", "short_description": "Desc", "latitude": 48.8, "longitude": 2.2}]`;
+
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        let text = response.text();
+        
+        // Clean text in case Gemini adds markdown code blocks
+        text = text.replace(/```json|```/g, "").trim();
+        
+        const suggestions = JSON.parse(text);
+        res.json({ city, suggestions });
+    } catch (err) {
+        console.error('Gemini error:', err.message);
+        res.status(500).json({ error: 'AI generation failed' });
     }
 });
 

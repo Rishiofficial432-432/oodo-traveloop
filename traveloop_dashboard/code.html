@@ -141,7 +141,17 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 .dark .bg-off-white { background-color: #000000; }
 .dark .bg-pale-gray { background-color: #222222; color: #f3f4f6;}
 .dark header { background-color: #111111; border-color: #333333; }
-.dark nav { background-color: #111111 !important; border-color: #333333; }
+</style>
+
+<!-- Model Viewer for 3D Artifacts -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+<!-- Mapbox for 3D Interactive Map -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+
+<style>
+    .mapboxgl-canvas { outline: none !important; }
+    #map-3d { width: 100%; height: 100%; border-radius: 1rem; }
 </style>
 </head>
 <body class="bg-off-white font-['Inter'] text-deep-charcoal">
@@ -179,6 +189,65 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </button>
 </div>
 </section>
+
+<!-- 3D Interactive Map & Landmark Section -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-xl">
+    <!-- Map Container -->
+    <div class="lg:col-span-2 h-[450px] bg-pale-gray rounded-3xl overflow-hidden border border-divider-gray relative shadow-inner">
+        <div id="map-3d"></div>
+        <div class="absolute top-4 left-4 z-10 bg-white/90 backdrop-blur-md p-3 rounded-2xl border border-divider-gray shadow-sm">
+            <p class="text-xs font-bold uppercase tracking-widest text-purple-heritage mb-1">Live 3D View</p>
+            <p class="text-sm font-medium text-deep-charcoal" id="map-location-label">Exploring Paris, France</p>
+        </div>
+        <!-- Map Loading State -->
+        <div id="map-loader" class="absolute inset-0 bg-pale-gray flex flex-col items-center justify-center z-20 transition-opacity duration-500">
+            <span class="material-symbols-outlined animate-spin text-purple-heritage text-4xl mb-2">refresh</span>
+            <p class="text-neutral-charcoal font-medium">Initializing 3D Terrain...</p>
+        </div>
+    </div>
+
+    <!-- 3D Artifact / Model Viewer -->
+    <div class="bg-white rounded-3xl border border-divider-gray shadow-sm p-6 flex flex-col items-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-teal-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        
+        <div class="w-full mb-4">
+            <h3 class="text-lg font-bold text-deep-charcoal flex items-center gap-2">
+                <span class="material-symbols-outlined text-teal-primary">view_in_ar</span>
+                Landmark Artifact
+            </h3>
+            <p class="text-xs text-neutral-charcoal">Interactive 3D Miniature</p>
+        </div>
+
+        <!-- The 3D Model -->
+        <div class="flex-1 w-full flex items-center justify-center relative min-h-[250px]">
+            <model-viewer id="landmark-model"
+                src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
+                poster="https://modelviewer.dev/shared-assets/models/Astronaut.png"
+                alt="3D model of a landmark"
+                shadow-intensity="1"
+                camera-controls
+                auto-rotate
+                ar
+                style="width: 100%; height: 100%; min-height: 250px;"
+                class="cursor-grab active:cursor-grabbing">
+                
+                <div slot="poster" class="flex flex-col items-center justify-center text-neutral-charcoal opacity-50">
+                    <span class="material-symbols-outlined text-4xl mb-2">3d_rotation</span>
+                    <p class="text-sm">Click to rotate artifact</p>
+                </div>
+            </model-viewer>
+        </div>
+
+        <div class="w-full mt-4 pt-4 border-t border-divider-gray">
+            <h4 id="model-name" class="font-bold text-deep-charcoal">Eiffel Tower Miniature</h4>
+            <p id="model-desc" class="text-sm text-neutral-charcoal line-clamp-2">A high-fidelity 3D replica of the Iron Lady. Explore every detail in 3D or AR.</p>
+            <button class="w-full mt-4 py-2 bg-pale-gray text-deep-charcoal font-bold rounded-xl text-xs hover:bg-divider-gray transition-colors">
+                View in Augmented Reality (AR)
+            </button>
+        </div>
+    </div>
+</section>
+
 <!-- Most Recent Trip Card -->
 <section class="mt-xl">
 <div class="flex items-center justify-between mb-lg">
@@ -242,9 +311,9 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 <div class="flex gap-lg overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4">
 <!-- City Card 1 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="window.location.href='../explore/code.html'">
+<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Tokyo')">
 <div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="A vibrant night view of Tokyo's Shibuya Crossing, with neon lights reflecting off the pavement and skyscrapers towering into a deep blue night sky. The style is high-energy and modern, featuring electric teals and vibrant pinks. The composition is dynamic, suggesting the fast-paced and futuristic atmosphere of a tech-forward metropolis." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCSASFn4FBC0ByED9W86gCpAuoSTWRh_7x6fZngztuaGA01gpiSELHRlE9yMXFSKaazYFdTi1eNc8tP5WZMy94pvDBBnXMJLECHY3maEQ3KwnaoItY-ngsG5R1DyCkdzxhfvvvaIL5MazhkuWpCVGUYOLxxk_8PKmZtb6LGWk4xGR-JayrdhyWoPGtlFZNtkQVwBBYGJIFgi_yttFo412DQfxxJIO9wbq6_ZV4nk6CjCInqFNVyOzawBr1ryX_7ve0rSJdM0gEqICc");'></div>
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="A vibrant night view of Tokyo's Shibuya Crossing..." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCSASFn4FBC0ByED9W86gCpAuoSTWRh_7x6fZngztuaGA01gpiSELHRlE9yMXFSKaazYFdTi1eNc8tP5WZMy94pvDBBnXMJLECHY3maEQ3KwnaoItY-ngsG5R1DyCkdzxhfvvvaIL5MazhkuWpCVGUYOLxxk_8PKmZtb6LGWk4xGR-JayrdhyWoPGtlFZNtkQVwBBYGJIFgi_yttFo412DQfxxJIO9wbq6_ZV4nk6CjCInqFNVyOzawBr1ryX_7ve0rSJdM0gEqICc");'></div>
 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 <div class="absolute bottom-4 left-4 text-white">
 <h4 class="text-xl font-bold">Tokyo, Japan</h4>
@@ -253,9 +322,9 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 </div>
 <!-- City Card 2 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="window.location.href='../explore/code.html'">
+<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Venice')">
 <div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="A serene landscape of Venice's Grand Canal at sunrise, with traditional gondolas moored in the foreground and the silhouette of historic architecture against a golden, hazy sky. The lighting is soft and ethereal, emphasizing the timeless beauty and calm of the Italian city. The palette features warm ambers and soft teal waters." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCStXeNDBW9sv_imTl7abogBiMrc6bmR-I7kVUhSd6WRz54lhnd3hlooFE78IgC3cfBWdEenYepvuXitnWbfGfbFdNv03vsGjZx-XwICUSflTJeGTJ7Vju2TzYTvD-H6OAOCQ7IhLOo23YjmGMatKADddR7TjxdT31VXuIewRH_qvTyOnIhSPFzjvefLEloWyJRQXl4epYPhr13lB97w58i8-3fierS2jCsjrPwEz8NmCaieam9y0APQnag0uCcIhMCdr72xQJRKxg");'></div>
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="Venice Grand Canal..." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCStXeNDBW9sv_imTl7abogBiMrc6bmR-I7kVUhSd6WRz54lhnd3hlooFE78IgC3cfBWdEenYepvuXitnWbfGfbFdNv03vsGjZx-XwICUSflTJeGTJ7Vju2TzYTvD-H6OAOCQ7IhLOo23YjmGMatKADddR7TjxdT31VXuIewRH_qvTyOnIhSPFzjvefLEloWyJRQXl4epYPhr13lB97w58i8-3fierS2jCsjrPwEz8NmCaieam9y0APQnag0uCcIhMCdr72xQJRKxg");'></div>
 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 <div class="absolute bottom-4 left-4 text-white">
 <h4 class="text-xl font-bold">Venice, Italy</h4>
@@ -264,9 +333,9 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 </div>
 <!-- City Card 3 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="window.location.href='../explore/code.html'">
+<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Santorini')">
 <div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="A stunning view of Santorini's white-washed buildings with iconic blue domes perched on a cliff overlooking the deep blue Aegean Sea. The scene is bathed in brilliant, high-key midday Mediterranean sunlight. The overall aesthetic is clean, bright, and luxurious, perfectly matching the Traveloop brand's focus on elegant and memorable experiences." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1bYj3YrGXxHk-LC9vvVmDhB9FDsRcLbB715fZwx16qgPOG4a0RL38bGsdAbXbxeFHgDnZ-2MxkhgWexXCor-lSefPu1tH1as6nt8mO_-1H075Z5UQhv0gg2fiBS90RKJ-woOMURURhbjoS3X5Idd32RUvJ1-SAtM_Ygn4y6yavTkJ-RhzCnnm2IgZ92ieK1w8DIftsfZw1EHlp3JXqBxYCJZJ3gZUZEF0jqDwUo_a8-y8aXOB0jbr4c7qXpV-ohf_QUv-4Q4xEFc");'></div>
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="Santorini domes..." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1bYj3YrGXxHk-LC9vvVmDhB9FDsRcLbB715fZwx16qgPOG4a0RL38bGsdAbXbxeFHgDnZ-2MxkhgWexXCor-lSefPu1tH1as6nt8mO_-1H075Z5UQhv0gg2fiBS90RKJ-woOMURURhbjoS3X5Idd32RUvJ1-SAtM_Ygn4y6yavTkJ-RhzCnnm2IgZ92ieK1w8DIftsfZw1EHlp3JXqBxYCJZJ3gZUZEF0jqDwUo_a8-y8aXOB0jbr4c7qXpV-ohf_QUv-4Q4xEFc");'></div>
 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 <div class="absolute bottom-4 left-4 text-white">
 <h4 class="text-xl font-bold">Santorini, Greece</h4>
@@ -275,9 +344,9 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 </div>
 <!-- City Card 4 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="window.location.href='../explore/code.html'">
+<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Paris')">
 <div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="The Eiffel Tower standing majestically amidst autumn trees with golden leaves. The soft overcast lighting creates a sophisticated, moody atmosphere that highlights the intricate ironwork of the tower. The color palette is composed of muted browns, golds, and deep charcoal grays, aligning with a professional and classy travel UI." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8aQQ5myOU4colQLwRhIFoW5gplemN8LixOP7gcof7YcQoEhS1Mdkcm-4htVaVXTxq9pN5d_qd77bI2CXNOglYR_6y0fu6FmWX8_Phh4jSt26xCfETCZlHYnjv15TPoOFhSluCflvy62inKb2krV0wbeM8ilDEcObHvd8DYV8tEgWLWH4_x42SuaOEDXgY0VMr4TC-F9sZk3rUmMfRnemJwByxDw1TVxFzNc60qAzkeAeElKScLyCcDvP0BrC_v6T_aWMyZmfKKgM");'></div>
+<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" data-alt="Eiffel Tower at dusk..." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8aQQ5myOU4colQLwRhIFoW5gplemN8LixOP7gcof7YcQoEhS1Mdkcm-4htVaVXTxq9pN5d_qd77bI2CXNOglYR_6y0fu6FmWX8_Phh4jSt26xCfETCZlHYnjv15TPoOFhSluCflvy62inKb2krV0wbeM8ilDEcObHvd8DYV8tEgWLWH4_x42SuaOEDXgY0VMr4TC-F9sZk3rUmMfRnemJwByxDw1TVxFzNc60qAzkeAeElKScLyCcDvP0BrC_v6T_aWMyZmfKKgM");'></div>
 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
 <div class="absolute bottom-4 left-4 text-white">
 <h4 class="text-xl font-bold">Paris, France</h4>
@@ -345,4 +414,128 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     </nav>
 </div>
 </div>
-<script src="../global.js"></script></body></html>
+<script src="../global.js"></script>
+<script>
+    // 3D Mapbox Initialization
+    // Note: Using a public token for demonstration. In production, use your own restricted token.
+    mapboxgl.accessToken = 'pk.eyJ1IjoicmlzaGlvZmZpY2lhbCIsImEiOiJjbHF5NDZ5NHAwMGFtMmtzM3V6OXJzZ2F5In0.9H1r-5r8-6-7-8-9'; 
+    
+    let map;
+    
+    function initMap() {
+        try {
+            map = new mapboxgl.Map({
+                container: 'map-3d',
+                style: 'mapbox://styles/mapbox/satellite-streets-v12',
+                center: [2.2945, 48.8584], // Paris Eiffel Tower
+                zoom: 15.5,
+                pitch: 60,
+                bearing: -17.6,
+                antialias: true
+            });
+
+            map.on('style.load', () => {
+                // Add 3D building layer
+                map.addLayer({
+                    'id': 'add-3d-buildings',
+                    'source': 'composite',
+                    'source-layer': 'building',
+                    'filter': ['==', 'extrude', 'true'],
+                    'type': 'fill-extrusion',
+                    'minzoom': 15,
+                    'paint': {
+                        'fill-extrusion-color': '#aaa',
+                        'fill-extrusion-height': ['get', 'height'],
+                        'fill-extrusion-base': ['get', 'min_height'],
+                        'fill-extrusion-opacity': 0.6
+                    }
+                });
+
+                // Add 3D terrain
+                map.addSource('mapbox-dem', {
+                    'type': 'raster-dem',
+                    'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
+                    'tileSize': 512,
+                    'maxzoom': 14
+                });
+                map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
+
+                document.getElementById('map-loader').classList.add('opacity-0', 'pointer-events-none');
+            });
+        } catch (e) {
+            console.error("Mapbox failed to load:", e);
+            document.getElementById('map-loader').innerHTML = '<p class="text-error-red">Map failed to load. Check API key.</p>';
+        }
+    }
+
+    // Function to switch location and 3D Artifact
+    window.updateExplorerView = function(city) {
+        const locations = {
+            'Paris': {
+                coords: [2.2945, 48.8584],
+                model: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder for Eiffel
+                name: 'Eiffel Tower Miniature',
+                desc: 'A high-fidelity 3D replica of the Iron Lady in Paris.'
+            },
+            'Tokyo': {
+                coords: [139.7671, 35.6812],
+                model: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder for Tokyo Tower
+                name: 'Tokyo Tower Miniature',
+                desc: 'The iconic communications and observation tower in the Minato district.'
+            },
+            'Santorini': {
+                coords: [25.4615, 36.3932],
+                model: 'https://modelviewer.dev/shared-assets/models/Astronaut.glb', // Placeholder for Blue Dome
+                name: 'Oia Blue Dome',
+                desc: 'The world-famous blue-domed church overlooking the caldera.'
+            }
+        };
+
+        const loc = locations[city];
+        if (!loc) return;
+
+        // Update Map
+        if (map) {
+            map.flyTo({ center: loc.coords, zoom: 16, pitch: 65, duration: 3000 });
+        }
+
+        // Update Model Viewer
+        const mv = document.getElementById('landmark-model');
+        mv.src = loc.model;
+        document.getElementById('model-name').innerText = loc.name;
+        document.getElementById('model-desc').innerText = loc.desc;
+        document.getElementById('map-location-label').innerText = `Exploring ${city}`;
+    };
+
+    initMap();
+
+    // Handle URL Parameters for direct 3D Navigation
+    window.addEventListener('load', () => {
+        const params = new URLSearchParams(window.location.search);
+        const lat = parseFloat(params.get('lat'));
+        const lon = parseFloat(params.get('lon'));
+        const name = params.get('name');
+        const city = params.get('city');
+
+        if (!isNaN(lat) && !isNaN(lon)) {
+            // Wait for map to be ready
+            const checkMap = setInterval(() => {
+                if (map && map.loaded()) {
+                    clearInterval(checkMap);
+                    map.flyTo({
+                        center: [lon, lat],
+                        zoom: 16,
+                        pitch: 65,
+                        duration: 4000
+                    });
+                    
+                    // Update UI labels
+                    if (name) document.getElementById('model-name').innerText = name;
+                    if (city) document.getElementById('map-location-label').innerText = `Exploring ${city}`;
+                    document.getElementById('model-desc').innerText = `Live 3D view of ${name || 'your destination'}.`;
+                }
+            }, 500);
+        }
+    });
+</script>
+</body></html>
