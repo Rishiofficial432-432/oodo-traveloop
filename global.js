@@ -1,28 +1,35 @@
-// Backend API URLs
-const API_URL = '/api/trips';
-
+// Database Operations using Supabase
 async function getTrips() {
     try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('Network response was not ok');
-        return await res.json();
+        const { data, error } = await window.supabaseClient
+            .from('trips')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        return data || [];
     } catch (err) {
-        console.error('Failed to fetch trips:', err);
+        console.error('Failed to fetch trips from Supabase:', err);
         return [];
     }
 }
 
 async function saveTrip(trip) {
     try {
-        const res = await fetch(API_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(trip)
-        });
-        if (!res.ok) throw new Error('Network response was not ok');
-        return await res.json();
+        // Get current user ID for ownership
+        const { data: { user } } = await window.supabaseClient.auth.getUser();
+        if (!user) throw new Error('You must be logged in to save trips');
+
+        const { data, error } = await window.supabaseClient
+            .from('trips')
+            .insert([{ ...trip, user_id: user.id }])
+            .select();
+
+        if (error) throw error;
+        return data[0];
     } catch (err) {
-        console.error('Failed to save trip:', err);
+        console.error('Failed to save trip to Supabase:', err);
+        alert('Error saving trip: ' + err.message);
     }
 }
 
