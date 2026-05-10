@@ -412,14 +412,14 @@ function loadFirebaseScripts(callback) {
 }
 
 // 2. YOUR FIREBASE CONFIGURATION
-// ⚠️ REPLACE THIS OBJECT WITH YOUR ACTUAL FIREBASE CONFIG ⚠️
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAwdMf_z7LvbCRf9pTd3dV0zZqHA3tkjw0",
+  authDomain: "traveloop-3cc59.firebaseapp.com",
+  projectId: "traveloop-3cc59",
+  storageBucket: "traveloop-3cc59.firebasestorage.app",
+  messagingSenderId: "602600395669",
+  appId: "1:602600395669:web:6b7e0fb03508a608565c9c",
+  measurementId: "G-ZLZ7ZFY1NS"
 };
 
 // 3. INITIALIZE FIREBASE & AUTH LISTENER
