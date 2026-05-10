@@ -55,24 +55,34 @@ async function saveTrip(trip) {
 
 async function uploadMedia(file) {
     try {
+        console.log("Starting upload for:", file.name);
         const fileExt = file.name.split('.').pop();
-        const fileName = `${Math.random()}.${fileExt}`;
+        // Create a more unique file name
+        const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 15)}.${fileExt}`;
         const filePath = `uploads/${fileName}`;
 
         const { data, error } = await window.supabaseClient.storage
             .from('trip-media')
-            .upload(filePath, file);
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false
+            });
 
-        if (error) throw error;
+        if (error) {
+            console.error("Supabase Storage Error:", error);
+            throw error;
+        }
 
+        console.log("File uploaded successfully, getting public URL...");
         const { data: { publicUrl } } = window.supabaseClient.storage
             .from('trip-media')
             .getPublicUrl(filePath);
 
+        console.log("Public URL generated:", publicUrl);
         return publicUrl;
     } catch (err) {
-        console.error('Upload failed:', err);
-        throw err;
+        console.error('Detailed Upload Failure:', err);
+        throw new Error(`Media upload failed: ${err.message || 'Check bucket name and permissions'}`);
     }
 }
 
