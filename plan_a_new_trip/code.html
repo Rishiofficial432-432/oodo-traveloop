@@ -242,4 +242,81 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </div>
 </main>
 <!-- Navigation is excluded from Create Trip flow as per "The Relevance Test" rule for Focused Views -->
-<script src="../global.js"></script></body></html>
+<script src="../global.js"></script>
+<script>
+    let selectedMediaUrl = null;
+
+    // Handle Media Selection
+    const uploadArea = document.getElementById('upload-area');
+    const mediaInput = document.getElementById('media-input');
+    const imagePreview = document.getElementById('image-preview');
+    const videoPreview = document.getElementById('video-preview');
+    const placeholder = document.getElementById('upload-placeholder');
+
+    uploadArea.addEventListener('click', () => mediaInput.click());
+
+    mediaInput.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Use the global uploadMedia function (which returns local blob URL)
+        selectedMediaUrl = await uploadMedia(file);
+
+        if (file.type.startsWith('image/')) {
+            imagePreview.src = selectedMediaUrl;
+            imagePreview.classList.remove('hidden');
+            videoPreview.classList.add('hidden');
+        } else if (file.type.startsWith('video/')) {
+            videoPreview.src = selectedMediaUrl;
+            videoPreview.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+        }
+        placeholder.classList.add('opacity-0');
+    });
+
+    // Handle Create Trip
+    const createBtn = document.getElementById('create-trip-btn');
+    createBtn.addEventListener('click', async () => {
+        const name = document.getElementById('trip-name').value.trim();
+        const desc = document.getElementById('trip-desc').value.trim();
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+
+        if (!name) {
+            alert('Please enter a trip name.');
+            return;
+        }
+
+        createBtn.disabled = true;
+        createBtn.innerHTML = '<span class="material-symbols-outlined animate-spin">refresh</span> <span>Saving...</span>';
+
+        const newTrip = {
+            name: name,
+            description: desc,
+            date: `${startDate} - ${endDate}`,
+            status: 'Upcoming',
+            image_url: selectedMediaUrl,
+            poi: []
+        };
+
+        const result = await saveTrip(newTrip);
+        if (result) {
+            window.location.href = '../my_trips/code.html';
+        } else {
+            createBtn.disabled = false;
+            createBtn.innerHTML = '<span class="material-symbols-outlined">save</span> <span>Create Trip</span>';
+        }
+    });
+
+    // Update range text dynamically
+    const startInput = document.getElementById('start-date');
+    const endInput = document.getElementById('end-date');
+    const rangeText = document.getElementById('selected-date-range');
+
+    function updateRange() {
+        rangeText.innerText = `${startInput.value} - ${endInput.value}`;
+    }
+    startInput.addEventListener('change', updateRange);
+    endInput.addEventListener('change', updateRange);
+</script>
+</body></html>

@@ -252,54 +252,76 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     </div>
 </section>
 
-<!-- Most Recent Trip Card -->
-<section class="mt-xl">
-<div class="flex items-center justify-between mb-lg">
-<h2 class="text-deep-charcoal text-heading-h4 font-bold">Upcoming Trip</h2>
-<a class="text-purple-heritage font-semibold hover:underline flex items-center gap-1" href="../my_trips/code.html">
-                        View all trips <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-</a>
-</div>
-<div class="bg-white rounded-xl border border-divider-gray shadow-[0px_3px_6px_0px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)]">
-<div class="md:w-1/3 h-64 md:h-auto relative">
-<div class="absolute inset-0 bg-center bg-cover" data-alt="A wide panoramic view of the Eiffel Tower at dusk, with the Parisian city lights beginning to sparkle beneath a soft pink and lavender sky. The lighting is cinematic and romantic, capturing the essence of a sophisticated European getaway. The visual style is crisp and modern, aligned with high-end travel publication standards." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCRYZXoXpjEkoMSr-pMEiKO4prqVK-50pWyKTH8j4n_3fzYpvh-B1HB2uAD17Mtg6UaA5RUiVG0lDcR-DEI6MVKTXMIIg-qSppl9qyrT_NXngP9xYdk18S86Wh9VjlnRHHLpVHyZtJQNUoxrIy1pOGq1jsWivZqMDQLvcpkclax09_K8aZptWiorkhBDbBTTTfoqjQ55sREcPHDAHETGuxdlXcwGnS7YdyW0kHNFdwkZGdGF-8QK1oSyD-d3lRMl-OfzJPA9ImjO6Y");'></div>
-<div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-purple-heritage uppercase tracking-wider">
-                            In 12 Days
-                        </div>
-</div>
-<div class="p-lg flex-1 flex flex-col justify-between">
-<div>
-<div class="flex justify-between items-start">
-<h3 class="text-[28px] font-bold text-deep-charcoal">Paris Romance &amp; Arts</h3>
-<span class="bg-success-green/10 text-success-green px-3 py-1 rounded text-sm font-semibold">Active</span>
-</div>
-<p class="text-neutral-charcoal mt-2 flex items-center gap-2">
-<span class="material-symbols-outlined text-[18px]">calendar_today</span>
-                                Oct 14 - Oct 22, 2023 (8 Days)
-                            </p>
-<!-- Budget Highlights -->
-<div class="mt-lg grid grid-cols-1 sm:grid-cols-3 gap-lg border-t border-divider-gray pt-lg">
-<div class="flex flex-col">
-<span class="text-sm text-neutral-charcoal font-medium">Total Budget</span>
-<span class="text-xl font-bold text-deep-charcoal">$3,500.00</span>
-</div>
-<div class="flex flex-col">
-<span class="text-sm text-neutral-charcoal font-medium">Spent So Far</span>
-<span class="text-xl font-bold text-teal-primary">$1,240.00</span>
-</div>
-<div class="flex flex-col">
-<span class="text-sm text-neutral-charcoal font-medium">Remaining</span>
-<span class="text-xl font-bold text-purple-heritage">$2,260.00</span>
-</div>
-</div>
-</div>
-<div class="mt-lg flex gap-3">
-<button class="flex-1 bg-pale-gray text-purple-heritage font-bold py-3 rounded hover:bg-divider-gray transition-colors text-button-reg cursor-pointer" onclick="window.location.href='../itinerary_builder/code.html'">Edit Itinerary</button>
-<button class="flex-1 bg-purple-heritage text-white font-bold py-3 rounded hover:bg-purple-dark transition-colors shadow-sm text-button-reg cursor-pointer" onclick="window.location.href='../traveloop_dashboard/code.html'">Trip Dashboard</button>
-</div>
-</div>
-</div>
+<!-- Most Recent Trip Section -->
+<section id="upcoming-trip-section" class="mt-xl">
+    <!-- Dynamic content will be injected here -->
 </section>
+
+<script>
+    async function updateDashboardTrip() {
+        const section = document.getElementById('upcoming-trip-section');
+        const trips = await getTrips();
+        
+        if (trips.length === 0) {
+            section.innerHTML = `
+                <div class="bg-white rounded-xl border border-divider-gray p-12 text-center flex flex-col items-center gap-4">
+                    <div class="size-20 rounded-full bg-pale-gray flex items-center justify-center text-neutral-charcoal">
+                        <span class="material-symbols-outlined" style="font-size: 40px;">explore</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-deep-charcoal">No trips planned yet</h2>
+                        <p class="text-neutral-charcoal">Your next adventure is just a few clicks away.</p>
+                    </div>
+                    <button onclick="window.location.href='../plan_a_new_trip/code.html'" class="mt-4 px-8 py-3 bg-purple-heritage text-white font-bold rounded-xl shadow-md hover:bg-purple-dark transition-all cursor-pointer">
+                        Start Planning
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        // Get the most recent upcoming trip
+        const trip = trips[0]; // trips are sorted by ID desc or date
+        const coverImage = trip.image_url || 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=1000';
+        
+        section.innerHTML = `
+            <div class="flex items-center justify-between mb-lg">
+                <h2 class="text-deep-charcoal text-heading-h4 font-bold">Upcoming Trip</h2>
+                <a class="text-purple-heritage font-semibold hover:underline flex items-center gap-1" href="../my_trips/code.html">
+                    View all trips <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                </a>
+            </div>
+            <div class="bg-white rounded-xl border border-divider-gray shadow-[0px_3px_6px_0px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)]">
+                <div class="md:w-1/3 h-64 md:h-auto relative">
+                    <div class="absolute inset-0 bg-center bg-cover" style='background-image: url("${coverImage}");'></div>
+                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-purple-heritage uppercase tracking-wider">
+                        ${trip.status || 'Upcoming'}
+                    </div>
+                </div>
+                <div class="p-lg flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-[28px] font-bold text-deep-charcoal">${trip.name}</h3>
+                            <span class="bg-success-green/10 text-success-green px-3 py-1 rounded text-sm font-semibold">Active</span>
+                        </div>
+                        <p class="text-neutral-charcoal mt-2 flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                            ${trip.date || 'Flexible Dates'}
+                        </p>
+                        <p class="text-sm text-neutral-charcoal mt-4 line-clamp-3">${trip.description || 'No description yet.'}</p>
+                    </div>
+                    <div class="mt-lg flex gap-3">
+                        <button class="flex-1 bg-pale-gray text-purple-heritage font-bold py-3 rounded hover:bg-divider-gray transition-colors text-button-reg cursor-pointer" onclick="alert('Edit logic coming soon!')">Edit Itinerary</button>
+                        <button class="flex-1 bg-purple-heritage text-white font-bold py-3 rounded hover:bg-purple-dark transition-colors shadow-sm text-button-reg cursor-pointer" onclick="window.location.reload()">Trip Dashboard</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', updateDashboardTrip);
+    subscribeToTable('trips', updateDashboardTrip);
+</script>
 <!-- Popular Cities / Recommended -->
 <section class="pt-xl pb-section-v">
 <div class="flex items-center justify-between mb-lg">
@@ -424,23 +446,45 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     let map;
     
     function initMap() {
-        console.log("Initializing Open Source Map...");
+        console.log("Initializing open-source 3D Map...");
         const loader = document.getElementById('map-loader');
         
         try {
             map = new maplibregl.Map({
                 container: 'map-3d',
-                // Using a super-reliable open style from MapLibre's own demo server
-                style: 'https://demotiles.maplibre.org/style.json', 
+                // Using a rich, beautiful OpenStreetMap-based style
+                style: 'https://tiles.openfreemap.org/styles/bright', 
                 center: [2.2945, 48.8584], 
                 zoom: 12,
-                pitch: 45,
+                pitch: 60,
                 bearing: 0,
                 antialias: true
             });
 
             map.on('load', () => {
-                console.log("MapLibre loaded successfully!");
+                console.log("MapLibre loaded with 3D Terrain!");
+                
+                // Add 3D Terrain Source
+                map.addSource('terrain', {
+                    type: 'raster-dem',
+                    url: 'https://demotiles.maplibre.org/terrain-tiles/tiles.json',
+                    tileSize: 256
+                });
+
+                // Enable Terrain
+                map.setTerrain({ source: 'terrain', exaggeration: 1.5 });
+
+                // Add Sky Layer for better 3D atmosphere
+                map.addLayer({
+                    'id': 'sky',
+                    'type': 'sky',
+                    'paint': {
+                        'sky-type': 'atmosphere',
+                        'sky-atmosphere-sun': [0.0, 0.0],
+                        'sky-atmosphere-sun-intensity': 15
+                    }
+                });
+
                 if (loader) {
                     loader.classList.add('opacity-0');
                     setTimeout(() => loader.remove(), 500);
@@ -449,7 +493,7 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 
             map.on('error', (e) => {
                 console.error("MapLibre error:", e);
-                if (loader) loader.innerHTML = `<p class="text-white/50 text-xs">Offline Map Mode</p>`;
+                if (loader) loader.innerHTML = `<p class="text-neutral-charcoal text-xs">Error loading map style</p>`;
             });
         } catch (e) {
             console.error("MapLibre failed:", e);
@@ -498,8 +542,6 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
         document.getElementById('model-desc').innerText = loc.desc;
         document.getElementById('map-location-label').innerText = `Exploring ${city}`;
     };
-
-    initMap();
 
     // Handle URL Parameters for direct 3D Navigation
     window.addEventListener('load', () => {

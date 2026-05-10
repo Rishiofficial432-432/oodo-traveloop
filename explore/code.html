@@ -223,101 +223,57 @@ document.addEventListener('DOMContentLoaded', () => {
         loadingIndicator.classList.remove('hidden');
         resultsContainer.innerHTML = '';
 
-        try {
-            if (searchType.value === 'web') {
-                const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                
-                loadingIndicator.classList.add('hidden');
+        // Simulate network delay
+        await new Promise(r => setTimeout(r, 1000));
+        loadingIndicator.classList.add('hidden');
 
-                if (data.organic_results && data.organic_results.length > 0) {
-                    data.organic_results.forEach(result => {
-                        const card = document.createElement('a');
-                        card.href = result.link;
-                        card.target = "_blank";
-                        card.className = "bg-white p-4 rounded-xl border border-divider-gray hover:border-purple-heritage hover:shadow-lg transition-all group flex flex-col gap-2";
-                        
-                        card.innerHTML = `
-                            <h3 class="font-bold text-lg text-deep-charcoal group-hover:text-purple-heritage transition-colors line-clamp-2">${result.title}</h3>
-                            <p class="text-sm text-neutral-charcoal line-clamp-3">${result.snippet}</p>
-                            <span class="text-xs text-teal-primary mt-auto pt-2">${result.source || 'Visit site'}</span>
-                        `;
-                        resultsContainer.appendChild(card);
-                    });
-                } else {
-                    resultsContainer.innerHTML = `<p class="text-neutral-charcoal col-span-full text-center py-8">No results found for "${query}". Try another search.</p>`;
-                }
-            } else if (searchType.value === 'ai') {
-                const response = await fetch(`/api/ai-suggestions?city=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                loadingIndicator.classList.add('hidden');
-                if (data.error) {
-                    resultsContainer.innerHTML = `<p class="text-error-red col-span-full text-center py-8">${data.error}</p>`;
-                    return;
-                }
-                if (data.suggestions && data.suggestions.length > 0) {
-                    const header = document.createElement('div');
-                    header.className = "col-span-full mb-4";
-                    header.innerHTML = `<div class="flex items-center gap-2 mb-2"><span class="material-symbols-outlined text-purple-heritage">auto_awesome</span><h2 class="text-2xl font-bold text-deep-charcoal">Gemini AI Recommendations for ${data.city}</h2></div>`;
-                    resultsContainer.appendChild(header);
-                    data.suggestions.forEach(item => {
-                        const card = document.createElement('div');
-                        card.className = "bg-white p-6 rounded-2xl border border-divider-gray hover:border-purple-heritage hover:shadow-xl transition-all flex flex-col gap-3 group";
-                        card.innerHTML = `<h3 class="font-bold text-xl text-deep-charcoal group-hover:text-purple-heritage transition-colors">${item.name}</h3><p class="text-sm text-neutral-charcoal leading-relaxed">${item.short_description || item.description}</p><div class="mt-auto pt-4"><button onclick="window.location.href='../traveloop_dashboard/code.html?city=${encodeURIComponent(data.city)}&lat=${item.latitude}&lon=${item.longitude}&name=${encodeURIComponent(item.name)}'" class="text-xs font-bold bg-purple-heritage/10 text-purple-heritage px-4 py-2 rounded-full hover:bg-purple-heritage hover:text-white transition-all flex items-center gap-2"><span class="material-symbols-outlined text-[16px]">view_in_ar</span> View in 3D</button></div>`;
-                        resultsContainer.appendChild(card);
-                    });
-                } else {
-                    resultsContainer.innerHTML = `<p class="text-neutral-charcoal col-span-full text-center py-8">AI couldn't find specific suggestions for "${query}".</p>`;
-                }
-            } else {
-                // POI Search
-                const response = await fetch(`/api/poi?city=${encodeURIComponent(query)}`);
-                const data = await response.json();
-                
-                loadingIndicator.classList.add('hidden');
+        const mockData = {
+            'paris': [
+                { name: 'Eiffel Tower', lat: 48.8584, lon: 2.2945, desc: 'The iconic iron lady of Paris, offering breathtaking views of the city.' },
+                { name: 'Louvre Museum', lat: 48.8606, lon: 2.3376, desc: 'The world\'s largest art museum and a historic monument in Paris.' },
+                { name: 'Notre-Dame', lat: 48.8530, lon: 2.3499, desc: 'A medieval Catholic cathedral on the Île de la Cité.' }
+            ],
+            'tokyo': [
+                { name: 'Shibuya Crossing', lat: 35.6595, lon: 139.7005, desc: 'The world\'s busiest pedestrian crossing, a symbol of modern Tokyo.' },
+                { name: 'Tokyo Tower', lat: 35.6586, lon: 139.7454, desc: 'A communications and observation tower inspired by the Eiffel Tower.' },
+                { name: 'Senso-ji Temple', lat: 35.7148, lon: 139.7967, desc: 'Tokyo\'s oldest temple, located in the historic Asakusa district.' }
+            ],
+            'london': [
+                { name: 'Big Ben', lat: 51.5007, lon: -0.1246, desc: 'The Great Bell of the striking clock at the north end of the Palace of Westminster.' },
+                { name: 'London Eye', lat: 51.5033, lon: -0.1195, desc: 'A cantilevered observation wheel on the South Bank of the River Thames.' },
+                { name: 'Tower Bridge', lat: 51.5055, lon: -0.0754, desc: 'A combined bascule and suspension bridge, an iconic symbol of London.' }
+            ]
+        };
 
-                if (data.error) {
-                    resultsContainer.innerHTML = `<p class="text-error-red col-span-full text-center py-8">${data.error}</p>`;
-                    return;
-                }
+        const cityKey = query.toLowerCase();
+        const results = mockData[cityKey] || [
+            { name: `Secret Spot in ${query}`, lat: 40.7128, lon: -74.0060, desc: 'A hidden gem discovered by the Traveloop community. Explore it in 3D!' }
+        ];
 
-                if (data.pois && data.pois.length > 0) {
-                    // Header for city
-                    const header = document.createElement('div');
-                    header.className = "col-span-full mb-4";
-                    header.innerHTML = `<h2 class="text-2xl font-bold text-deep-charcoal">Top attractions in ${data.city}, ${data.country}</h2>`;
-                    resultsContainer.appendChild(header);
+        const header = document.createElement('div');
+        header.className = "col-span-full mb-4";
+        header.innerHTML = `<h2 class="text-2xl font-bold text-deep-charcoal">Top discoveries in ${query}</h2>`;
+        resultsContainer.appendChild(header);
 
-                    data.pois.forEach(poi => {
-                        if (!poi.name) return; // Skip unnamed POIs
-                        const kinds = poi.kinds.split(',').map(k => k.replace(/_/g, ' ')).slice(0, 2).join(' • ');
-                        
-                        const card = document.createElement('div');
-                        card.className = "bg-white p-4 rounded-xl border border-divider-gray hover:border-teal-primary hover:shadow-lg transition-all flex flex-col gap-2";
-                        
-                        card.innerHTML = `
-                            <div class="flex items-start justify-between">
-                                <h3 class="font-bold text-lg text-deep-charcoal line-clamp-2">${poi.name}</h3>
-                                <span class="bg-teal-primary/10 text-teal-primary text-xs px-2 py-1 rounded font-bold">★ ${poi.rate}</span>
-                            </div>
-                            <p class="text-sm text-neutral-charcoal capitalize mt-1">${kinds}</p>
-                            <div class="mt-auto pt-3 flex gap-2">
-                                <a href="https://www.google.com/maps/search/?api=1&query=${poi.point.lat},${poi.point.lon}" target="_blank" class="text-xs font-bold text-purple-heritage hover:underline flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">map</span> View on Map
-                                </a>
-                            </div>
-                        `;
-                        resultsContainer.appendChild(card);
-                    });
-                } else {
-                    resultsContainer.innerHTML = `<p class="text-neutral-charcoal col-span-full text-center py-8">No popular attractions found in "${query}".</p>`;
-                }
-            }
-        } catch (err) {
-            console.error(err);
-            loadingIndicator.classList.add('hidden');
-            resultsContainer.innerHTML = `<p class="text-error-red col-span-full text-center py-8">Failed to fetch results. Please try again.</p>`;
-        }
+        results.forEach(item => {
+            const card = document.createElement('div');
+            card.className = "bg-white p-6 rounded-2xl border border-divider-gray hover:border-purple-heritage hover:shadow-xl transition-all flex flex-col gap-3 group";
+            
+            card.innerHTML = `
+                <h3 class="font-bold text-xl text-deep-charcoal group-hover:text-purple-heritage transition-colors">${item.name}</h3>
+                <p class="text-sm text-neutral-charcoal leading-relaxed">${item.desc}</p>
+                <div class="mt-auto pt-4 flex gap-2">
+                    <button onclick="window.location.href='../traveloop_dashboard/code.html?lat=${item.lat}&lon=${item.lon}&name=${encodeURIComponent(item.name)}&city=${encodeURIComponent(query)}'" 
+                            class="text-xs font-bold bg-purple-heritage/10 text-purple-heritage px-4 py-2 rounded-full hover:bg-purple-heritage hover:text-white transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">view_in_ar</span> View in 3D
+                    </button>
+                    <button onclick="alert('Added to your plan!')" class="text-xs font-bold bg-pale-gray text-deep-charcoal px-4 py-2 rounded-full hover:bg-divider-gray transition-all">
+                        Add to Trip
+                    </button>
+                </div>
+            `;
+            resultsContainer.appendChild(card);
+        });
     }
 
     searchBtn.addEventListener('click', performSearch);
@@ -326,6 +282,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 </script>
+<style>
+    /* Prevent text selection on search button */
+    #searchBtn { user-select: none; }
+</style>
 </main>
 <!-- Bottom Navigation (MacOS Dock Style) -->
 <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">

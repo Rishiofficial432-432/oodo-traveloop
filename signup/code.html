@@ -67,7 +67,6 @@
                         <span id="eye-icon" class="material-symbols-outlined">visibility</span>
                     </button>
                 </div>
-            </div>
 
             <div class="flex items-start gap-3 py-2">
                 <input class="mt-1 size-5 rounded border-border-subtle text-purple-heritage focus:ring-purple-heritage" id="terms" type="checkbox" required/>
@@ -154,15 +153,15 @@
             alert("Sign Up Failed: " + error.message);
             btn.disabled = false;
             btn.innerHTML = 'Create Account';
-        }
-        if (data.user) {
+        } else {
+            // Frictionless: Redirect immediately to hero (which will then go to dashboard)
             window.location.href = "../hero/code.html";
         }
     });
 
-    // Google Sign Up Logic
+    // Google Login Logic
     window.signInWithGoogle = async function() {
-        const btn = document.getElementById('google-signup-btn');
+        const btn = document.getElementById('google-signin-btn');
         const originalContent = btn.innerHTML;
         btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">refresh</span> Connecting...';
         btn.classList.add('opacity-70', 'pointer-events-none');
@@ -175,9 +174,27 @@
         });
 
         if (error) {
-            alert("Google Sign In Failed: " + error.message);
+            alert("Google Login Failed: " + error.message);
             btn.innerHTML = originalContent;
             btn.classList.remove('opacity-70', 'pointer-events-none');
+        }
+    };
+
+    window.handleForgotPassword = async function() {
+        const email = document.getElementById('email').value;
+        if (!email) {
+            alert("Please enter your email address first.");
+            return;
+        }
+        
+        const { error } = await window.supabaseClient.auth.resetPasswordForEmail(email, {
+            redirectTo: window.location.origin + '/auth/code.html',
+        });
+
+        if (error) {
+            alert("Error: " + error.message);
+        } else {
+            alert("Password reset email sent! Check your inbox.");
         }
     };
 </script>

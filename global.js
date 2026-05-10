@@ -71,6 +71,18 @@ async function saveTrip(trip) {
     }
 }
 
+async function deleteTrip(tripId) {
+    try {
+        await db.trips.delete(Number(tripId));
+        console.log("Trip deleted from Local DB:", tripId);
+        localDataEvents.dispatchEvent(new Event('tripsChanged'));
+        return true;
+    } catch (err) {
+        console.error('Failed to delete trip:', err);
+        return false;
+    }
+}
+
 async function uploadMedia(file) {
     // For local storage, we just return the file blob URL
     // or we can convert to a permanent blob in the DB
