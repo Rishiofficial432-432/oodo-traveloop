@@ -103,8 +103,14 @@
 </header>
 
 <!-- HERO -->
-<section class="relative hero-bg min-h-[640px] flex items-center">
-  <div class="max-w-7xl mx-auto px-4 md:px-10 w-full py-20">
+<section class="relative hero-bg min-h-[640px] flex items-center overflow-hidden">
+  <!-- Background Video -->
+  <video class="absolute inset-0 w-full h-full object-cover bg-deep-charcoal" autoplay loop muted playsinline style="filter: brightness(0.65);">
+    <source src="assets/hero_bg.mp4" type="video/mp4">
+  </video>
+  <div class="absolute inset-0 bg-gradient-to-b from-black/15 to-black/55 pointer-events-none"></div>
+
+  <div class="relative z-10 max-w-7xl mx-auto px-4 md:px-10 w-full py-20">
     <div class="max-w-2xl">
       <p class="text-white/80 text-sm font-semibold uppercase tracking-[0.2em] mb-4">Hotel &amp; Cafe</p>
       <h1 class="text-white text-5xl md:text-7xl font-bold leading-[1.05] mb-6">
@@ -126,7 +132,7 @@
   </div>
 
   <!-- LIVE WEATHER STRIP -->
-  <div id="weather-strip" data-state="loading" class="weather-strip absolute bottom-6 left-4 right-4 md:left-10 md:right-auto md:w-auto rounded-lg px-5 py-3 flex items-center gap-4 shadow-lg">
+  <div id="weather-strip" data-state="loading" class="weather-strip absolute bottom-6 left-4 right-4 md:left-10 md:right-auto md:w-auto rounded-lg px-5 py-3 flex items-center gap-4 shadow-lg z-10">
     <span id="weather-icon" class="material-symbols-outlined text-3xl text-teal-primary">thermostat</span>
     <div>
       <p class="weather-place text-xs font-semibold uppercase tracking-wide text-neutral-charcoal" id="weather-place">
@@ -502,6 +508,23 @@ document.addEventListener('DOMContentLoaded', () => {
       result.classList.remove('hidden');
     }
   });
+
+  // Video Force-Play & Status Check
+  const heroVideo = document.querySelector('video');
+  if (heroVideo) {
+    heroVideo.addEventListener('loadedmetadata', () => {
+      heroVideo.play().catch(e => console.log("Autoplay prevented, waiting for interaction."));
+    });
+    
+    // Backup: Try playing every 500ms until successful
+    const playInterval = setInterval(() => {
+      if (heroVideo.paused) {
+        heroVideo.play().then(() => clearInterval(playInterval)).catch(() => {});
+      } else {
+        clearInterval(playInterval);
+      }
+    }, 500);
+  }
 });
 </script>
 </body>
