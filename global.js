@@ -68,8 +68,9 @@ if (window.supabase) {
 
 // Initialize Local Browser Database (Dexie.js)
 const db = new Dexie("TraveloopDB");
-db.version(1).stores({
-    trips: '++id, user_id, name, date, created_at'
+db.version(2).stores({
+    trips: '++id, user_id, name, date, created_at',
+    bookings: '++id, user_id, room_type, checkin, checkout, guests, status, created_at'
 });
 
 // Database Operations using Local Browser DB

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Odoo Cafe Admin Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed-dim": "#78d5db",
+                      "surface-container": "#e5eeff",
+                      "outline": "#80747a",
+                      "inverse-surface": "#27313e",
+                      "background": "#f8f9ff",
+                      "secondary-fixed": "#95f1f8",
+                      "on-error": "#ffffff",
+                      "inverse-on-surface": "#eaf1ff",
+                      "surface-container-high": "#dfe9fa",
+                      "secondary-container": "#92eff5",
+                      "on-tertiary-container": "#cbcdce",
+                      "error": "#ba1a1a",
+                      "on-tertiary-fixed": "#191c1d",
+                      "on-background": "#121c28",
+                      "on-secondary-fixed-variant": "#004f53",
+                      "surface-variant": "#d9e3f4",
+                      "primary-fixed": "#ffd7f1",
+                      "on-surface": "#121c28",
+                      "on-primary-container": "#f0bfe0",
+                      "surface": "#f8f9ff",
+                      "on-surface-variant": "#4e444a",
+                      "inverse-primary": "#e9b8d9",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed": "#e1e3e4",
+                      "primary-container": "#714b67",
+                      "on-primary-fixed-variant": "#5f3b56",
+                      "on-primary-fixed": "#2f1029",
+                      "on-secondary-fixed": "#002022",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#e9b8d9",
+                      "surface-tint": "#79526f",
+                      "surface-container-highest": "#d9e3f4",
+                      "surface-container-lowest": "#ffffff",
+                      "tertiary": "#3d4041",
+                      "secondary": "#00696e",
+                      "primary": "#57344f",
+                      "tertiary-container": "#555758",
+                      "on-secondary-container": "#006e73",
+                      "surface-bright": "#f8f9ff",
+                      "on-tertiary": "#ffffff",
+                      "outline-variant": "#d1c3ca",
+                      "surface-dim": "#d1dbec",
+                      "on-tertiary-fixed-variant": "#454748",
+                      "surface-container-low": "#eef4ff",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed-dim": "#c5c7c8",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "xs": "4px",
+                      "md": "16px",
+                      "margin-mobile": "16px",
+                      "gutter": "16px",
+                      "sm": "8px",
+                      "base": "4px",
+                      "xl": "32px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "display-brand": ["Caveat"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                      "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                      "display-brand": ["40px", { "lineHeight": "48px", "fontWeight": "700" }],
+                      "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                      "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                      "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: #f8f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        /* Simple animation for charts */
+        @keyframes drawLine { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+        .chart-line { stroke-dasharray: 1000; animation: drawLine 2s ease-out forwards; }
+    </style>
+</head>
+<body class="text-on-background font-body-md antialiased overflow-x-hidden">
+<!-- SideNavBar (Admin Console) -->
+<aside class="bg-surface-container-lowest h-screen w-64 fixed left-0 top-0 border-r border-outline-variant shadow-sm flex flex-col h-full py-lg z-50">
+<!-- Header -->
+<div class="px-md mb-lg flex flex-col items-start">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">admin_panel_settings</span>
+</div>
+<h1 class="font-display-brand text-display-brand text-primary"><a href="admin_dashboard.html" class="hover:opacity-85 transition-opacity">Odoo Cafe</a></h1>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant ml-2">Management Console</p>
+</div>
+<!-- Navigation Links -->
+<nav class="flex-1 overflow-y-auto">
+<ul class="flex flex-col">
+<!-- Inactive Tab: Products -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer active:scale-95" href="pos_order_view_terminal.html">
+<span class="material-symbols-outlined text-[20px]">point_of_sale</span>
+<span>POS Terminal</span>
+</a>
+</li>
+<!-- Inactive Tab: Categories -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer active:scale-95" href="floor_plan_table_selection.html">
+<span class="material-symbols-outlined text-[20px]">table_restaurant</span>
+<span>Floor Plan / Tables</span>
+</a>
+</li>
+<!-- Inactive Tab: Payment Methods -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+<span>Payment Methods</span>
+</a>
+</li>
+<!-- Inactive Tab: Coupons -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-[20px]">confirmation_number</span>
+<span>Coupons</span>
+</a>
+</li>
+<!-- Inactive Tab: Employees -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-colors cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-[20px]">badge</span>
+<span>Employees</span>
+</a>
+</li>
+<!-- ACTIVE Tab: Reports (Dashboard Intent) -->
+<li>
+<a class="flex items-center gap-md px-md py-sm font-body-md text-body-md text-primary font-bold border-r-4 border-primary bg-surface-container-low cursor-pointer active:scale-95" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span>Reports</span>
+</a>
+</li>
+</ul>
+</nav>
+<!-- User Profile Anchor -->
+<div class="mt-auto px-md pt-md border-t border-outline-variant/30">
+<div class="flex items-center gap-sm cursor-pointer hover:bg-surface-container p-sm rounded-lg transition-colors">
+<img alt="Admin User" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A close up portrait of a professional corporate manager in a bright, modern office setting. Soft natural lighting emphasizes a clean, trustworthy aesthetic suitable for an enterprise software interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDlj9b0nXrw3cZQs6jxzzxgIPXwiLc6P9da8ZMq6KraJxMJkFLxfbVQ07v8KP2jTCoOuW2fHZKwN1NEDX_YL6kU6VJ5VM_be0dVoe28uwUO5WRW26XqPzWlnM0FavKayTHIpmiHz_XdPgUJguKR6wNuYMX5G-sBuTMUjJxiRbCNhHZqUxnQa9mhA3q0wKavi_JZPaaP9Q_y1iPFEgVewEDTdEZ8b7uBsp_NuVTto63ZQFbDWlwnTn_Uic9IRaoZPD55PqrRXBthkSg"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface">Admin User</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">System Admin</span>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 p-margin-desktop min-h-screen">
+<!-- Header area -->
+<header class="flex justify-between items-end mb-lg">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Dashboard Overview</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">Real-time performance metrics for Odoo Cafe.</p>
+</div>
+<div class="flex gap-sm">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-md py-sm rounded-lg font-label-md text-label-md hover:bg-surface-container transition-colors flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                    Last 7 Days
+                </button>
+<button onclick="window.location.href='pos_order_view_terminal.html';" class="bg-secondary text-on-secondary px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-95 transition-all flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">point_of_sale</span>
+                    Launch POS
+                </button>
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg font-label-md text-label-md hover:brightness-90 transition-all flex items-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                    Export
+                </button>
+</div>
+</header>
+<!-- Key Metrics Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-md">
+<!-- Metric 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Revenue</span>
+<div class="bg-primary-container/20 p-xs rounded-md text-primary">
+<span class="material-symbols-outlined text-[20px]">payments</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">$12,450.00</h3>
+<div class="flex items-center gap-xs mt-1 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+14.5% vs last week</span>
+</div>
+</div>
+<!-- Decorative background subtle pattern -->
+<div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]">payments</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Total Orders</span>
+<div class="bg-surface-variant p-xs rounded-md text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">receipt_long</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">842</h3>
+<div class="flex items-center gap-xs mt-1 text-secondary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+<span>+5.2% vs last week</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]">receipt_long</span>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="flex justify-between items-start">
+<span class="font-label-md text-label-md text-on-surface-variant">Average Order Value</span>
+<div class="bg-secondary-container/30 p-xs rounded-md text-secondary">
+<span class="material-symbols-outlined text-[20px]">local_mall</span>
+</div>
+</div>
+<div>
+<h3 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">$42.50</h3>
+<div class="flex items-center gap-xs mt-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">trending_flat</span>
+<span>+0.8% vs last week</span>
+</div>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-5 pointer-events-none transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[80px]">local_mall</span>
+</div>
+</div>
+</div>
+<!-- Charts Bento Row -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-md mb-md">
+<!-- Sales Trend Line Chart (Span 2) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm lg:col-span-2 flex flex-col h-80">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">Sales Trend</h3>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<!-- SVG Line Chart Mockup -->
+<div class="flex-1 relative w-full h-full mt-sm">
+<!-- Y Axis Labels -->
+<div class="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-label-sm text-on-surface-variant font-label-sm pr-sm pb-1">
+<span>$3k</span>
+<span>$2k</span>
+<span>$1k</span>
+<span>$0</span>
+</div>
+<!-- Chart Area -->
+<div class="absolute left-8 right-0 top-0 bottom-6 border-l border-b border-outline-variant/50 relative">
+<!-- Horizontal Grid Lines -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none">
+<div class="w-full h-px border-t border-dashed border-outline-variant/30"></div>
+<div class="w-full h-px border-t border-dashed border-outline-variant/30"></div>
+<div class="w-full h-px border-t border-dashed border-outline-variant/30"></div>
+<div class="w-full h-px"></div> <!-- Bottom border handles this -->
+</div>
+<!-- SVG Line -->
+<svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 100 100">
+<!-- Gradient Def for subtle fill under line -->
+<defs>
+<lineargradient id="chartFill" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#714b67" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#714b67" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Area Fill -->
+<path class="opacity-70" d="M0,80 Q10,75 20,60 T40,40 T60,50 T80,20 T100,10 L100,100 L0,100 Z" fill="url(#chartFill)"></path>
+<!-- Main Data Line -->
+<path class="chart-line" d="M0,80 Q10,75 20,60 T40,40 T60,50 T80,20 T100,10" fill="none" stroke="#714b67" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"></path>
+<!-- Data Points -->
+<circle cx="20" cy="60" fill="#ffffff" r="2" stroke="#714b67" stroke-width="1.5"></circle>
+<circle cx="40" cy="40" fill="#ffffff" r="2" stroke="#714b67" stroke-width="1.5"></circle>
+<circle cx="60" cy="50" fill="#ffffff" r="2" stroke="#714b67" stroke-width="1.5"></circle>
+<circle cx="80" cy="20" fill="#ffffff" r="2" stroke="#714b67" stroke-width="1.5"></circle>
+<circle cx="100" cy="10" fill="#ffffff" r="2" stroke="#714b67" stroke-width="1.5"></circle>
+</svg>
+</div>
+<!-- X Axis Labels -->
+<div class="absolute left-8 right-0 bottom-0 flex justify-between text-label-sm text-on-surface-variant font-label-sm pt-xs pl-2 pr-2">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+<span>Sat</span>
+<span>Sun</span>
+</div>
+</div>
+</div>
+<!-- Top Categories Pie Chart (Span 1) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm lg:col-span-1 flex flex-col h-80">
+<div class="flex justify-between items-center mb-md">
+<h3 class="font-headline-md text-headline-md text-on-surface">Top Categories</h3>
+<button class="text-on-surface-variant hover:text-on-surface">
+<span class="material-symbols-outlined text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center relative">
+<!-- SVG Donut Chart Mockup -->
+<div class="w-40 h-40 relative">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 100 100">
+<!-- Base circle / Coffee (45%) -->
+<circle class="transition-all duration-1000" cx="50" cy="50" fill="transparent" r="40" stroke="#714b67" stroke-dasharray="251.2" stroke-dashoffset="0" stroke-width="15"></circle>
+<!-- Pastries (30%) -->
+<circle class="transition-all duration-1000 origin-center rotate-[162deg]" cx="50" cy="50" fill="transparent" r="40" stroke="#00696e" stroke-dasharray="251.2" stroke-dashoffset="138.16" stroke-width="15"></circle>
+<!-- Hot Meals (15%) -->
+<circle class="transition-all duration-1000 origin-center rotate-[270deg]" cx="50" cy="50" fill="transparent" r="40" stroke="#92eff5" stroke-dasharray="251.2" stroke-dashoffset="213.52" stroke-width="15"></circle>
+<!-- Cold Drinks (10%) -->
+<circle class="transition-all duration-1000 origin-center rotate-[324deg]" cx="50" cy="50" fill="transparent" r="40" stroke="#d9e3f4" stroke-dasharray="251.2" stroke-dashoffset="226.08" stroke-width="15"></circle>
+</svg>
+<!-- Center Text -->
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="font-headline-lg text-headline-lg text-on-surface leading-none">4</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Active</span>
+</div>
+</div>
+<!-- Legend -->
+<div class="w-full mt-lg grid grid-cols-2 gap-sm gap-x-md px-sm">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+<span class="font-label-sm text-label-sm text-on-surface">Coffee</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-secondary"></div>
+<span class="font-label-sm text-label-sm text-on-surface">Pastries</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface">Meals</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-surface-variant"></div>
+<span class="font-label-sm text-label-sm text-on-surface">Cold Drinks</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Top Products Table -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm overflow-hidden mb-lg">
+<div class="p-md border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Top Products</h3>
+<button class="text-primary font-label-md text-label-md hover:underline">View All Inventory</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant">
+<th class="p-sm px-md font-label-md text-label-md text-on-surface-variant font-semibold">Product Name</th>
+<th class="p-sm px-md font-label-md text-label-md text-on-surface-variant font-semibold">Category</th>
+<th class="p-sm px-md font-label-md text-label-md text-on-surface-variant font-semibold text-right">Quantity Sold</th>
+<th class="p-sm px-md font-label-md text-label-md text-on-surface-variant font-semibold text-right">Revenue</th>
+<th class="p-sm px-md font-label-md text-label-md text-on-surface-variant font-semibold text-center">Status</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface">
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors group">
+<td class="p-sm px-md py-3 flex items-center gap-sm">
+<div class="w-10 h-10 bg-surface-variant rounded-md flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">local_cafe</span>
+</div>
+<span class="font-semibold text-on-surface">Espresso Double</span>
+</td>
+<td class="p-sm px-md text-on-surface-variant">Coffee</td>
+<td class="p-sm px-md text-right">412</td>
+<td class="p-sm px-md text-right font-medium">$1,854.00</td>
+<td class="p-sm px-md text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#e6f4ea] text-[#137333] font-label-sm text-label-sm border border-[#ceead6]">In Stock</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors bg-background">
+<td class="p-sm px-md py-3 flex items-center gap-sm">
+<div class="w-10 h-10 bg-surface-variant rounded-md flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">bakery_dining</span>
+</div>
+<span class="font-semibold text-on-surface">Almond Croissant</span>
+</td>
+<td class="p-sm px-md text-on-surface-variant">Pastries</td>
+<td class="p-sm px-md text-right">289</td>
+<td class="p-sm px-md text-right font-medium">$1,300.50</td>
+<td class="p-sm px-md text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#fef7e0] text-[#b06000] font-label-sm text-label-sm border border-[#fde293]">Low Stock</span>
+</td>
+</tr>
+<tr class="border-b border-outline-variant/50 hover:bg-surface-container-low transition-colors">
+<td class="p-sm px-md py-3 flex items-center gap-sm">
+<div class="w-10 h-10 bg-surface-variant rounded-md flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">local_pizza</span>
+</div>
+<span class="font-semibold text-on-surface">Avocado Toast</span>
+</td>
+<td class="p-sm px-md text-on-surface-variant">Meals</td>
+<td class="p-sm px-md text-right">156</td>
+<td class="p-sm px-md text-right font-medium">$1,404.00</td>
+<td class="p-sm px-md text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-[#e6f4ea] text-[#137333] font-label-sm text-label-sm border border-[#ceead6]">In Stock</span>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors bg-background">
+<td class="p-sm px-md py-3 flex items-center gap-sm">
+<div class="w-10 h-10 bg-surface-variant rounded-md flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">icecream</span>
+</div>
+<span class="font-semibold text-on-surface">Iced Latte</span>
+</td>
+<td class="p-sm px-md text-on-surface-variant">Cold Drinks</td>
+<td class="p-sm px-md text-right">120</td>
+<td class="p-sm px-md text-right font-medium">$660.00</td>
+<td class="p-sm px-md text-center">
+<span class="inline-flex items-center px-2 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm border border-[#f8b4b4]">Out of Stock</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</main>
+</body></html>

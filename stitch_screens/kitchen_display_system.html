@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Odoo Cafe - Kitchen Display System</title>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "secondary-fixed-dim": "#78d5db",
+                            "surface-container": "#e5eeff",
+                            "outline": "#80747a",
+                            "inverse-surface": "#27313e",
+                            "background": "#f8f9ff",
+                            "secondary-fixed": "#95f1f8",
+                            "on-error": "#ffffff",
+                            "inverse-on-surface": "#eaf1ff",
+                            "surface-container-high": "#dfe9fa",
+                            "secondary-container": "#92eff5",
+                            "on-tertiary-container": "#cbcdce",
+                            "error": "#ba1a1a",
+                            "on-tertiary-fixed": "#191c1d",
+                            "on-background": "#121c28",
+                            "on-secondary-fixed-variant": "#004f53",
+                            "surface-variant": "#d9e3f4",
+                            "primary-fixed": "#ffd7f1",
+                            "on-surface": "#121c28",
+                            "on-primary-container": "#f0bfe0",
+                            "surface": "#f8f9ff",
+                            "on-surface-variant": "#4e444a",
+                            "inverse-primary": "#e9b8d9",
+                            "on-secondary": "#ffffff",
+                            "tertiary-fixed": "#e1e3e4",
+                            "primary-container": "#714b67",
+                            "on-primary-fixed-variant": "#5f3b56",
+                            "on-primary-fixed": "#2f1029",
+                            "on-secondary-fixed": "#002022",
+                            "error-container": "#ffdad6",
+                            "primary-fixed-dim": "#e9b8d9",
+                            "surface-tint": "#79526f",
+                            "surface-container-highest": "#d9e3f4",
+                            "surface-container-lowest": "#ffffff",
+                            "tertiary": "#3d4041",
+                            "secondary": "#00696e",
+                            "primary": "#57344f",
+                            "tertiary-container": "#555758",
+                            "on-secondary-container": "#006e73",
+                            "surface-bright": "#f8f9ff",
+                            "on-tertiary": "#ffffff",
+                            "outline-variant": "#d1c3ca",
+                            "surface-dim": "#d1dbec",
+                            "on-tertiary-fixed-variant": "#454748",
+                            "surface-container-low": "#eef4ff",
+                            "on-primary": "#ffffff",
+                            "tertiary-fixed-dim": "#c5c7c8",
+                            "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.125rem",
+                            "lg": "0.25rem",
+                            "xl": "0.5rem",
+                            "full": "0.75rem"
+                    },
+                    "spacing": {
+                            "margin-desktop": "32px",
+                            "xs": "4px",
+                            "md": "16px",
+                            "margin-mobile": "16px",
+                            "gutter": "16px",
+                            "sm": "8px",
+                            "base": "4px",
+                            "xl": "32px",
+                            "lg": "24px"
+                    },
+                    "fontFamily": {
+                            "headline-lg-mobile": ["Inter"],
+                            "label-md": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "display-brand": ["Caveat"],
+                            "headline-lg": ["Inter"],
+                            "body-lg": ["Inter"],
+                            "body-md": ["Inter"],
+                            "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                            "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                            "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+                            "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                            "display-brand": ["40px", { "lineHeight": "48px", "fontWeight": "700" }],
+                            "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
+                            "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                            "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for KDS interface */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.1); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #555758; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #80747a; 
+        }
+        .ticket-glass {
+            background: rgba(61, 64, 65, 0.95);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+    </style>
+</head>
+<body class="bg-inverse-surface text-inverse-on-surface font-body-md antialiased overflow-hidden flex h-screen">
+<!-- Shared Component: SideNavBar (Kitchen Display) -->
+<nav class="h-screen w-20 fixed left-0 top-0 flex flex-col justify-between bg-surface-container-high dark:bg-inverse-surface border-r border-outline-variant z-50 py-md">
+<!-- Top Section: Brand & Nav -->
+<div class="flex flex-col items-center w-full gap-lg">
+<!-- Brand Logo Mark (Abbreviated for narrow sidebar) -->
+<a href="admin_dashboard.html" class="font-display-brand text-display-brand text-secondary mb-4 flex flex-col items-center text-center leading-none hover:opacity-80 transition-opacity" title="Management Console">
+<span class="material-symbols-outlined text-[32px] mb-1">soup_kitchen</span>
+<span class="text-label-sm font-label-sm">KDS</span>
+</a>
+<!-- Navigation Links -->
+<div class="flex flex-col items-center w-full gap-sm">
+<!-- Inactive Tab: To Cook -->
+<button onclick="window.location.href='pos_order_view_terminal.html';" class="flex flex-col items-center justify-center w-16 h-16 text-on-surface-variant hover:bg-surface-variant transition-all duration-150 rounded-xl cursor-pointer active:scale-95 group relative">
+<span class="material-symbols-outlined text-[28px] mb-1">restaurant</span>
+<span class="font-label-sm text-label-sm opacity-0 group-hover:opacity-100 absolute -bottom-6 bg-tertiary text-on-tertiary px-2 py-1 rounded whitespace-nowrap pointer-events-none transition-opacity">Launch POS (3)</span>
+<span class="absolute top-1 right-2 w-4 h-4 bg-error text-on-error rounded-full font-label-sm text-[10px] flex items-center justify-center">3</span>
+</button>
+<!-- Active Tab: Preparing -->
+<button class="flex flex-col items-center justify-center w-16 h-16 bg-secondary text-on-secondary rounded-xl mx-2 transition-all duration-150 cursor-pointer active:scale-95 shadow-md relative">
+<span class="material-symbols-outlined text-[28px] mb-1">timer</span>
+<span class="font-label-sm text-label-sm mt-xs text-[10px] uppercase tracking-wider">Prep</span>
+<span class="absolute -top-1 -right-1 w-5 h-5 bg-error text-on-error rounded-full font-label-sm text-[11px] flex items-center justify-center border-2 border-secondary shadow-sm">2</span>
+</button>
+<!-- Inactive Tab: Completed -->
+<button class="flex flex-col items-center justify-center w-16 h-16 text-on-surface-variant hover:bg-surface-variant transition-all duration-150 rounded-xl cursor-pointer active:scale-95 group relative">
+<span class="material-symbols-outlined text-[28px] mb-1">check_circle</span>
+<span class="font-label-sm text-label-sm opacity-0 group-hover:opacity-100 absolute -bottom-6 bg-tertiary text-on-tertiary px-2 py-1 rounded whitespace-nowrap pointer-events-none transition-opacity">Completed</span>
+</button>
+</div>
+</div>
+<!-- Bottom Section: Footer Actions -->
+<div class="flex flex-col items-center w-full gap-sm">
+<button class="flex items-center justify-center w-12 h-12 text-on-surface-variant hover:text-on-surface hover:bg-surface-variant rounded-full transition-all duration-150" title="Settings">
+<span class="material-symbols-outlined text-[24px]">settings</span>
+</button>
+<button onclick="window.location.href='admin_dashboard.html';" class="flex items-center justify-center w-12 h-12 text-on-surface-variant hover:text-error hover:bg-surface-variant rounded-full transition-all duration-150" title="Exit to Console">
+<span class="material-symbols-outlined text-[24px]">logout</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="ml-20 flex-1 flex flex-col h-full bg-inverse-surface relative overflow-hidden">
+<!-- Top App Bar equivalent (Contextual Header) -->
+<header class="h-16 border-b border-outline flex items-center justify-between px-lg shrink-0 bg-inverse-surface/90 backdrop-blur z-10">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary text-[28px]">timer</span>
+<h1 class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight">Preparing Orders</h1>
+<span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-sm">Station 1</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex items-center gap-xs text-tertiary-fixed-dim font-label-md text-label-md bg-tertiary px-3 py-1.5 rounded-lg border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">sort</span>
+<span>Oldest First</span>
+</div>
+<button class="flex items-center gap-xs text-inverse-on-surface hover:text-secondary-fixed font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[20px]">fullscreen</span>
+</button>
+</div>
+</header>
+<!-- KDS Grid Area -->
+<div class="flex-1 overflow-y-auto p-lg">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg auto-rows-max items-start">
+<!-- Ticket Card 1 (Urgent/Long Wait) -->
+<article class="ticket-glass rounded-xl border-t-4 border-t-error border border-outline flex flex-col h-[420px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-transform hover:-translate-y-1">
+<!-- Ticket Header -->
+<div class="p-md border-b border-outline/50 flex justify-between items-start bg-error/10 rounded-t-lg">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-tertiary leading-none mb-1">#102</h2>
+<span class="font-label-md text-label-md text-tertiary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">table_restaurant</span> Table 4
+                            </span>
+</div>
+<div class="flex flex-col items-end text-right">
+<span class="font-label-md text-label-md text-error animate-pulse flex items-center gap-1 font-bold">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 12m ago
+                            </span>
+<span class="font-label-sm text-label-sm bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded mt-1">Dine-In</span>
+</div>
+</div>
+<!-- Ticket Items -->
+<div class="flex-1 overflow-y-auto p-md space-y-1 custom-scrollbar">
+<!-- Completed Item -->
+<div class="flex items-start gap-sm py-2 opacity-50 group cursor-pointer hover:opacity-80 transition-opacity">
+<span class="material-symbols-outlined text-secondary-fixed shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_box</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-tertiary-fixed-dim line-through">2x Iced Latte</p>
+<p class="font-label-sm text-label-sm text-outline line-through">- Oat Milk</p>
+</div>
+</div>
+<!-- Pending Item -->
+<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
+<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-tertiary font-medium">1x Veggie Burger</p>
+<p class="font-label-sm text-label-sm text-error bg-error/20 inline-block px-1.5 py-0.5 rounded mt-0.5">NO ONIONS</p>
+</div>
+</div>
+<!-- Pending Item -->
+<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
+<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-tertiary font-medium">1x Truffle Fries</p>
+</div>
+</div>
+</div>
+<!-- Ticket Footer Action -->
+<div class="p-md border-t border-outline/50 bg-tertiary/50 rounded-b-xl shrink-0 mt-auto">
+<button class="w-full bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary font-label-md text-label-md py-3 px-4 rounded-lg flex justify-between items-center transition-colors shadow-sm group">
+<span>Move to Completed</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Ticket Card 2 (Standard) -->
+<article class="ticket-glass rounded-xl border-t-4 border-t-secondary border border-outline flex flex-col h-[420px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-transform hover:-translate-y-1">
+<!-- Ticket Header -->
+<div class="p-md border-b border-outline/50 flex justify-between items-start bg-secondary/10 rounded-t-lg">
+<div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-tertiary leading-none mb-1">#104</h2>
+<span class="font-label-md text-label-md text-tertiary-fixed-dim flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shopping_bag</span> Takeout
+                            </span>
+</div>
+<div class="flex flex-col items-end text-right">
+<span class="font-label-md text-label-md text-secondary-fixed flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 5m ago
+                            </span>
+<span class="font-label-sm text-label-sm bg-primary text-on-primary px-2 py-0.5 rounded mt-1">UberEats</span>
+</div>
+</div>
+<!-- Ticket Items -->
+<div class="flex-1 overflow-y-auto p-md space-y-1 custom-scrollbar">
+<!-- Pending Item -->
+<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
+<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-tertiary font-medium">3x Avocado Toast</p>
+<p class="font-label-sm text-label-sm text-secondary-fixed-dim bg-secondary-fixed-dim/20 inline-block px-1.5 py-0.5 rounded mt-0.5">Gluten Free Bread</p>
+</div>
+</div>
+<!-- Pending Item -->
+<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
+<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
+<div class="flex-1">
+<p class="font-body-md text-body-md text-on-tertiary font-medium">2x Flat White</p>
+</div>
+</div>
+</div>
+<!-- Ticket Footer Action -->
+<div class="p-md border-t border-outline/50 bg-tertiary/50 rounded-b-xl shrink-0 mt-auto">
+<button class="w-full bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary font-label-md text-label-md py-3 px-4 rounded-lg flex justify-between items-center transition-colors shadow-sm group">
+<span>Move to Completed</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</article>
+</div>
+</div>
+</main>
+<script>
+        // Simple script to toggle strikethrough on items for demonstration
+        document.querySelectorAll('.ticket-glass .flex-1.overflow-y-auto > div').forEach(item => {
+            item.addEventListener('click', function() {
+                const icon = this.querySelector('.material-symbols-outlined');
+                const textElements = this.querySelectorAll('p');
+                
+                if (this.classList.contains('opacity-50')) {
+                    // Mark incomplete
+                    this.classList.remove('opacity-50');
+                    icon.textContent = 'check_box_outline_blank';
+                    icon.classList.remove('text-secondary-fixed');
+                    icon.classList.add('text-outline');
+                    icon.style.fontVariationSettings = "'FILL' 0";
+                    textElements.forEach(el => {
+                        el.classList.remove('line-through', 'text-tertiary-fixed-dim');
+                        if(el.classList.contains('font-body-md')) el.classList.add('text-on-tertiary');
+                    });
+                } else {
+                    // Mark complete
+                    this.classList.add('opacity-50');
+                    icon.textContent = 'check_box';
+                    icon.classList.remove('text-outline');
+                    icon.classList.add('text-secondary-fixed');
+                    icon.style.fontVariationSettings = "'FILL' 1";
+                    textElements.forEach(el => {
+                        el.classList.add('line-through', 'text-tertiary-fixed-dim');
+                        if(el.classList.contains('font-body-md')) el.classList.remove('text-on-tertiary');
+                    });
+                }
+            });
+        });
+    </script>
+</body></html>

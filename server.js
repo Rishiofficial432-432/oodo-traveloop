@@ -15,6 +15,7 @@ if (!fs.existsSync(uploadDir)) {
 
 app.use(cors());
 app.use('/uploads', express.static(uploadDir));
+app.use(express.static(__dirname));
 
 // Configure Multer for local storage
 const storage = multer.diskStorage({

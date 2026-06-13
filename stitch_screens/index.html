@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Odoo Cafe POS — Prototype Showcase Hub</title>
+    <!-- Tailwind CSS (via CDN) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "purple-heritage": "#714B67",
+                        "purple-dark": "#5A3C52",
+                        "teal-primary": "#017E84",
+                        "teal-accent": "#00A09D",
+                        "deep-charcoal": "#111827",
+                        "neutral-charcoal": "#374151",
+                        "divider-gray": "#DEE2E6",
+                        "off-white-light": "#F9FAFB",
+                        "success-green": "#28A745",
+                        "error-red": "#DC3545"
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        cursive: ['Caveat', 'cursive']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(113, 75, 103, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(1, 126, 132, 0.15) 0px, transparent 50%);
+        }
+        .glass-card {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+        .glass-card:hover {
+            border-color: rgba(1, 126, 132, 0.3);
+            box-shadow: 0 12px 40px 0 rgba(1, 126, 132, 0.1);
+        }
+        .modal-blur {
+            backdrop-filter: blur(12px);
+            background: rgba(11, 15, 25, 0.8);
+        }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen font-sans flex flex-col">
+
+    <!-- Header Navigation -->
+    <header class="w-full py-6 px-8 border-b border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-deep-charcoal/40 backdrop-blur-md sticky top-0 z-40">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-heritage to-teal-primary flex items-center justify-center shadow-lg">
+                <span class="material-symbols-outlined text-white font-bold text-2xl">soup_kitchen</span>
+            </div>
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                    Odoo Cafe <span class="text-purple-heritage font-cursive text-3xl font-bold italic lowercase">POS</span>
+                </h1>
+                <p class="text-xs text-gray-400">Prototype Showcase Hub</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <span class="text-xs px-3 py-1.5 rounded-full bg-white/5 text-gray-300 border border-white/10 flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-success-green animate-pulse"></span> Local Server Active
+            </span>
+            <a href="../hero.html" class="text-xs px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-gray-300 hover:bg-white/10 hover:text-white transition-all flex items-center gap-1.5">
+                <span class="material-symbols-outlined text-[16px]">flight_takeoff</span> Traveloop Portal
+            </a>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-6 py-12 flex flex-col gap-16">
+        
+        <!-- Hero Introduction Section -->
+        <section class="text-center max-w-3xl mx-auto space-y-6">
+            <h2 class="text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
+                Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-heritage to-teal-primary font-cursive text-5xl md:text-6xl px-1">Odoo POS</span> Prototype
+            </h2>
+            <p class="text-gray-400 text-lg md:text-xl font-light leading-relaxed">
+                Experience Odoo's high-performance enterprise hospitality UI. These screens use unified styles, responsive structures, and have been linked together to demonstrate real front-of-house & back-of-house interactions.
+            </p>
+        </section>
+
+        <!-- Grid of Screens -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
+            <!-- Screen 1: POS Terminal -->
+            <article class="glass-card rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="relative overflow-hidden rounded-xl border border-white/10 bg-black/40 aspect-[5/4] flex items-center justify-center">
+                        <img src="pos_order_view_terminal.png" alt="POS Order View Terminal Screenshot" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 justify-between">
+                            <span class="text-xs font-semibold bg-purple-heritage text-white px-3 py-1 rounded-full">Front of House</span>
+                            <span class="text-xs text-gray-300">2560 x 2048 (Desktop)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2 group-hover:text-teal-accent transition-colors">
+                            1. POS Order View - Terminal
+                        </h3>
+                        <p class="text-sm text-gray-400 mt-2 leading-relaxed">
+                            Front-of-house cashier terminal where orders are placed. Features categories, grid layout of products, current guest's cart, totals summary, and actions to checkout or send order directly to the kitchen KDS.
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 flex gap-3">
+                    <button onclick="openPreview('pos_order_view_terminal.html', 'POS Order View - Terminal')" class="flex-1 py-3 px-4 rounded-xl bg-teal-primary hover:bg-teal-accent text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-teal-primary/10">
+                        <span class="material-symbols-outlined text-[18px]">play_circle</span> Interactive Preview
+                    </button>
+                    <a href="pos_order_view_terminal.html" target="_blank" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors flex items-center justify-center" title="Open Full Screen in New Tab">
+                        <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Screen 2: Table Selection -->
+            <article class="glass-card rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="relative overflow-hidden rounded-xl border border-white/10 bg-black/40 aspect-[5/4] flex items-center justify-center">
+                        <img src="floor_plan_table_selection.png" alt="Floor Plan & Table Selection Screenshot" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 justify-between">
+                            <span class="text-xs font-semibold bg-purple-heritage text-white px-3 py-1 rounded-full">Front of House</span>
+                            <span class="text-xs text-gray-300">2560 x 2048 (Desktop)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2 group-hover:text-teal-accent transition-colors">
+                            2. Floor Plan & Table Selection
+                        </h3>
+                        <p class="text-sm text-gray-400 mt-2 leading-relaxed">
+                            Table layout selector for hosts and cashiers. Displays Ground Floor, Outdoor, and Rooftop seating zones. Shows table numbers, capacity, available status, and occupied bills. Click on Table 5 to jump straight into its POS order.
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 flex gap-3">
+                    <button onclick="openPreview('floor_plan_table_selection.html', 'Floor Plan & Table Selection')" class="flex-1 py-3 px-4 rounded-xl bg-teal-primary hover:bg-teal-accent text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-teal-primary/10">
+                        <span class="material-symbols-outlined text-[18px]">play_circle</span> Interactive Preview
+                    </button>
+                    <a href="floor_plan_table_selection.html" target="_blank" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors flex items-center justify-center" title="Open Full Screen in New Tab">
+                        <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Screen 3: Kitchen Display System (KDS) -->
+            <article class="glass-card rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="relative overflow-hidden rounded-xl border border-white/10 bg-black/40 aspect-[5/4] flex items-center justify-center">
+                        <img src="kitchen_display_system.png" alt="Kitchen Display System Screenshot" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 justify-between">
+                            <span class="text-xs font-semibold bg-purple-heritage text-white px-3 py-1 rounded-full">Back of House</span>
+                            <span class="text-xs text-gray-300">2560 x 2048 (Desktop)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2 group-hover:text-teal-accent transition-colors">
+                            3. Kitchen Display System (KDS)
+                        </h3>
+                        <p class="text-sm text-gray-400 mt-2 leading-relaxed">
+                            Back-of-house kitchen station monitor. Renders incoming orders as culinary tickets, indicating elapsed wait times, dine-in vs. takeout status, and dish customisations. Interactive click-to-complete ticks keep chefs in sync.
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 flex gap-3">
+                    <button onclick="openPreview('kitchen_display_system.html', 'Kitchen Display System (KDS)')" class="flex-1 py-3 px-4 rounded-xl bg-teal-primary hover:bg-teal-accent text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-teal-primary/10">
+                        <span class="material-symbols-outlined text-[18px]">play_circle</span> Interactive Preview
+                    </button>
+                    <a href="kitchen_display_system.html" target="_blank" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors flex items-center justify-center" title="Open Full Screen in New Tab">
+                        <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+                    </a>
+                </div>
+            </article>
+
+            <!-- Screen 4: Admin Dashboard -->
+            <article class="glass-card rounded-2xl p-6 transition-all duration-300 flex flex-col justify-between group">
+                <div class="space-y-4">
+                    <div class="relative overflow-hidden rounded-xl border border-white/10 bg-black/40 aspect-[5/4] flex items-center justify-center">
+                        <img src="admin_dashboard.png" alt="Admin Dashboard - Odoo Cafe POS Screenshot" class="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-500"/>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4 justify-between">
+                            <span class="text-xs font-semibold bg-purple-heritage text-white px-3 py-1 rounded-full">Back-Office Console</span>
+                            <span class="text-xs text-gray-300">2560 x 2048 (Desktop)</span>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-white flex items-center gap-2 group-hover:text-teal-accent transition-colors">
+                            4. Admin Dashboard - Odoo Cafe POS
+                        </h3>
+                        <p class="text-sm text-gray-400 mt-2 leading-relaxed">
+                            Back-office dashboard showcasing business intelligence. Features core metrics (Revenue, Total Orders, Average Value), revenue line trends, category breakdown donut charts, and an active inventory stock level table.
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-6 pt-4 border-t border-white/5 flex gap-3">
+                    <button onclick="openPreview('admin_dashboard.html', 'Admin Dashboard - Odoo Cafe POS')" class="flex-1 py-3 px-4 rounded-xl bg-teal-primary hover:bg-teal-accent text-white font-semibold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-teal-primary/10">
+                        <span class="material-symbols-outlined text-[18px]">play_circle</span> Interactive Preview
+                    </button>
+                    <a href="admin_dashboard.html" target="_blank" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white transition-colors flex items-center justify-center" title="Open Full Screen in New Tab">
+                        <span class="material-symbols-outlined text-[20px]">open_in_new</span>
+                    </a>
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Design Guidelines Specifications Section -->
+        <section class="glass-card rounded-2xl p-8 border border-white/10 flex flex-col lg:flex-row gap-8">
+            <div class="lg:w-1/3 space-y-4">
+                <h3 class="text-2xl font-bold text-white">Design System Specifications</h3>
+                <p class="text-sm text-gray-400 leading-relaxed">
+                    The Odoo Inspired Design System is engineered to balance high legibility of dense back-office data grids with fast touch targets for front-of-house operations.
+                </p>
+                <div class="flex flex-wrap gap-2 pt-2">
+                    <span class="text-[11px] px-3 py-1 bg-white/5 border border-white/10 text-gray-300 rounded-full font-mono">Theme: Light</span>
+                    <span class="text-[11px] px-3 py-1 bg-white/5 border border-white/10 text-gray-300 rounded-full font-mono">Radius: 4px–5px</span>
+                    <span class="text-[11px] px-3 py-1 bg-white/5 border border-white/10 text-gray-300 rounded-full font-mono">Grid: 12-Column Desktop</span>
+                    <span class="text-[11px] px-3 py-1 bg-white/5 border border-white/10 text-gray-300 rounded-full font-mono">Base Unit: 4px</span>
+                </div>
+            </div>
+            <div class="lg:w-2/3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <!-- Color Palette Info -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400">Core Colors</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded bg-[#714B67] border border-white/15"></span>
+                            <span>Purple Heritage (<code class="text-[10px] text-gray-300">#714B67</code>)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded bg-[#017E84] border border-white/15"></span>
+                            <span>Teal Primary (<code class="text-[10px] text-gray-300">#017E84</code>)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded bg-[#111827] border border-white/15"></span>
+                            <span>Deep Charcoal (<code class="text-[10px] text-gray-300">#111827</code>)</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-4 h-4 rounded bg-[#f8f9ff] border border-white/15"></span>
+                            <span>Canvas Surface (<code class="text-[10px] text-gray-300">#F8F9FF</code>)</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Typography Info -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400">Typography Hierarchy</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex flex-col">
+                            <span class="font-bold text-gray-300">Primary Face</span>
+                            <span class="text-gray-400">Inter (Systematic & high legibility)</span>
+                        </li>
+                        <li class="flex flex-col">
+                            <span class="font-cursive text-lg text-gray-300 leading-none">Cursive Accents</span>
+                            <span class="text-gray-400">Caveat (Used on welcome titles & logo)</span>
+                        </li>
+                        <li class="flex flex-col">
+                            <span class="font-bold text-gray-300">Line Height / Scaling</span>
+                            <span class="text-gray-400">Generous 1.5x ratio, scales perfectly</span>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Spacing & Elevation -->
+                <div class="space-y-3">
+                    <h4 class="font-bold text-sm uppercase tracking-wider text-gray-400">Depth & Touch Targets</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="flex flex-col">
+                            <span class="font-bold text-gray-300">Raised Level (L1)</span>
+                            <span class="text-gray-400">0px 1px 3px rgba(0,0,0,0.1) for cards</span>
+                        </li>
+                        <li class="flex flex-col">
+                            <span class="font-bold text-gray-300">Touch Target Padding</span>
+                            <span class="text-gray-400">Minimum 44px–48px hit areas</span>
+                        </li>
+                        <li class="flex flex-col">
+                            <span class="font-bold text-gray-300">Elevation Shift</span>
+                            <span class="text-gray-400">Subtle hover lifts to L2 shadow depth</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/5 text-center text-xs text-gray-500 bg-black/20">
+        <p>© 2026 Odoo Design System Framework Prototype Hub. Built with Antigravity.</p>
+    </footer>
+
+    <!-- Interactive Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-blur hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-6xl h-[85vh] flex flex-col shadow-2xl overflow-hidden scale-95 transition-transform duration-300" id="modalContainer">
+            <!-- Modal Header -->
+            <div class="bg-deep-charcoal border-b border-white/5 px-6 py-4 flex justify-between items-center shrink-0">
+                <div class="flex items-center gap-2">
+                    <span class="w-3 h-3 rounded-full bg-teal-primary"></span>
+                    <h4 id="modalTitle" class="font-bold text-white text-base">Screen Title</h4>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a id="modalExternalLink" href="#" target="_blank" class="text-gray-400 hover:text-white flex items-center gap-1 text-xs border border-white/10 hover:bg-white/5 px-3 py-1.5 rounded-lg transition-colors">
+                        <span class="material-symbols-outlined text-[16px]">open_in_new</span> Open Full Tab
+                    </a>
+                    <button onclick="closePreview()" class="text-gray-400 hover:text-white rounded-lg p-1 hover:bg-white/5 transition-colors flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[24px]">close</span>
+                    </button>
+                </div>
+            </div>
+            <!-- Modal Body (Iframe container) -->
+            <div class="flex-1 bg-white relative">
+                <iframe id="previewIframe" src="" class="w-full h-full border-none"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('previewModal');
+        const container = document.getElementById('modalContainer');
+        const title = document.getElementById('modalTitle');
+        const iframe = document.getElementById('previewIframe');
+        const externalLink = document.getElementById('modalExternalLink');
+
+        function openPreview(url, screenTitle) {
+            title.textContent = screenTitle;
+            iframe.src = url;
+            externalLink.href = url;
+            
+            // Remove hidden
+            modal.classList.remove('hidden');
+            // Timeout to allow browser repaint for transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                container.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closePreview() {
+            modal.classList.add('opacity-0');
+            container.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                iframe.src = '';
+            }, 300);
+        }
+
+        // Close modal on click background
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closePreview();
+            }
+        });
+    </script>
+</body>
+</html>
