@@ -37,25 +37,60 @@ async function seedCafeData() {
         console.log('Seeded cafe_tables');
     }
 
+    // Force re-seed if menu is stale (fewer than 30 items means old seed)
     const menuCount = await db.cafe_menu.count();
-    if (menuCount === 0) {
+    if (menuCount < 30) {
+        await db.cafe_menu.clear();
         await db.cafe_menu.bulkAdd([
-            { name: 'Classic Latte', category: 'Beverages', price: 120, available: true },
-            { name: 'Cold Brew', category: 'Beverages', price: 140, available: true },
-            { name: 'Iced Americano', category: 'Beverages', price: 110, available: true },
-            { name: 'Flat White', category: 'Beverages', price: 130, available: true },
-            { name: 'Filter Coffee', category: 'Beverages', price: 90, available: true },
-            { name: 'Avocado Toast', category: 'Mains', price: 280, available: true },
-            { name: 'Club Sandwich', category: 'Mains', price: 280, available: true },
-            { name: 'Margherita Pizza', category: 'Mains', price: 420, available: true },
-            { name: 'Veggie Burger', category: 'Mains', price: 320, available: true },
-            { name: 'Blueberry Muffin', category: 'Desserts', price: 150, available: true },
-            { name: 'Almond Croissant', category: 'Desserts', price: 160, available: true },
-            { name: 'Chocolate Brownie', category: 'Desserts', price: 180, available: true },
-            { name: 'Truffle Fries', category: 'Sides', price: 200, available: true },
-            { name: 'Garlic Bread', category: 'Sides', price: 150, available: true }
+            // ── BEVERAGES ──────────────────────────────────────────
+            { name: 'Classic Latte',         category: 'Beverages',   price: 120, available: true,  image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80' },
+            { name: 'Cappuccino',            category: 'Beverages',   price: 130, available: true,  image: 'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&q=80' },
+            { name: 'Flat White',            category: 'Beverages',   price: 130, available: true,  image: 'https://images.unsplash.com/photo-1578374173705-969cbe6f2d6b?w=400&q=80' },
+            { name: 'Espresso Shot',         category: 'Beverages',   price: 80,  available: true,  image: 'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?w=400&q=80' },
+            { name: 'Cold Brew',             category: 'Beverages',   price: 150, available: true,  image: 'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400&q=80' },
+            { name: 'Iced Americano',        category: 'Beverages',   price: 110, available: true,  image: 'https://images.unsplash.com/photo-1498804103079-a6351b050096?w=400&q=80' },
+            { name: 'Filter Coffee',         category: 'Beverages',   price: 90,  available: true,  image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&q=80' },
+            { name: 'Masala Chai',           category: 'Beverages',   price: 70,  available: true,  image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=400&q=80' },
+            { name: 'Matcha Latte',          category: 'Beverages',   price: 160, available: true,  image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&q=80' },
+            { name: 'Hot Chocolate',         category: 'Beverages',   price: 140, available: true,  image: 'https://images.unsplash.com/photo-1542990253-0d0f5be5f0ed?w=400&q=80' },
+            // ── COLD DRINKS ────────────────────────────────────────
+            { name: 'Mango Smoothie',        category: 'Cold Drinks', price: 180, available: true,  image: 'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=400&q=80' },
+            { name: 'Strawberry Shake',      category: 'Cold Drinks', price: 190, available: true,  image: 'https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=400&q=80' },
+            { name: 'Fresh Lime Soda',       category: 'Cold Drinks', price: 80,  available: true,  image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80' },
+            { name: 'Virgin Mojito',         category: 'Cold Drinks', price: 140, available: true,  image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
+            { name: 'Cold Coffee',           category: 'Cold Drinks', price: 160, available: true,  image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80' },
+            // ── BREAKFAST ──────────────────────────────────────────
+            { name: 'Masala Omelette',       category: 'Breakfast',   price: 160, available: true,  image: 'https://images.unsplash.com/photo-1510693206972-df098062cb71?w=400&q=80' },
+            { name: 'Avocado Toast',         category: 'Breakfast',   price: 280, available: true,  image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c820?w=400&q=80' },
+            { name: 'Pancakes (3 pcs)',      category: 'Breakfast',   price: 220, available: true,  image: 'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80' },
+            { name: 'Eggs Benedict',         category: 'Breakfast',   price: 320, available: true,  image: 'https://images.unsplash.com/photo-1608039829572-78524f79c4c7?w=400&q=80' },
+            { name: 'Granola Bowl',          category: 'Breakfast',   price: 200, available: true,  image: 'https://images.unsplash.com/photo-1517093157656-b9eccef91cb1?w=400&q=80' },
+            // ── MAINS ──────────────────────────────────────────────
+            { name: 'Club Sandwich',         category: 'Mains',       price: 280, available: true,  image: 'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=400&q=80' },
+            { name: 'Margherita Pizza',      category: 'Mains',       price: 420, available: true,  image: 'https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80' },
+            { name: 'Veggie Burger',         category: 'Mains',       price: 320, available: true,  image: 'https://images.unsplash.com/photo-1520072959219-c595dc870360?w=400&q=80' },
+            { name: 'Pasta Arrabbiata',      category: 'Mains',       price: 360, available: true,  image: 'https://images.unsplash.com/photo-1555949258-eb67b1ef0ceb?w=400&q=80' },
+            { name: 'Grilled Paneer Wrap',   category: 'Mains',       price: 300, available: true,  image: 'https://images.unsplash.com/photo-1626700051175-6818013e1d4f?w=400&q=80' },
+            { name: 'BLT Ciabatta',          category: 'Mains',       price: 340, available: true,  image: 'https://images.unsplash.com/photo-1484723091739-30anf5-0a3b?w=400&q=80' },
+            // ── SIDES ──────────────────────────────────────────────
+            { name: 'Truffle Fries',         category: 'Sides',       price: 200, available: true,  image: 'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?w=400&q=80' },
+            { name: 'Garlic Bread',          category: 'Sides',       price: 150, available: true,  image: 'https://images.unsplash.com/photo-1619531040576-f9416740661d?w=400&q=80' },
+            { name: 'Caesar Salad',          category: 'Sides',       price: 220, available: true,  image: 'https://images.unsplash.com/photo-1512852939750-1305098529bf?w=400&q=80' },
+            { name: 'Onion Rings',           category: 'Sides',       price: 170, available: true,  image: 'https://images.unsplash.com/photo-1639024471283-03518883512d?w=400&q=80' },
+            { name: 'Coleslaw Cup',          category: 'Sides',       price: 100, available: true,  image: 'https://images.unsplash.com/photo-1600271772470-bd22a42787b3?w=400&q=80' },
+            // ── DESSERTS ───────────────────────────────────────────
+            { name: 'Almond Croissant',      category: 'Desserts',    price: 160, available: true,  image: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=400&q=80' },
+            { name: 'Blueberry Muffin',      category: 'Desserts',    price: 150, available: true,  image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&q=80' },
+            { name: 'Chocolate Brownie',     category: 'Desserts',    price: 180, available: true,  image: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=400&q=80' },
+            { name: 'Tiramisu',              category: 'Desserts',    price: 240, available: true,  image: 'https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?w=400&q=80' },
+            { name: 'Cheesecake Slice',      category: 'Desserts',    price: 220, available: true,  image: 'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?w=400&q=80' },
+            // ── SPECIALS ───────────────────────────────────────────
+            { name: 'Chef Special Thali',    category: 'Specials',    price: 480, available: true,  image: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=400&q=80' },
+            { name: 'WI Signature Burger',   category: 'Specials',    price: 420, available: true,  image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80' },
+            { name: 'Truffle Mushroom Pizza', category: 'Specials',   price: 520, available: true,  image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80' },
+            { name: 'Sunday Brunch Plate',   category: 'Specials',    price: 550, available: false, image: 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?w=400&q=80' },
         ]);
-        console.log('Seeded cafe_menu');
+        console.log('Seeded cafe_menu (40 items with images)');
     }
 }
 

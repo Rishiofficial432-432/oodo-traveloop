@@ -1,341 +1,556 @@
 <!DOCTYPE html>
-
-<html class="light" lang="en"><head>
+<html class="light" lang="en">
+<head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-<title>Odoo Cafe POS Terminal</title>
+<title>World International Cafe — POS Terminal</title>
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
+<script src="../global.js"></script>
+<script src="cafe.js"></script>
 <script id="tailwind-config">
-        tailwind.config = {
-          darkMode: "class",
-          theme: {
-            extend: {
-              "colors": {
-                      "secondary-fixed-dim": "#78d5db",
-                      "surface-container": "#e5eeff",
-                      "outline": "#80747a",
-                      "inverse-surface": "#27313e",
-                      "background": "#f8f9ff",
-                      "secondary-fixed": "#95f1f8",
-                      "on-error": "#ffffff",
-                      "inverse-on-surface": "#eaf1ff",
-                      "surface-container-high": "#dfe9fa",
-                      "secondary-container": "#92eff5",
-                      "on-tertiary-container": "#cbcdce",
-                      "error": "#ba1a1a",
-                      "on-tertiary-fixed": "#191c1d",
-                      "on-background": "#121c28",
-                      "on-secondary-fixed-variant": "#004f53",
-                      "surface-variant": "#d9e3f4",
-                      "primary-fixed": "#ffd7f1",
-                      "on-surface": "#121c28",
-                      "on-primary-container": "#f0bfe0",
-                      "surface": "#f8f9ff",
-                      "on-surface-variant": "#4e444a",
-                      "inverse-primary": "#e9b8d9",
-                      "on-secondary": "#ffffff",
-                      "tertiary-fixed": "#e1e3e4",
-                      "primary-container": "#714b67",
-                      "on-primary-fixed-variant": "#5f3b56",
-                      "on-primary-fixed": "#2f1029",
-                      "on-secondary-fixed": "#002022",
-                      "error-container": "#ffdad6",
-                      "primary-fixed-dim": "#e9b8d9",
-                      "surface-tint": "#79526f",
-                      "surface-container-highest": "#d9e3f4",
-                      "surface-container-lowest": "#ffffff",
-                      "tertiary": "#3d4041",
-                      "secondary": "#00696e",
-                      "primary": "#57344f",
-                      "tertiary-container": "#555758",
-                      "on-secondary-container": "#006e73",
-                      "surface-bright": "#f8f9ff",
-                      "on-tertiary": "#ffffff",
-                      "outline-variant": "#d1c3ca",
-                      "surface-dim": "#d1dbec",
-                      "on-tertiary-fixed-variant": "#454748",
-                      "surface-container-low": "#eef4ff",
-                      "on-primary": "#ffffff",
-                      "tertiary-fixed-dim": "#c5c7c8",
-                      "on-error-container": "#93000a"
-              },
-              "borderRadius": {
-                      "DEFAULT": "0.125rem",
-                      "lg": "0.25rem",
-                      "xl": "0.5rem",
-                      "full": "0.75rem"
-              },
-              "spacing": {
-                      "margin-desktop": "32px",
-                      "xs": "4px",
-                      "md": "16px",
-                      "margin-mobile": "16px",
-                      "gutter": "16px",
-                      "sm": "8px",
-                      "base": "4px",
-                      "xl": "32px",
-                      "lg": "24px"
-              },
-              "fontFamily": {
-                      "headline-lg-mobile": ["Inter"],
-                      "label-md": ["Inter"],
-                      "headline-md": ["Inter"],
-                      "display-brand": ["Caveat"],
-                      "headline-lg": ["Inter"],
-                      "body-lg": ["Inter"],
-                      "body-md": ["Inter"],
-                      "label-sm": ["Inter"]
-              },
-              "fontSize": {
-                      "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                      "label-md": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
-                      "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
-                      "display-brand": ["40px", { "lineHeight": "48px", "fontWeight": "700" }],
-                      "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "600" }],
-                      "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
-                      "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
-                      "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.02em", "fontWeight": "600" }]
-              }
-            }
-          }
-        }
-    </script>
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{"secondary-fixed-dim":"#78d5db","surface-container":"#e5eeff","outline":"#80747a","inverse-surface":"#27313e","background":"#f8f9ff","on-error":"#ffffff","inverse-on-surface":"#eaf1ff","surface-container-high":"#dfe9fa","secondary-container":"#92eff5","error":"#ba1a1a","on-background":"#121c28","surface-variant":"#d9e3f4","primary-fixed":"#ffd7f1","on-surface":"#121c28","on-primary-container":"#f0bfe0","surface":"#f8f9ff","on-surface-variant":"#4e444a","inverse-primary":"#e9b8d9","on-secondary":"#ffffff","primary-container":"#714b67","on-primary-fixed":"#2f1029","error-container":"#ffdad6","primary-fixed-dim":"#e9b8d9","surface-tint":"#79526f","surface-container-highest":"#d9e3f4","surface-container-lowest":"#ffffff","tertiary":"#3d4041","secondary":"#00696e","primary":"#57344f","tertiary-container":"#555758","on-secondary-container":"#006e73","surface-bright":"#f8f9ff","on-tertiary":"#ffffff","outline-variant":"#d1c3ca","surface-dim":"#d1dbec","surface-container-low":"#eef4ff","on-primary":"#ffffff","on-error-container":"#93000a"},borderRadius:{DEFAULT:"0.125rem",lg:"0.25rem",xl:"0.5rem",full:"0.75rem"},spacing:{xs:"4px",md:"16px",sm:"8px",base:"4px",xl:"32px",lg:"24px"},fontFamily:{"display-brand":["Caveat"]},fontSize:{"label-md":["14px",{lineHeight:"20px",fontWeight:"500"}],"headline-md":["24px",{lineHeight:"32px",fontWeight:"600"}],"display-brand":["40px",{lineHeight:"48px",fontWeight:"700"}],"headline-lg":["32px",{lineHeight:"40px",fontWeight:"600"}],"body-md":["16px",{lineHeight:"24px",fontWeight:"400"}],"label-sm":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}]}}}
+}
+</script>
 <style>
-        /* Hide scrollbar for category tabs */
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+  .scrollbar-hide::-webkit-scrollbar{display:none}
+  .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+  #payment-modal{transition:opacity .2s ease}
+  .cat-chip.active{background:rgba(0,105,110,.12);color:#00696e;border-color:#00696e}
+  .menu-card{transition:transform .12s ease,box-shadow .12s ease}
+  .menu-card:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+  .menu-card:active{transform:scale(.97)}
+  .cart-item-row:hover .delete-btn{opacity:1}
+  .delete-btn{opacity:0;transition:opacity .15s}
+</style>
 </head>
-<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md select-none">
-<!-- JSON Component: TopNavBar -->
-<nav class="fixed top-0 w-full h-14 bg-primary dark:bg-primary-container text-on-primary dark:text-on-primary-container flex items-center justify-between px-md z-50 shadow-md">
-<!-- Brand -->
-<div class="flex items-center space-x-lg mr-xl">
-<a href="admin_dashboard.html" class="font-display-brand text-display-brand text-on-primary hover:opacity-85 transition-opacity">Odoo Cafe POS</a>
-</div>
-<!-- Navigation Cluster -->
-<div class="flex items-center space-x-xs h-full py-1">
-<a class="h-full flex items-center px-4 bg-on-primary/15 rounded-lg font-bold font-label-md text-label-md scale-98 active:opacity-90" href="pos_order_view_terminal.html">
-                POS Order
-            </a>
-<a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg font-label-md text-label-md scale-98 active:opacity-90 transition-colors" href="kitchen_display_system.html">
-                Active Orders
-            </a>
-<a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg font-label-md text-label-md scale-98 active:opacity-90 transition-colors" href="#">
-                Customers
-            </a>
-<a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg font-label-md text-label-md scale-98 active:opacity-90 transition-colors" href="floor_plan_table_selection.html">
-                Table View
-            </a>
-</div>
-<!-- Right Side: Search & Trailing Actions -->
-<div class="flex items-center space-x-md ml-auto">
-<!-- Search Bar (on_right) -->
-<div class="relative flex items-center bg-primary-fixed-dim/10 rounded-full border border-on-primary/20 hover:border-on-primary/40 focus-within:border-secondary transition-colors px-3 py-1.5 w-64">
-<span class="material-symbols-outlined text-[20px] text-on-primary/70 mr-2">search</span>
-<input class="bg-transparent border-none text-on-primary placeholder-on-primary/60 font-label-md text-label-md w-full focus:ring-0 p-0" placeholder="Search menu..." type="text"/>
-</div>
-<div class="w-px h-6 bg-on-primary/20 mx-2"></div>
-<button class="bg-surface-tint text-on-primary px-4 py-1.5 rounded hover:bg-surface-tint/80 font-label-md text-label-md transition-colors border border-on-primary/10">
-                Employee Portal
-            </button>
-<div class="flex items-center space-x-1">
-<button class="p-1.5 rounded-full hover:bg-primary-fixed-dim/20 text-on-primary/90 transition-colors flex items-center justify-center scale-98 active:opacity-90">
-<span class="material-symbols-outlined text-[20px]">sync</span>
-</button>
-<button class="p-1.5 rounded-full hover:bg-primary-fixed-dim/20 text-on-primary/90 transition-colors flex items-center justify-center scale-98 active:opacity-90">
-<span class="material-symbols-outlined text-[20px]">wifi</span>
-</button>
-<button class="p-1.5 rounded-full hover:bg-primary-fixed-dim/20 text-on-primary/90 transition-colors flex items-center justify-center scale-98 active:opacity-90">
-<span class="material-symbols-outlined text-[20px]">settings</span>
-</button>
-</div>
-</div>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col select-none" style="font-family:Inter,sans-serif">
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full h-14 bg-primary text-on-primary flex items-center justify-between px-md z-50 shadow-md">
+  <div class="flex items-center space-x-lg mr-xl">
+    <a href="admin_dashboard.html" class="font-display-brand text-display-brand text-on-primary hover:opacity-85 transition-opacity">World International Cafe</a>
+  </div>
+  <div class="flex items-center space-x-xs h-full py-1">
+    <a class="h-full flex items-center px-4 bg-on-primary/15 rounded-lg font-bold text-label-md scale-98" href="pos_order_view_terminal.html">POS Order</a>
+    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="kitchen_display_system.html">Active Orders</a>
+    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="floor_plan_table_selection.html">Table View</a>
+    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="admin_dashboard.html">Dashboard</a>
+  </div>
+  <div class="flex items-center space-x-md ml-auto">
+    <div id="table-badge" class="bg-surface-tint text-on-primary px-4 py-1.5 rounded-lg flex items-center gap-2 border border-on-primary/20 font-bold text-label-md">
+      <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">table_restaurant</span>
+      <span id="table-label">Walk-in</span>
+    </div>
+    <button id="open-payment-btn" disabled class="bg-secondary text-on-secondary px-4 py-1.5 rounded-lg text-label-md font-bold hover:brightness-95 transition-all flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
+      <span class="material-symbols-outlined text-[18px]">payments</span> Pay
+    </button>
+  </div>
 </nav>
-<!-- Main Workspace -->
+
+<!-- MAIN -->
 <main class="flex-1 mt-14 flex flex-row w-full bg-background overflow-hidden">
-<!-- Left Pane: Product Grid (60%) -->
-<section class="w-[60%] flex flex-col h-full bg-background relative z-0">
-<!-- Category Filters -->
-<div class="px-md py-sm bg-surface-container-lowest border-b border-outline-variant shadow-sm flex items-center overflow-x-auto scrollbar-hide space-x-sm shrink-0">
-<button class="px-6 py-2.5 rounded-full bg-secondary/10 text-secondary border border-secondary font-label-md text-label-md whitespace-nowrap active:scale-95 transition-transform flex items-center space-x-2">
-<span class="material-symbols-outlined text-[18px]">local_cafe</span>
-<span>Beverages</span>
-</button>
-<button class="px-6 py-2.5 rounded-full bg-surface text-on-surface border border-outline-variant hover:bg-surface-variant font-label-md text-label-md whitespace-nowrap active:scale-95 transition-transform">
-                    Mains
-                </button>
-<button class="px-6 py-2.5 rounded-full bg-surface text-on-surface border border-outline-variant hover:bg-surface-variant font-label-md text-label-md whitespace-nowrap active:scale-95 transition-transform">
-                    Desserts
-                </button>
-<button class="px-6 py-2.5 rounded-full bg-surface text-on-surface border border-outline-variant hover:bg-surface-variant font-label-md text-label-md whitespace-nowrap active:scale-95 transition-transform">
-                    Sides
-                </button>
-</div>
-<!-- Grid Content -->
-<div class="flex-1 overflow-y-auto p-md">
-<div class="grid grid-cols-3 xl:grid-cols-4 gap-sm md:gap-md">
-<!-- Product Card: Latte -->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-secondary transition-all cursor-pointer active:scale-95 h-32 md:h-40 flex flex-col overflow-hidden group">
-<div class="h-2 w-full bg-[#8B5A2B] shrink-0"></div> <!-- Category Indicator -->
-<div class="p-sm flex-1 flex flex-col justify-between">
-<div class="font-label-md text-label-md text-on-surface leading-tight line-clamp-2 mt-1 group-hover:text-secondary transition-colors">
-                                Classic Latte
-                            </div>
-<div class="flex justify-between items-end">
-<span class="font-label-sm text-label-sm text-on-surface-variant">12oz</span>
-<span class="font-body-md text-body-md font-semibold text-primary">$4.50</span>
-</div>
-</div>
-</div>
-<!-- Product Card: Avocado Toast -->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-secondary transition-all cursor-pointer active:scale-95 h-32 md:h-40 flex flex-col overflow-hidden group">
-<div class="h-2 w-full bg-[#4CAF50] shrink-0"></div> <!-- Category Indicator -->
-<div class="p-sm flex-1 flex flex-col justify-between">
-<div class="font-label-md text-label-md text-on-surface leading-tight line-clamp-2 mt-1 group-hover:text-secondary transition-colors">
-                                Avocado Toast
-                            </div>
-<div class="flex justify-between items-end">
-<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-variant px-1.5 py-0.5 rounded">Vegan</span>
-<span class="font-body-md text-body-md font-semibold text-primary">$8.50</span>
-</div>
-</div>
-</div>
-<!-- Product Card: Generic 1 -->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-secondary transition-all cursor-pointer active:scale-95 h-32 md:h-40 flex flex-col overflow-hidden group">
-<div class="h-2 w-full bg-[#8B5A2B] shrink-0"></div>
-<div class="p-sm flex-1 flex flex-col justify-between">
-<div class="font-label-md text-label-md text-on-surface leading-tight line-clamp-2 mt-1 group-hover:text-secondary transition-colors">
-                                Iced Americano
-                            </div>
-<div class="flex justify-between items-end">
-<span class="font-label-sm text-label-sm text-on-surface-variant">16oz</span>
-<span class="font-body-md text-body-md font-semibold text-primary">$3.50</span>
-</div>
-</div>
-</div>
-<!-- Product Card: Generic 2 -->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-secondary transition-all cursor-pointer active:scale-95 h-32 md:h-40 flex flex-col overflow-hidden group">
-<div class="h-2 w-full bg-[#E91E63] shrink-0"></div>
-<div class="p-sm flex-1 flex flex-col justify-between">
-<div class="font-label-md text-label-md text-on-surface leading-tight line-clamp-2 mt-1 group-hover:text-secondary transition-colors">
-                                Blueberry Muffin
-                            </div>
-<div class="flex justify-between items-end">
-<span class="font-label-sm text-label-sm text-on-surface-variant">Baked fresh</span>
-<span class="font-body-md text-body-md font-semibold text-primary">$3.75</span>
-</div>
-</div>
-</div>
-<!-- Product Card: Generic 3 -->
-<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm hover:shadow-md hover:border-secondary transition-all cursor-pointer active:scale-95 h-32 md:h-40 flex flex-col overflow-hidden group opacity-50">
-<div class="h-2 w-full bg-[#8B5A2B] shrink-0"></div>
-<div class="p-sm flex-1 flex flex-col justify-between">
-<div class="font-label-md text-label-md text-on-surface leading-tight line-clamp-2 mt-1 group-hover:text-secondary transition-colors">
-                                Cold Brew
-                            </div>
-<div class="flex justify-between items-end">
-<span class="font-label-sm text-label-sm text-error bg-error-container px-1.5 py-0.5 rounded">Sold Out</span>
-<span class="font-body-md text-body-md font-semibold text-primary">$4.00</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Right Pane: Cart & Summary (40%) -->
-<section class="w-[40%] h-full bg-surface-container-lowest border-l border-outline-variant shadow-[-8px_0_24px_-8px_rgba(0,0,0,0.05)] flex flex-col z-10">
-<!-- Cart Header -->
-<div class="px-md py-sm bg-surface-container-lowest border-b border-outline flex justify-between items-center shrink-0 min-h-[64px]">
-<div class="flex items-center space-x-sm">
-<span class="material-symbols-outlined text-primary text-[28px]">receipt_long</span>
-<div class="flex flex-col">
-<h2 class="font-headline-md text-headline-md text-on-surface leading-none">Current Order</h2>
-<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Guest 1</span>
-</div>
-</div>
-<!-- Table Indicator -->
-<div class="bg-surface-container border border-primary/30 text-primary px-4 py-1.5 rounded-lg flex items-center space-x-2 shadow-sm">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">table_restaurant</span>
-<span class="font-label-md text-label-md font-bold">Table #5</span>
-</div>
-</div>
-<!-- Cart Items List (Scrollable) -->
-<div class="flex-1 overflow-y-auto bg-background p-sm space-y-xs">
-<!-- Item 1: Latte x2 -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-sm flex items-start shadow-sm min-h-[64px] group hover:border-secondary transition-colors">
-<!-- Qty Control -->
-<div class="flex flex-col items-center justify-center w-12 mr-2 bg-surface-container rounded py-1">
-<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer hover:text-primary">expand_less</span>
-<span class="font-label-md text-label-md font-bold text-primary my-0.5">2</span>
-<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer hover:text-primary">expand_more</span>
-</div>
-<!-- Item Details -->
-<div class="flex-1 flex flex-col justify-center py-1">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Classic Latte</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">+ Oat Milk</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant">+ Extra Hot</span>
-</div>
-<!-- Price & Delete -->
-<div class="flex flex-col items-end justify-between py-1 h-full">
-<span class="font-label-md text-label-md text-on-surface font-semibold">$9.00</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant/50 cursor-pointer hover:text-error opacity-0 group-hover:opacity-100 transition-opacity mt-2">delete</span>
-</div>
-</div>
-<!-- Item 2: Avocado Toast x1 -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-sm flex items-start shadow-sm min-h-[64px] group hover:border-secondary transition-colors">
-<div class="flex flex-col items-center justify-center w-12 mr-2 bg-surface-container rounded py-1">
-<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer hover:text-primary">expand_less</span>
-<span class="font-label-md text-label-md font-bold text-primary my-0.5">1</span>
-<span class="material-symbols-outlined text-[16px] text-on-surface-variant cursor-pointer hover:text-primary">expand_more</span>
-</div>
-<div class="flex-1 flex flex-col justify-center py-1">
-<span class="font-label-md text-label-md text-on-surface font-semibold">Avocado Toast</span>
-<span class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Sourdough</span>
-</div>
-<div class="flex flex-col items-end justify-between py-1 h-full">
-<span class="font-label-md text-label-md text-on-surface font-semibold">$8.50</span>
-<span class="material-symbols-outlined text-[18px] text-on-surface-variant/50 cursor-pointer hover:text-error opacity-0 group-hover:opacity-100 transition-opacity mt-2">delete</span>
-</div>
-</div>
-</div>
-<!-- Order Summary Footer -->
-<div class="bg-surface-container-lowest border-t border-outline-variant shadow-[0_-8px_20px_-8px_rgba(0,0,0,0.08)] z-20 shrink-0">
-<!-- Totals -->
-<div class="p-md space-y-sm">
-<div class="flex justify-between items-center text-on-surface-variant font-body-md text-body-md">
-<span>Subtotal</span>
-<span>$17.50</span>
-</div>
-<div class="flex justify-between items-center text-on-surface-variant font-body-md text-body-md">
-<span>Tax (8.0%)</span>
-<span>$1.40</span>
-</div>
-<div class="flex justify-between items-center text-on-surface font-headline-lg text-headline-lg pt-sm mt-sm border-t border-outline-variant/50 border-dashed">
-<span>Total</span>
-<span>$18.90</span>
-</div>
-</div>
-<!-- Action Buttons -->
-<div class="px-md pb-md grid grid-cols-2 gap-sm">
-<button class="bg-secondary text-on-secondary border border-transparent rounded-lg py-4 font-label-md text-label-md font-semibold hover:bg-secondary/90 active:scale-95 transition-all shadow-sm flex items-center justify-center space-x-2">
-<span class="material-symbols-outlined text-[20px]">payments</span>
-<span>Payment</span>
-</button>
-<button onclick="alert('🚀 Order sent to kitchen successfully!'); window.location.href='kitchen_display_system.html';" class="bg-primary text-on-primary rounded-lg py-4 font-label-md text-label-md font-bold shadow-md hover:bg-surface-tint active:scale-95 transition-all flex items-center justify-center space-x-2 w-full">
-<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">room_service</span>
-<span>Send to Kitchen</span>
-</button>
-</div>
-</div>
-</section>
+
+  <!-- LEFT: Menu -->
+  <section class="w-[60%] flex flex-col h-full bg-background">
+
+    <!-- Search + Category row -->
+    <div class="px-md py-sm bg-surface-container-lowest border-b border-outline-variant shadow-sm flex items-center gap-sm shrink-0 flex-wrap">
+      <div class="relative flex items-center bg-surface-container rounded-full border border-outline-variant px-3 py-1.5 w-52">
+        <span class="material-symbols-outlined text-[18px] text-on-surface-variant mr-2">search</span>
+        <input id="search-input" type="text" placeholder="Search menu…" class="bg-transparent border-none text-on-surface text-label-md w-full focus:ring-0 p-0 outline-none placeholder:text-on-surface-variant/60"/>
+      </div>
+      <div id="cat-tabs" class="flex items-center overflow-x-auto scrollbar-hide gap-sm flex-1">
+        <!-- populated by JS -->
+      </div>
+    </div>
+
+    <!-- Menu grid -->
+    <div id="menu-grid" class="flex-1 overflow-y-auto p-md">
+      <div class="grid grid-cols-3 xl:grid-cols-5 gap-sm">
+        <!-- skeleton -->
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+        <div class="bg-surface-container-high rounded-xl h-36 animate-pulse"></div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- RIGHT: Cart -->
+  <section class="w-[40%] h-full bg-surface-container-lowest border-l border-outline-variant shadow-[-8px_0_24px_-8px_rgba(0,0,0,0.05)] flex flex-col">
+
+    <!-- Cart header -->
+    <div class="px-md py-sm bg-surface-container-lowest border-b border-outline flex justify-between items-center shrink-0 min-h-[64px]">
+      <div class="flex items-center space-x-sm">
+        <span class="material-symbols-outlined text-primary text-[28px]">receipt_long</span>
+        <div>
+          <h2 class="text-headline-md text-on-surface leading-none">Current Order</h2>
+          <span id="cart-order-id" class="text-label-sm text-on-surface-variant mt-1 block">&mdash;</span>
+        </div>
+      </div>
+      <button id="clear-cart-btn" class="text-label-sm text-error hover:bg-error-container px-3 py-1.5 rounded-lg transition-colors hidden">Clear all</button>
+    </div>
+
+    <!-- Cart items -->
+    <div id="cart-list" class="flex-1 overflow-y-auto bg-background p-sm space-y-xs scrollbar-hide">
+      <div id="empty-cart" class="flex flex-col items-center justify-center h-full text-on-surface-variant opacity-50 gap-2 py-16">
+        <span class="material-symbols-outlined text-[48px]">shopping_cart</span>
+        <p class="text-label-md">No items yet. Tap menu to add.</p>
+      </div>
+    </div>
+
+    <!-- Totals + actions -->
+    <div class="bg-surface-container-lowest border-t border-outline-variant shadow-[0_-8px_20px_-8px_rgba(0,0,0,0.08)] z-20 shrink-0">
+      <div class="p-md space-y-sm">
+        <div class="flex justify-between items-center text-on-surface-variant text-body-md">
+          <span>Subtotal (<span id="item-count">0</span> items)</span>
+          <span id="subtotal">₹0.00</span>
+        </div>
+        <div class="flex justify-between items-center text-on-surface-variant text-body-md">
+          <span>GST (5%)</span>
+          <span id="tax">₹0.00</span>
+        </div>
+        <div class="flex justify-between items-center text-on-surface text-headline-lg pt-sm border-t border-outline-variant/50 border-dashed">
+          <span>Total</span>
+          <span id="total-display">₹0.00</span>
+        </div>
+      </div>
+      <div class="px-md pb-md grid grid-cols-2 gap-sm">
+        <button id="send-kitchen-btn" disabled class="bg-primary text-on-primary rounded-lg py-4 text-label-md font-bold shadow-md hover:bg-surface-tint active:scale-95 transition-all flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">room_service</span>
+          <span>Send to Kitchen</span>
+        </button>
+        <button id="pay-btn" disabled class="bg-secondary text-on-secondary rounded-lg py-4 text-label-md font-semibold hover:bg-secondary/90 active:scale-95 transition-all shadow-sm flex items-center justify-center space-x-2 disabled:opacity-40 disabled:cursor-not-allowed">
+          <span class="material-symbols-outlined text-[20px]">payments</span>
+          <span>Payment</span>
+        </button>
+      </div>
+    </div>
+
+  </section>
 </main>
-</body></html>
+
+<!-- PAYMENT MODAL -->
+<div id="payment-modal" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden opacity-0">
+  <div class="bg-surface-container-lowest rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+    <!-- Modal header -->
+    <div class="bg-primary text-on-primary px-6 py-4 flex items-center justify-between">
+      <div>
+        <h3 class="text-headline-md font-bold">Payment</h3>
+        <p class="text-label-sm text-on-primary/70 mt-0.5" id="pay-order-ref">Order #—</p>
+      </div>
+      <button id="close-payment-btn" class="p-2 rounded-full hover:bg-on-primary/10 transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <!-- Amount summary -->
+    <div class="px-6 py-4 border-b border-outline-variant bg-surface-container-low">
+      <div class="flex justify-between text-label-md text-on-surface-variant mb-1">
+        <span>Subtotal</span><span id="pay-subtotal">₹0.00</span>
+      </div>
+      <div class="flex justify-between text-label-md text-on-surface-variant mb-2">
+        <span>GST (5%)</span><span id="pay-tax">₹0.00</span>
+      </div>
+      <div class="flex justify-between text-headline-md font-bold text-on-surface">
+        <span>Total Due</span><span id="pay-total">₹0.00</span>
+      </div>
+    </div>
+
+    <!-- Payment method -->
+    <div class="px-6 py-4">
+      <p class="text-label-md font-semibold text-on-surface-variant uppercase tracking-wide mb-3">Payment Method</p>
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <button data-method="cash" class="pay-method-btn flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-outline-variant hover:border-secondary transition-colors bg-surface">
+          <span class="material-symbols-outlined text-[28px] text-secondary">payments</span>
+          <span class="text-label-sm text-on-surface">Cash</span>
+        </button>
+        <button data-method="card" class="pay-method-btn flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-outline-variant hover:border-secondary transition-colors bg-surface">
+          <span class="material-symbols-outlined text-[28px] text-secondary">credit_card</span>
+          <span class="text-label-sm text-on-surface">Card</span>
+        </button>
+        <button data-method="upi" class="pay-method-btn flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-outline-variant hover:border-secondary transition-colors bg-surface">
+          <span class="material-symbols-outlined text-[28px] text-secondary">qr_code_2</span>
+          <span class="text-label-sm text-on-surface">UPI</span>
+        </button>
+      </div>
+
+      <!-- Cash tendered (only for cash) -->
+      <div id="cash-section" class="hidden mb-4">
+        <label class="text-label-md font-semibold text-on-surface-variant block mb-2">Cash Tendered (₹)</label>
+        <input id="cash-tendered" type="number" min="0" step="1" placeholder="Enter amount" class="w-full border border-outline-variant rounded-lg px-4 py-3 text-body-md focus:outline-none focus:border-secondary focus:ring-2 focus:ring-secondary/20"/>
+        <div id="change-display" class="hidden mt-2 text-label-md font-bold text-secondary"></div>
+      </div>
+
+      <!-- UPI QR placeholder -->
+      <div id="upi-section" class="hidden mb-4 flex flex-col items-center gap-3">
+        <div class="w-36 h-36 bg-surface-container rounded-xl flex items-center justify-center border border-outline-variant">
+          <span class="material-symbols-outlined text-[64px] text-on-surface-variant/30">qr_code</span>
+        </div>
+        <p class="text-label-sm text-on-surface-variant text-center">Scan QR with any UPI app.<br/>Payment confirms automatically.</p>
+      </div>
+
+      <button id="confirm-payment-btn" disabled class="w-full bg-secondary text-on-secondary py-4 rounded-xl text-label-md font-bold hover:bg-secondary/90 active:scale-95 transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined text-[20px]">check_circle</span>
+        <span>Confirm Payment</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] bg-on-surface text-surface px-6 py-3 rounded-full shadow-xl text-label-md font-semibold flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+  <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1">check_circle</span>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+const TAX_RATE = 0.05;
+let currentOrderId = null;
+let currentTableId = null;
+let currentTableNum = null;
+let allMenu = [];
+let activeCategory = 'All';
+let searchQuery = '';
+
+// ─── INIT ────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  // Read table from URL param
+  const params = new URLSearchParams(window.location.search);
+  const tableParam = params.get('table');
+
+  if (tableParam) {
+    currentTableId = Number(tableParam);
+    const table = await db.cafe_tables.get(currentTableId);
+    if (table) {
+      currentTableNum = table.number;
+      document.getElementById('table-label').textContent = `Table #${table.number} · ${table.zone}`;
+    }
+    const order = await getActiveOrderForTable(currentTableId);
+    currentOrderId = order.id;
+    document.getElementById('cart-order-id').textContent = `Order #${currentOrderId}`;
+  } else {
+    // Walk-in / no table — create a standalone order
+    const id = await db.cafe_orders.add({
+      table_id: null, order_type: 'walk-in', source: 'walk-in',
+      status: 'open', items: [], created_at: new Date().toISOString()
+    });
+    currentOrderId = id;
+    document.getElementById('cart-order-id').textContent = `Order #${id}`;
+  }
+
+  await loadMenu();
+  await renderCart();
+
+  // Live sync: re-render cart if order changes from another tab/screen
+  subscribeCafe(async () => { await renderCart(); });
+});
+
+// ─── MENU ────────────────────────────────────────────────────────────────────
+const CATEGORY_COLORS = {
+  'Beverages':  '#6F4E37',
+  'Mains':      '#4CAF50',
+  'Desserts':   '#E91E63',
+  'Sides':      '#FF9800',
+  'Breakfast':  '#FFC107',
+  'Specials':   '#9C27B0',
+  'Cold Drinks':'#2196F3',
+};
+
+async function loadMenu() {
+  allMenu = await getMenu();
+  buildCatTabs();
+  renderMenu();
+}
+
+function buildCatTabs() {
+  const cats = ['All', ...new Set(allMenu.map(i => i.category))];
+  const container = document.getElementById('cat-tabs');
+  container.innerHTML = '';
+  cats.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = `cat-chip px-5 py-2 rounded-full border border-outline-variant text-label-md text-on-surface-variant whitespace-nowrap transition-colors hover:bg-surface-variant ${cat === activeCategory ? 'active' : ''}`;
+    btn.textContent = cat;
+    btn.addEventListener('click', () => {
+      activeCategory = cat;
+      document.querySelectorAll('.cat-chip').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderMenu();
+    });
+    container.appendChild(btn);
+  });
+}
+
+function renderMenu() {
+  const grid = document.getElementById('menu-grid');
+  let items = allMenu;
+  if (activeCategory !== 'All') items = items.filter(i => i.category === activeCategory);
+  if (searchQuery) items = items.filter(i => i.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  if (items.length === 0) {
+    grid.innerHTML = `<p class="col-span-full text-center text-on-surface-variant py-12 text-label-md">No items found.</p>`;
+    return;
+  }
+
+  grid.innerHTML = `<div class="grid grid-cols-3 xl:grid-cols-4 gap-sm">${items.map(menuCard).join('')}</div>`;
+  grid.querySelectorAll('.menu-card').forEach(card => {
+    card.addEventListener('click', () => addToCart(Number(card.dataset.id)));
+  });
+}
+
+function menuCard(item) {
+  const color = CATEGORY_COLORS[item.category] || '#714b67';
+  const unavail = !item.available;
+  const imgHtml = item.image
+    ? `<img src="${item.image}" alt="${item.name}" class="w-full h-24 object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+       <div class="w-full h-24 items-center justify-center bg-surface-container text-on-surface-variant hidden" style="display:none">
+         <span class="material-symbols-outlined text-[32px]">restaurant</span>
+       </div>`
+    : `<div class="w-full h-24 flex items-center justify-center bg-surface-container text-on-surface-variant">
+         <span class="material-symbols-outlined text-[32px]">restaurant</span>
+       </div>`;
+
+  return `
+  <div class="menu-card bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm cursor-pointer flex flex-col overflow-hidden group ${unavail ? 'opacity-40 pointer-events-none' : ''}" data-id="${item.id}">
+    <div class="relative overflow-hidden shrink-0">
+      ${imgHtml}
+      ${unavail ? '<div class="absolute inset-0 bg-black/40 flex items-center justify-center"><span class="text-white text-label-sm font-bold bg-error px-2 py-0.5 rounded">Sold Out</span></div>' : ''}
+      <div class="absolute top-1.5 right-1.5 bg-black/50 text-white text-[11px] font-bold px-1.5 py-0.5 rounded">${item.category}</div>
+    </div>
+    <div class="p-sm flex flex-col gap-1">
+      <div class="text-label-md text-on-surface leading-tight line-clamp-2 group-hover:text-secondary transition-colors font-semibold">${item.name}</div>
+      <div class="flex justify-between items-center">
+        <span class="text-label-sm text-on-surface-variant">₹</span>
+        <span class="text-body-md font-bold text-primary">₹${item.price}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('search-input').addEventListener('input', (e) => {
+  searchQuery = e.target.value;
+  renderMenu();
+});
+
+// ─── CART ────────────────────────────────────────────────────────────────────
+async function addToCart(menuId) {
+  const item = allMenu.find(i => i.id === menuId);
+  if (!item || !currentOrderId) return;
+  await addItemToOrder(currentOrderId, item);
+  await renderCart();
+  showToast(`${item.name} added`);
+}
+
+async function renderCart() {
+  if (!currentOrderId) return;
+  const order = await db.cafe_orders.get(Number(currentOrderId));
+  if (!order) return;
+
+  const items = order.items || [];
+  const cartList = document.getElementById('cart-list');
+  const emptyEl = document.getElementById('empty-cart');
+  const clearBtn = document.getElementById('clear-cart-btn');
+
+  if (items.length === 0) {
+    emptyEl.style.display = 'flex';
+    clearBtn.classList.add('hidden');
+    // Remove any previous item rows
+    cartList.querySelectorAll('.cart-item-row').forEach(r => r.remove());
+    setTotals(0);
+    setCartButtons(false);
+    return;
+  }
+
+  emptyEl.style.display = 'none';
+  clearBtn.classList.remove('hidden');
+
+  // Rebuild rows
+  cartList.querySelectorAll('.cart-item-row').forEach(r => r.remove());
+  let subtotal = 0;
+
+  items.forEach((it, idx) => {
+    const lineTotal = it.price * it.qty;
+    subtotal += lineTotal;
+
+    const row = document.createElement('div');
+    row.className = 'cart-item-row bg-surface-container-lowest border border-outline-variant rounded-lg p-sm flex items-start shadow-sm min-h-[64px] group hover:border-secondary transition-colors';
+    row.innerHTML = `
+      <div class="flex flex-col items-center justify-center w-12 mr-2 bg-surface-container rounded py-1 shrink-0">
+        <button class="qty-up material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary cursor-pointer w-full flex justify-center py-0.5" data-idx="${idx}">expand_less</button>
+        <span class="text-label-md font-bold text-primary my-0.5">${it.qty}</span>
+        <button class="qty-down material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary cursor-pointer w-full flex justify-center py-0.5" data-idx="${idx}">expand_more</button>
+      </div>
+      <div class="flex-1 flex flex-col justify-center py-1 min-w-0">
+        <span class="text-label-md text-on-surface font-semibold truncate">${it.name}</span>
+        ${it.notes ? `<span class="text-label-sm text-on-surface-variant mt-0.5 truncate">${it.notes}</span>` : ''}
+      </div>
+      <div class="flex flex-col items-end justify-between py-1 h-full ml-2 shrink-0">
+        <span class="text-label-md text-on-surface font-semibold">₹${lineTotal.toFixed(2)}</span>
+        <button class="delete-btn material-symbols-outlined text-[18px] text-on-surface-variant/50 hover:text-error cursor-pointer mt-2" data-idx="${idx}">delete</button>
+      </div>`;
+    cartList.appendChild(row);
+  });
+
+  // Bind qty/delete buttons
+  cartList.querySelectorAll('.qty-up').forEach(btn => {
+    btn.addEventListener('click', async () => { await adjustItemQty(currentOrderId, Number(btn.dataset.idx), 1); await renderCart(); });
+  });
+  cartList.querySelectorAll('.qty-down').forEach(btn => {
+    btn.addEventListener('click', async () => { await adjustItemQty(currentOrderId, Number(btn.dataset.idx), -1); await renderCart(); });
+  });
+  cartList.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', async () => { await removeItemFromOrder(currentOrderId, Number(btn.dataset.idx)); await renderCart(); });
+  });
+
+  setTotals(subtotal);
+  setCartButtons(true);
+}
+
+function setTotals(subtotal) {
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + tax;
+  document.getElementById('subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('tax').textContent = `₹${tax.toFixed(2)}`;
+  document.getElementById('total-display').textContent = `₹${total.toFixed(2)}`;
+  document.getElementById('item-count').textContent = subtotal > 0
+    ? (document.querySelectorAll('.cart-item-row').length || '—') : '0';
+}
+
+function setCartButtons(hasItems) {
+  document.getElementById('send-kitchen-btn').disabled = !hasItems;
+  document.getElementById('pay-btn').disabled = !hasItems;
+  document.getElementById('open-payment-btn').disabled = !hasItems;
+}
+
+document.getElementById('clear-cart-btn').addEventListener('click', async () => {
+  if (!currentOrderId) return;
+  await db.cafe_orders.update(Number(currentOrderId), { items: [] });
+  emitCafeChange();
+  await renderCart();
+});
+
+// ─── SEND TO KITCHEN ─────────────────────────────────────────────────────────
+document.getElementById('send-kitchen-btn').addEventListener('click', async () => {
+  const order = await db.cafe_orders.get(Number(currentOrderId));
+  if (!order || !order.items?.length) return;
+  await sendOrderToKitchen(currentOrderId);
+  showToast('Order sent to kitchen 🍳');
+  setTimeout(() => window.location.href = 'kitchen_display_system.html', 1000);
+});
+
+// ─── PAYMENT MODAL ───────────────────────────────────────────────────────────
+let selectedMethod = null;
+
+function openPaymentModal() {
+  const subtotal = parseFloat(document.getElementById('subtotal').textContent.replace('₹',''));
+  const tax = subtotal * TAX_RATE;
+  const total = subtotal + tax;
+  document.getElementById('pay-subtotal').textContent = `₹${subtotal.toFixed(2)}`;
+  document.getElementById('pay-tax').textContent = `₹${tax.toFixed(2)}`;
+  document.getElementById('pay-total').textContent = `₹${total.toFixed(2)}`;
+  document.getElementById('pay-order-ref').textContent = `Order #${currentOrderId}`;
+
+  selectedMethod = null;
+  document.querySelectorAll('.pay-method-btn').forEach(b => b.classList.remove('border-secondary','bg-secondary/10'));
+  document.getElementById('cash-section').classList.add('hidden');
+  document.getElementById('upi-section').classList.add('hidden');
+  document.getElementById('cash-tendered').value = '';
+  document.getElementById('change-display').classList.add('hidden');
+  document.getElementById('confirm-payment-btn').disabled = true;
+
+  const modal = document.getElementById('payment-modal');
+  modal.classList.remove('hidden');
+  requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+}
+
+function closePaymentModal() {
+  const modal = document.getElementById('payment-modal');
+  modal.classList.add('opacity-0');
+  setTimeout(() => modal.classList.add('hidden'), 200);
+}
+
+document.getElementById('pay-btn').addEventListener('click', openPaymentModal);
+document.getElementById('open-payment-btn').addEventListener('click', openPaymentModal);
+document.getElementById('close-payment-btn').addEventListener('click', closePaymentModal);
+document.getElementById('payment-modal').addEventListener('click', (e) => { if (e.target === e.currentTarget) closePaymentModal(); });
+
+document.querySelectorAll('.pay-method-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    selectedMethod = btn.dataset.method;
+    document.querySelectorAll('.pay-method-btn').forEach(b => b.classList.remove('border-secondary','bg-secondary/10'));
+    btn.classList.add('border-secondary','bg-secondary/10');
+    document.getElementById('cash-section').classList.toggle('hidden', selectedMethod !== 'cash');
+    document.getElementById('upi-section').classList.toggle('hidden', selectedMethod !== 'upi');
+    if (selectedMethod !== 'cash') document.getElementById('confirm-payment-btn').disabled = false;
+  });
+});
+
+document.getElementById('cash-tendered').addEventListener('input', (e) => {
+  const total = parseFloat(document.getElementById('pay-total').textContent.replace('₹',''));
+  const tendered = parseFloat(e.target.value) || 0;
+  const changeEl = document.getElementById('change-display');
+  if (tendered >= total) {
+    const change = tendered - total;
+    changeEl.textContent = `Change: ₹${change.toFixed(2)}`;
+    changeEl.classList.remove('hidden', 'text-error');
+    changeEl.classList.add('text-secondary');
+    document.getElementById('confirm-payment-btn').disabled = false;
+  } else {
+    changeEl.textContent = tendered > 0 ? `Short by ₹${(total - tendered).toFixed(2)}` : '';
+    changeEl.classList.toggle('hidden', tendered === 0);
+    changeEl.classList.add('text-error');
+    changeEl.classList.remove('text-secondary');
+    document.getElementById('confirm-payment-btn').disabled = true;
+  }
+});
+
+document.getElementById('confirm-payment-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('confirm-payment-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[20px]">sync</span> Processing…';
+
+  // Save payment record on order
+  const total = parseFloat(document.getElementById('pay-total').textContent.replace('₹',''));
+  const tendered = selectedMethod === 'cash' ? (parseFloat(document.getElementById('cash-tendered').value) || total) : total;
+
+  await db.cafe_orders.update(Number(currentOrderId), {
+    status: 'completed',
+    payment_method: selectedMethod,
+    amount_paid: tendered,
+    total_amount: total,
+    completed_at: new Date().toISOString()
+  });
+  emitCafeChange();
+
+  closePaymentModal();
+  showToast(`Payment confirmed via ${selectedMethod.toUpperCase()} 🎉`);
+
+  setTimeout(() => {
+    // Reset POS for next order
+    currentOrderId = null;
+    if (currentTableId) {
+      window.location.href = `floor_plan_table_selection.html`;
+    } else {
+      window.location.reload();
+    }
+  }, 1800);
+});
+
+// ─── TOAST ───────────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  toast.classList.remove('translate-y-20','opacity-0');
+  setTimeout(() => toast.classList.add('translate-y-20','opacity-0'), 2200);
+}
+</script>
+</body>
+</html>
