@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js"></script>
 <script src="global.js"></script>
+<script src="nav.js"></script>
 <script id="tailwind-config">
       tailwind.config = {
         theme: {
@@ -43,15 +44,7 @@
     </style>
 </head>
 <body class="min-h-screen pb-24">
-<!-- Header -->
-<header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
-<button onclick="window.location.href='my_trips.html'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
-<span class="material-symbols-outlined text-deep-charcoal">arrow_back</span>
-</button>
-<div class="flex-1 text-center pr-10">
-<h1 class="text-xl font-bold text-deep-charcoal" id="trip-name-display">Loading Trip...</h1>
-</div>
-</header>
+<!-- Old header replaced by unified nav.js -->
 <main class="max-w-4xl mx-auto p-6 space-y-8">
 <!-- Trip Header Card -->
 <div class="bg-white p-8 rounded-3xl border border-divider-gray shadow-sm flex flex-col md:flex-row gap-8">

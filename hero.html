@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="global.js"></script>
+<script src="nav.js"></script>
 <script id="tailwind-config">
   tailwind.config = {
     theme: {
@@ -78,33 +79,14 @@
   }
 </style>
 </head>
-<body class="text-deep-charcoal h-screen overflow-hidden">
+<body class="text-deep-charcoal h-screen overflow-hidden flex flex-col">
 
-<!-- NAV -->
-<header class="sticky top-0 z-30 bg-white border-b border-divider-gray">
-  <div class="max-w-7xl mx-auto px-4 md:px-10 h-16 flex items-center justify-between">
-    <a href="hero.html" class="flex items-center gap-2">
-      <span class="material-symbols-outlined text-purple-heritage text-3xl">hotel_class</span>
-      <span class="text-2xl font-display font-bold text-deep-charcoal">World International</span>
-    </a>
-    <nav class="hidden md:flex items-center gap-1">
-      <a href="#rooms" class="px-4 py-2 rounded text-sm font-semibold text-neutral-charcoal hover:bg-off-white-light hover:text-purple-heritage transition-colors">Rooms</a>
-      <a href="#cafe" class="px-4 py-2 rounded text-sm font-semibold text-neutral-charcoal hover:bg-off-white-light hover:text-purple-heritage transition-colors">Cafe</a>
-      <a href="#nearby" class="px-4 py-2 rounded text-sm font-semibold text-neutral-charcoal hover:bg-off-white-light hover:text-purple-heritage transition-colors">Nearby</a>
-      <a href="#contact" class="px-4 py-2 rounded text-sm font-semibold text-neutral-charcoal hover:bg-off-white-light hover:text-purple-heritage transition-colors">Contact</a>
-    </nav>
-    <div class="flex items-center gap-3">
-      <a href="auth.html" class="pill-btn px-6 py-2.5 rounded bg-purple-heritage text-white text-sm font-semibold hover:bg-purple-dark shadow-sm">
-        Login / Join
-      </a>
-    </div>
-  </div>
-</header>
+<!-- Old NAV replaced by unified nav.js -->
 
 <!-- HERO -->
-<section class="relative hero-bg min-h-[640px] flex items-center overflow-hidden">
+<section class="relative hero-bg flex-1 flex items-center overflow-hidden">
   <!-- Background Video -->
-  <video class="absolute inset-0 w-full h-full object-cover bg-deep-charcoal" autoplay loop muted playsinline style="filter: brightness(0.65);">
+  <video id="bg-video" class="absolute inset-0 w-full h-full object-cover bg-deep-charcoal" autoplay="autoplay" loop="loop" muted="muted" playsinline="playsinline" disablePictureInPicture preload="auto" style="filter: brightness(0.65);">
     <source src="assets/hero_bg.mp4" type="video/mp4">
   </video>
   <div class="absolute inset-0 bg-gradient-to-b from-black/15 to-black/55 pointer-events-none"></div>
@@ -286,20 +268,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // Video Force-Play & Status Check
-  const heroVideo = document.querySelector('video');
+  const heroVideo = document.getElementById('bg-video');
   if (heroVideo) {
-    heroVideo.addEventListener('loadedmetadata', () => {
-      heroVideo.play().catch(e => console.log("Autoplay prevented, waiting for interaction."));
-    });
+    // Aggressively force muted state in JS
+    heroVideo.defaultMuted = true;
+    heroVideo.muted = true;
+    heroVideo.setAttribute('muted', 'muted');
+    heroVideo.setAttribute('playsinline', 'playsinline');
+    heroVideo.setAttribute('autoplay', 'autoplay');
     
-    // Backup: Try playing every 500ms until successful
+    const forcePlay = () => {
+      heroVideo.muted = true;
+      const playPromise = heroVideo.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => console.log("Safari blocked autoplay:", e));
+      }
+    };
+
+    // Try immediately
+    forcePlay();
+
+    // Try when metadata loads
+    heroVideo.addEventListener('loadedmetadata', forcePlay);
+    heroVideo.addEventListener('canplay', forcePlay);
+    
+    // Backup interval: Try playing every 100ms
     const playInterval = setInterval(() => {
       if (heroVideo.paused) {
-        heroVideo.play().then(() => clearInterval(playInterval)).catch(() => {});
+        forcePlay();
       } else {
         clearInterval(playInterval);
       }
-    }, 500);
+    }, 100);
+
+    // Ultimate fallback: Any interaction anywhere on the page instantly starts the video
+    // (This satisfies Safari's requirement for a "user gesture" if it's in Low Power Mode)
+    const unlockVideo = () => {
+      if (heroVideo.paused) {
+        heroVideo.muted = true;
+        heroVideo.play();
+      }
+      document.removeEventListener('touchstart', unlockVideo);
+      document.removeEventListener('click', unlockVideo);
+      document.removeEventListener('scroll', unlockVideo);
+    };
+    document.addEventListener('touchstart', unlockVideo, { passive: true });
+    document.addEventListener('click', unlockVideo, { passive: true });
+    document.addEventListener('scroll', unlockVideo, { passive: true });
   }
 });
 </script>

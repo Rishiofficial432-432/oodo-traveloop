@@ -157,12 +157,12 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     .mapboxgl-canvas { outline: none !important; }
     #map-3d { width: 100%; height: 100%; border-radius: 1rem; }
 </style>
-<!-- Scripts moved to head -->
+<script src="nav.js"></script>
 </head>
 <body class="bg-off-white font-['Inter'] text-deep-charcoal h-screen overflow-hidden">
 <div class="relative flex h-full w-full flex-col bg-off-white overflow-hidden">
-<!-- Shared Header Fragment -->
-<header class="flex items-center bg-off-white px-container-h py-4 border-b border-divider-gray justify-between">
+<!-- Shared Header Fragment - hidden, replaced by nav.js -->
+<header class="hidden">
 <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="window.location.href='hero.html'">
 <div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 shadow-sm border border-divider-gray" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCIXzDJVjhKjFS0bd3s4xGhgu-AeLvQmegtc9tKpaxXGawEWIKUWYVHGlly2oUQ6RuyycIqcRm6M4cQVnDWfwRgc6O0h__acRYLOK2Ax2EUDPKP59cnXdomKQBTX1PeDIbpYPU7yf_uLSk36djFknXyH26xncGcZphRTP42ffnYF15hAe9AB7OmRgzGF1DCZzWhKhYtGqDdCHtvu3batgl6povfE6sTjo_jiSDkMtNsWDID81Oqw-GRMmb8EVEmIBbIvYVCpqdsyUc");'></div>
 <h2 class="text-deep-charcoal text-xl font-bold leading-tight tracking-[-0.015em]">Traveloop</h2>

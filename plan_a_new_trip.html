@@ -7,7 +7,9 @@
 <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Caveat:wght@700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
 <script src="global.js"></script>
+<script src="nav.js"></script>
 <script id="tailwind-config">
       tailwind.config = {
         theme: {
@@ -42,15 +44,7 @@
     </style>
 </head>
 <body class="min-h-screen pb-24">
-<!-- Header -->
-<header class="flex items-center px-6 h-16 border-b border-divider-gray bg-white sticky top-0 z-40">
-<button onclick="window.location.href='my_trips.html'" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-pale-gray transition-colors">
-<span class="material-symbols-outlined text-deep-charcoal">close</span>
-</button>
-<div class="flex-1 text-center pr-10">
-<h1 class="text-xl font-bold text-deep-charcoal" id="page-title">Create New Adventure</h1>
-</div>
-</header>
+<!-- Old header replaced by unified nav.js -->
 <main class="max-w-3xl mx-auto p-6">
 <div class="bg-white rounded-3xl border border-divider-gray shadow-sm overflow-hidden">
 <div class="h-48 bg-purple-heritage/10 flex flex-col items-center justify-center text-purple-heritage relative group overflow-hidden">
@@ -130,7 +124,7 @@
 
             try {
                 // Point to your local server.js
-                const response = await fetch('http://localhost:3000/upload', {
+                const response = await fetch('http://localhost:3001/upload', {
                     method: 'POST',
                     body: formData
                 });

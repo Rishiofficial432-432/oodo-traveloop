@@ -68,6 +68,7 @@ if (window.supabase) {
 
 // Initialize Local Browser Database (Dexie.js)
 const db = new Dexie("TraveloopDB");
+window.db = db; // Expose globally for inline scripts
 db.version(2).stores({
     trips: '++id, user_id, name, date, created_at',
     bookings: '++id, user_id, room_type, checkin, checkout, guests, status, created_at'
@@ -157,7 +158,7 @@ async function uploadMedia(file) {
     formData.append('media', file);
 
     try {
-        const response = await fetch('http://localhost:3000/upload', {
+        const response = await fetch('http://localhost:3001/upload', {
             method: 'POST',
             body: formData
         });

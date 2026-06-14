@@ -5,7 +5,7 @@ const cors = require('cors');
 const fs = require('fs');
 
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Ensure uploads directory exists
 const uploadDir = path.join(__dirname, 'uploads');
