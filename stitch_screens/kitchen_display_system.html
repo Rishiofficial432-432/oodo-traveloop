@@ -13,6 +13,9 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
+<script src="../global.js"></script>
+<script src="cafe.js"></script>
 <!-- Tailwind Configuration -->
 <script id="tailwind-config">
         tailwind.config = {
@@ -147,14 +150,13 @@
 <!-- Inactive Tab: To Cook -->
 <button onclick="window.location.href='pos_order_view_terminal.html';" class="flex flex-col items-center justify-center w-16 h-16 text-on-surface-variant hover:bg-surface-variant transition-all duration-150 rounded-xl cursor-pointer active:scale-95 group relative">
 <span class="material-symbols-outlined text-[28px] mb-1">restaurant</span>
-<span class="font-label-sm text-label-sm opacity-0 group-hover:opacity-100 absolute -bottom-6 bg-tertiary text-on-tertiary px-2 py-1 rounded whitespace-nowrap pointer-events-none transition-opacity">Launch POS (3)</span>
-<span class="absolute top-1 right-2 w-4 h-4 bg-error text-on-error rounded-full font-label-sm text-[10px] flex items-center justify-center">3</span>
+<span class="font-label-sm text-label-sm opacity-0 group-hover:opacity-100 absolute -bottom-6 bg-tertiary text-on-tertiary px-2 py-1 rounded whitespace-nowrap pointer-events-none transition-opacity">Launch POS</span>
 </button>
 <!-- Active Tab: Preparing -->
 <button class="flex flex-col items-center justify-center w-16 h-16 bg-secondary text-on-secondary rounded-xl mx-2 transition-all duration-150 cursor-pointer active:scale-95 shadow-md relative">
 <span class="material-symbols-outlined text-[28px] mb-1">timer</span>
 <span class="font-label-sm text-label-sm mt-xs text-[10px] uppercase tracking-wider">Prep</span>
-<span class="absolute -top-1 -right-1 w-5 h-5 bg-error text-on-error rounded-full font-label-sm text-[11px] flex items-center justify-center border-2 border-secondary shadow-sm">2</span>
+<span id="kds-prep-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-error text-on-error rounded-full font-label-sm text-[11px] items-center justify-center border-2 border-secondary shadow-sm hidden">0</span>
 </button>
 <!-- Inactive Tab: Completed -->
 <button class="flex flex-col items-center justify-center w-16 h-16 text-on-surface-variant hover:bg-surface-variant transition-all duration-150 rounded-xl cursor-pointer active:scale-95 group relative">
@@ -177,152 +179,158 @@
 <main class="ml-20 flex-1 flex flex-col h-full bg-inverse-surface relative overflow-hidden">
 <!-- Top App Bar equivalent (Contextual Header) -->
 <header class="h-16 border-b border-outline flex items-center justify-between px-lg shrink-0 bg-inverse-surface/90 backdrop-blur z-10">
-<div class="flex items-center gap-sm">
-<span class="material-symbols-outlined text-secondary text-[28px]">timer</span>
-<h1 class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight">World International Cafe — Kitchen</h1>
-<span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded-full ml-sm">Station 1</span>
+<div class="flex items-center gap-4">
+  <button onclick="window.location.href='pos_order_view_terminal.html'" class="flex items-center gap-2 px-4 py-2 rounded-lg text-secondary-fixed font-bold hover:bg-white/5 transition-colors border border-outline/50">
+    <span class="material-symbols-outlined">arrow_back</span>
+    Back to POS
+  </button>
+  <div class="flex items-center gap-sm">
+    <span class="bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded ml-sm uppercase tracking-wider hidden md:inline">Step 3 of 4</span>
+    <h1 class="font-headline-md text-headline-md text-inverse-on-surface tracking-tight hidden lg:block ml-2">Kitchen Display</h1>
+  </div>
 </div>
 <div class="flex items-center gap-md">
-<div class="flex items-center gap-xs text-tertiary-fixed-dim font-label-md text-label-md bg-tertiary px-3 py-1.5 rounded-lg border border-outline-variant">
-<span class="material-symbols-outlined text-[18px]">sort</span>
-<span>Oldest First</span>
-</div>
-<button class="flex items-center gap-xs text-inverse-on-surface hover:text-secondary-fixed font-label-md text-label-md transition-colors">
-<span class="material-symbols-outlined text-[20px]">fullscreen</span>
-</button>
+  <div class="flex items-center gap-xs text-tertiary-fixed-dim font-label-md text-label-md bg-tertiary px-3 py-1.5 rounded-lg border border-outline-variant hidden md:flex">
+    <span class="material-symbols-outlined text-[18px]">sort</span>
+    <span>Oldest First</span>
+  </div>
+  <button onclick="window.location.href='admin_dashboard.html'" class="flex items-center gap-2 px-5 py-2 rounded-lg bg-secondary text-on-secondary font-bold hover:brightness-110 transition-colors shadow-md">
+    Next: Admin Console
+    <span class="material-symbols-outlined">arrow_forward</span>
+  </button>
 </div>
 </header>
 <!-- KDS Grid Area -->
 <div class="flex-1 overflow-y-auto p-lg">
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg auto-rows-max items-start">
-<!-- Ticket Card 1 (Urgent/Long Wait) -->
-<article class="ticket-glass rounded-xl border-t-4 border-t-error border border-outline flex flex-col h-[420px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-transform hover:-translate-y-1">
-<!-- Ticket Header -->
-<div class="p-md border-b border-outline/50 flex justify-between items-start bg-error/10 rounded-t-lg">
-<div>
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-tertiary leading-none mb-1">#102</h2>
-<span class="font-label-md text-label-md text-tertiary-fixed-dim flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">table_restaurant</span> Table 4
-                            </span>
-</div>
-<div class="flex flex-col items-end text-right">
-<span class="font-label-md text-label-md text-error animate-pulse flex items-center gap-1 font-bold">
-<span class="material-symbols-outlined text-[16px]">schedule</span> 12m ago
-                            </span>
-<span class="font-label-sm text-label-sm bg-tertiary-container text-on-tertiary-container px-2 py-0.5 rounded mt-1">Dine-In</span>
-</div>
-</div>
-<!-- Ticket Items -->
-<div class="flex-1 overflow-y-auto p-md space-y-1 custom-scrollbar">
-<!-- Completed Item -->
-<div class="flex items-start gap-sm py-2 opacity-50 group cursor-pointer hover:opacity-80 transition-opacity">
-<span class="material-symbols-outlined text-secondary-fixed shrink-0 mt-0.5" style="font-variation-settings: 'FILL' 1;">check_box</span>
-<div class="flex-1">
-<p class="font-body-md text-body-md text-tertiary-fixed-dim line-through">2x Iced Latte</p>
-<p class="font-label-sm text-label-sm text-outline line-through">- Oat Milk</p>
-</div>
-</div>
-<!-- Pending Item -->
-<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
-<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
-<div class="flex-1">
-<p class="font-body-md text-body-md text-on-tertiary font-medium">1x Veggie Burger</p>
-<p class="font-label-sm text-label-sm text-error bg-error/20 inline-block px-1.5 py-0.5 rounded mt-0.5">NO ONIONS</p>
-</div>
-</div>
-<!-- Pending Item -->
-<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
-<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
-<div class="flex-1">
-<p class="font-body-md text-body-md text-on-tertiary font-medium">1x Truffle Fries</p>
-</div>
-</div>
-</div>
-<!-- Ticket Footer Action -->
-<div class="p-md border-t border-outline/50 bg-tertiary/50 rounded-b-xl shrink-0 mt-auto">
-<button class="w-full bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary font-label-md text-label-md py-3 px-4 rounded-lg flex justify-between items-center transition-colors shadow-sm group">
-<span>Move to Completed</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-</article>
-<!-- Ticket Card 2 (Standard) -->
-<article class="ticket-glass rounded-xl border-t-4 border-t-secondary border border-outline flex flex-col h-[420px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-transform hover:-translate-y-1">
-<!-- Ticket Header -->
-<div class="p-md border-b border-outline/50 flex justify-between items-start bg-secondary/10 rounded-t-lg">
-<div>
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-tertiary leading-none mb-1">#104</h2>
-<span class="font-label-md text-label-md text-tertiary-fixed-dim flex items-center gap-1">
-<span class="material-symbols-outlined text-[14px]">shopping_bag</span> Takeout
-                            </span>
-</div>
-<div class="flex flex-col items-end text-right">
-<span class="font-label-md text-label-md text-secondary-fixed flex items-center gap-1">
-<span class="material-symbols-outlined text-[16px]">schedule</span> 5m ago
-                            </span>
-<span class="font-label-sm text-label-sm bg-primary text-on-primary px-2 py-0.5 rounded mt-1">UberEats</span>
-</div>
-</div>
-<!-- Ticket Items -->
-<div class="flex-1 overflow-y-auto p-md space-y-1 custom-scrollbar">
-<!-- Pending Item -->
-<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
-<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
-<div class="flex-1">
-<p class="font-body-md text-body-md text-on-tertiary font-medium">3x Avocado Toast</p>
-<p class="font-label-sm text-label-sm text-secondary-fixed-dim bg-secondary-fixed-dim/20 inline-block px-1.5 py-0.5 rounded mt-0.5">Gluten Free Bread</p>
-</div>
-</div>
-<!-- Pending Item -->
-<div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors">
-<span class="material-symbols-outlined text-outline shrink-0 mt-0.5">check_box_outline_blank</span>
-<div class="flex-1">
-<p class="font-body-md text-body-md text-on-tertiary font-medium">2x Flat White</p>
-</div>
-</div>
-</div>
-<!-- Ticket Footer Action -->
-<div class="p-md border-t border-outline/50 bg-tertiary/50 rounded-b-xl shrink-0 mt-auto">
-<button class="w-full bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary font-label-md text-label-md py-3 px-4 rounded-lg flex justify-between items-center transition-colors shadow-sm group">
-<span>Move to Completed</span>
-<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-</button>
-</div>
-</article>
+<div id="kds-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg auto-rows-max items-start">
+<!-- Dynamic tickets will be injected here -->
 </div>
 </div>
 </main>
 <script>
-        // Simple script to toggle strikethrough on items for demonstration
-        document.querySelectorAll('.ticket-glass .flex-1.overflow-y-auto > div').forEach(item => {
-            item.addEventListener('click', function() {
-                const icon = this.querySelector('.material-symbols-outlined');
-                const textElements = this.querySelectorAll('p');
-                
-                if (this.classList.contains('opacity-50')) {
-                    // Mark incomplete
-                    this.classList.remove('opacity-50');
-                    icon.textContent = 'check_box_outline_blank';
-                    icon.classList.remove('text-secondary-fixed');
-                    icon.classList.add('text-outline');
-                    icon.style.fontVariationSettings = "'FILL' 0";
-                    textElements.forEach(el => {
-                        el.classList.remove('line-through', 'text-tertiary-fixed-dim');
-                        if(el.classList.contains('font-body-md')) el.classList.add('text-on-tertiary');
-                    });
-                } else {
-                    // Mark complete
-                    this.classList.add('opacity-50');
-                    icon.textContent = 'check_box';
-                    icon.classList.remove('text-outline');
-                    icon.classList.add('text-secondary-fixed');
-                    icon.style.fontVariationSettings = "'FILL' 1";
-                    textElements.forEach(el => {
-                        el.classList.add('line-through', 'text-tertiary-fixed-dim');
-                        if(el.classList.contains('font-body-md')) el.classList.remove('text-on-tertiary');
-                    });
+    async function loadKitchenOrders() {
+        const orders = await getActiveKitchenOrders();
+        
+        // Sort oldest first based on sent_at or created_at
+        orders.sort((a, b) => new Date(a.sent_at || a.created_at) - new Date(b.sent_at || b.created_at));
+
+        const grid = document.getElementById('kds-grid');
+        const badge = document.getElementById('kds-prep-badge');
+        
+        if (orders.length > 0) {
+            badge.textContent = orders.length;
+            badge.style.display = 'flex';
+        } else {
+            badge.style.display = 'none';
+        }
+
+        grid.innerHTML = '';
+        
+        if (orders.length === 0) {
+            grid.innerHTML = '<div class="col-span-full text-center py-16 text-on-surface-variant font-label-md">No active orders right now.</div>';
+            return;
+        }
+
+        for (const order of orders) {
+            let tableText = 'Takeout';
+            if (order.table_id) {
+                const table = await db.cafe_tables.get(order.table_id);
+                if (table) tableText = `Table ${table.number}`;
+            }
+
+            const isUrgent = getElapsedMinutes(order.sent_at || order.created_at) > 15;
+            const topColor = isUrgent ? 'border-t-error' : 'border-t-secondary';
+            const headBg = isUrgent ? 'bg-error/10' : 'bg-secondary/10';
+            
+            const card = document.createElement('article');
+            card.className = `ticket-glass rounded-xl border-t-4 ${topColor} border border-outline flex flex-col h-[420px] shadow-[0_8px_30px_rgb(0,0,0,0.12)] transform transition-transform hover:-translate-y-1`;
+            
+            let itemsHtml = '';
+            (order.items || []).forEach((item, idx) => {
+                const isDone = item.done;
+                const icon = isDone ? 'check_box' : 'check_box_outline_blank';
+                const iconColor = isDone ? 'text-secondary-fixed' : 'text-outline';
+                const opacity = isDone ? 'opacity-50' : '';
+                const lineThrough = isDone ? 'line-through text-tertiary-fixed-dim' : 'text-on-tertiary';
+                const iconFill = isDone ? "font-variation-settings: 'FILL' 1;" : "";
+
+                let notesHtml = '';
+                if (item.notes) {
+                    notesHtml = `<p class="font-label-sm text-label-sm text-error bg-error/20 inline-block px-1.5 py-0.5 rounded mt-0.5">${item.notes}</p>`;
                 }
+
+                itemsHtml += `
+                <div class="flex items-start gap-sm py-2 group cursor-pointer hover:bg-white/5 rounded-md px-1 -mx-1 transition-colors ${opacity}" onclick="toggleKdsItem(${order.id}, ${idx})">
+                    <span class="material-symbols-outlined ${iconColor} shrink-0 mt-0.5" style="${iconFill}">${icon}</span>
+                    <div class="flex-1">
+                        <p class="font-body-md text-body-md ${lineThrough} font-medium">${item.qty}x ${item.name}</p>
+                        ${notesHtml}
+                    </div>
+                </div>`;
             });
+
+            card.innerHTML = `
+            <div class="p-md border-b border-outline/50 flex justify-between items-start ${headBg} rounded-t-lg">
+                <div>
+                    <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-tertiary leading-none mb-1">#${order.id}</h2>
+                    <span class="font-label-md text-label-md text-tertiary-fixed-dim flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[14px]">table_restaurant</span> ${tableText}
+                    </span>
+                </div>
+                <div class="flex flex-col items-end text-right">
+                    <span class="kds-timer font-label-md text-label-md ${isUrgent ? 'text-error animate-pulse font-bold' : 'text-secondary-fixed'} flex items-center gap-1" data-time="${order.sent_at || order.created_at}">
+                        <span class="material-symbols-outlined text-[16px]">schedule</span> <span>Calculating...</span>
+                    </span>
+                    <span class="font-label-sm text-label-sm ${isUrgent ? 'bg-tertiary-container text-on-tertiary-container' : 'bg-primary text-on-primary'} px-2 py-0.5 rounded mt-1">${order.order_type}</span>
+                </div>
+            </div>
+            <div class="flex-1 overflow-y-auto p-md space-y-1 custom-scrollbar">
+                ${itemsHtml}
+            </div>
+            <div class="p-md border-t border-outline/50 bg-tertiary/50 rounded-b-xl shrink-0 mt-auto">
+                <button onclick="markKdsComplete(${order.id})" class="w-full bg-secondary hover:bg-secondary-container hover:text-on-secondary-container text-on-secondary font-label-md text-label-md py-3 px-4 rounded-lg flex justify-between items-center transition-colors shadow-sm group">
+                    <span>Move to Completed</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                </button>
+            </div>`;
+            
+            grid.appendChild(card);
+        }
+        updateTimers();
+    }
+
+    function getElapsedMinutes(dateStr) {
+        if (!dateStr) return 0;
+        return Math.floor((new Date() - new Date(dateStr)) / 60000);
+    }
+
+    function updateTimers() {
+        document.querySelectorAll('.kds-timer').forEach(el => {
+            const timeStr = el.getAttribute('data-time');
+            if (timeStr) {
+                const mins = getElapsedMinutes(timeStr);
+                const textSpan = el.querySelector('span:last-child');
+                if (textSpan) {
+                    if (mins < 1) textSpan.textContent = 'Just now';
+                    else textSpan.textContent = mins + 'm ago';
+                }
+            }
         });
-    </script>
+    }
+
+    window.toggleKdsItem = async function(orderId, itemIdx) {
+        await toggleOrderItemDone(orderId, itemIdx);
+        // Rendering triggers via the cafeChanged event automatically!
+    };
+
+    window.markKdsComplete = async function(orderId) {
+        await completeOrder(orderId);
+    };
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadKitchenOrders();
+        setInterval(updateTimers, 10000); // update times every 10s
+        subscribeCafe(loadKitchenOrders);
+    });
+</script>
 </body></html>

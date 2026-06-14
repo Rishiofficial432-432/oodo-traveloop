@@ -124,7 +124,8 @@
     </style>
 <style>
     body {
-      min-height: max(884px, 100dvh);
+      height: 100vh;
+      overflow: hidden;
     }
   </style>
 
@@ -158,8 +159,8 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
 </style>
 <!-- Scripts moved to head -->
 </head>
-<body class="bg-off-white font-['Inter'] text-deep-charcoal">
-<div class="relative flex min-h-screen w-full flex-col bg-off-white overflow-x-hidden">
+<body class="bg-off-white font-['Inter'] text-deep-charcoal h-screen overflow-hidden">
+<div class="relative flex h-full w-full flex-col bg-off-white overflow-hidden">
 <!-- Shared Header Fragment -->
 <header class="flex items-center bg-off-white px-container-h py-4 border-b border-divider-gray justify-between">
 <div class="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity" onclick="window.location.href='hero.html'">
@@ -252,147 +253,11 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
     </div>
 </section>
 
-<!-- Most Recent Trip Section -->
-<section id="upcoming-trip-section" class="mt-xl">
-    <!-- Dynamic content will be injected here -->
-</section>
+
 
 <script>
-    async function updateDashboardTrip() {
-        const section = document.getElementById('upcoming-trip-section');
-        const urlParams = new URLSearchParams(window.location.search);
-        const tripId = urlParams.get('tripId');
-        
-        let trips = await getTrips();
-        let trip = null;
-
-        if (tripId) {
-            trip = await db.trips.get(Number(tripId));
-        } else if (trips.length > 0) {
-            trip = trips[0];
-        }
-        
-        if (!trip) {
-            section.innerHTML = `
-                <div class="bg-white rounded-xl border border-divider-gray p-12 text-center flex flex-col items-center gap-4">
-                    <div class="size-20 rounded-full bg-pale-gray flex items-center justify-center text-neutral-charcoal">
-                        <span class="material-symbols-outlined" style="font-size: 40px;">explore</span>
-                    </div>
-                    <div>
-                        <h2 class="text-2xl font-bold text-deep-charcoal">No trips planned yet</h2>
-                        <p class="text-neutral-charcoal">Your next adventure is just a few clicks away.</p>
-                    </div>
-                    <button onclick="window.location.href='plan_a_new_trip.html'" class="mt-4 px-8 py-3 bg-purple-heritage text-white font-bold rounded-xl shadow-md hover:bg-purple-dark transition-all cursor-pointer">
-                        Start Planning
-                    </button>
-                </div>
-            `;
-            return;
-        }
-
-        const coverImage = trip.image_url || 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&q=80&w=1000';
-        
-        section.innerHTML = `
-            <div class="flex items-center justify-between mb-lg">
-                <h2 class="text-deep-charcoal text-heading-h4 font-bold">Upcoming Trip</h2>
-                <a class="text-purple-heritage font-semibold hover:underline flex items-center gap-1" href="my_trips.html">
-                    View all trips <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                </a>
-            </div>
-            <div class="bg-white rounded-xl border border-divider-gray shadow-[0px_3px_6px_0px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col md:flex-row transition-all hover:shadow-[0px_10px_20px_0px_rgba(0,0,0,0.08)]">
-                <div class="md:w-1/3 h-64 md:h-auto relative overflow-hidden">
-                    ${trip.video_url ? 
-                        `<video src="${trip.video_url}" autoplay muted loop playsinline class="absolute inset-0 w-full h-full object-cover"></video>` :
-                        `<div class="absolute inset-0 bg-center bg-cover" style='background-image: url("${coverImage}");'></div>`
-                    }
-                    <div class="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-purple-heritage uppercase tracking-wider">
-                        ${trip.status || 'Upcoming'}
-                    </div>
-                </div>
-                <div class="p-lg flex-1 flex flex-col justify-between">
-                    <div>
-                        <div class="flex justify-between items-start">
-                            <h3 class="text-[28px] font-bold text-deep-charcoal">${trip.name}</h3>
-                            <span class="bg-success-green/10 text-success-green px-3 py-1 rounded text-sm font-semibold">Active</span>
-                        </div>
-                        <p class="text-neutral-charcoal mt-2 flex items-center gap-2">
-                            <span class="material-symbols-outlined text-[18px]">calendar_today</span>
-                            ${trip.date || 'Flexible Dates'}
-                        </p>
-                        <p class="text-sm text-neutral-charcoal mt-4 line-clamp-3">${trip.description || 'No description yet.'}</p>
-                    </div>
-                    <div class="mt-lg flex gap-3">
-                        <button class="flex-1 bg-pale-gray text-purple-heritage font-bold py-3 rounded hover:bg-divider-gray transition-colors text-button-reg cursor-pointer" onclick="window.location.href='plan_a_new_trip.html?edit=${trip.id}'">Edit Itinerary</button>
-                        <button class="flex-1 bg-purple-heritage text-white font-bold py-3 rounded hover:bg-purple-dark transition-colors shadow-sm text-button-reg cursor-pointer" onclick="window.location.href='itinerary_builder.html?tripId=${trip.id}'">Trip Dashboard</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    }
-
-    document.addEventListener('DOMContentLoaded', updateDashboardTrip);
-    subscribeToTable('trips', updateDashboardTrip);
+    // Removed updateDashboardTrip logic since Upcoming Trip section was extracted.
 </script>
-<!-- Popular Cities / Recommended -->
-<section class="pt-xl pb-section-v">
-<div class="flex items-center justify-between mb-lg">
-<h2 class="text-deep-charcoal text-heading-h4 font-bold">Discover New Horizons</h2>
-<div class="flex gap-2">
-<button class="p-2 rounded-full border border-divider-gray hover:bg-pale-gray transition-colors cursor-pointer" onclick="window.history.back()">
-<span class="material-symbols-outlined">chevron_left</span>
-</button>
-<button class="p-2 rounded-full border border-divider-gray hover:bg-pale-gray transition-colors cursor-pointer">
-<span class="material-symbols-outlined">chevron_right</span>
-</button>
-</div>
-</div>
-<div class="flex gap-lg overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4">
-<!-- City Card 1 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Tokyo')">
-<div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCSASFn4FBC0ByED9W86gCpAuoSTWRh_7x6fZngztuaGA01gpiSELHRlE9yMXFSKaazYFdTi1eNc8tP5WZMy94pvDBBnXMJLECHY3maEQ3KwnaoItY-ngsG5R1DyCkdzxhfvvvaIL5MazhkuWpCVGUYOLxxk_8PKmZtb6LGWk4xGR-JayrdhyWoPGtlFZNtkQVwBBYGJIFgi_yttFo412DQfxxJIO9wbq6_ZV4nk6CjCInqFNVyOzawBr1ryX_7ve0rSJdM0gEqICc");'></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-4 text-white">
-<h4 class="text-xl font-bold">Tokyo, Japan</h4>
-<p class="text-sm opacity-90">Futuristic Cityscape &amp; Tradition</p>
-</div>
-</div>
-</div>
-<!-- City Card 2 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Venice')">
-<div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCStXeNDBW9sv_imTl7abogBiMrc6bmR-I7kVUhSd6WRz54lhnd3hlooFE78IgC3cfBWdEenYepvuXitnWbfGfbFdNv03vsGjZx-XwICUSflTJeGTJ7Vju2TzYTvD-H6OAOCQ7IhLOo23YjmGMatKADddR7TjxdT31VXuIewRH_qvTyOnIhSPFzjvefLEloWyJRQXl4epYPhr13lB97w58i8-3fierS2jCsjrPwEz8NmCaieam9y0APQnag0uCcIhMCdr72xQJRKxg");'></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-4 text-white">
-<h4 class="text-xl font-bold">Venice, Italy</h4>
-<p class="text-sm opacity-90">Timeless Canals &amp; Artistry</p>
-</div>
-</div>
-</div>
-<!-- City Card 3 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Santorini')">
-<div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuD1bYj3YrGXxHk-LC9vvVmDhB9FDsRcLbB715fZwx16qgPOG4a0RL38bGsdAbXbxeFHgDnZ-2MxkhgWexXCor-lSefPu1tH1as6nt8mO_-1H075Z5UQhv0gg2fiBS90RKJ-woOMURURhbjoS3X5Idd32RUvJ1-SAtM_Ygn4y6yavTkJ-RhzCnnm2IgZ92ieK1w8DIftsfZw1EHlp3JXqBxYCJZJ3gZUZEF0jqDwUo_a8-y8aXOB0jbr4c7qXpV-ohf_QUv-4Q4xEFc");'></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-4 text-white">
-<h4 class="text-xl font-bold">Santorini, Greece</h4>
-<p class="text-sm opacity-90">White Cliffs &amp; Azure Seas</p>
-</div>
-</div>
-</div>
-<!-- City Card 4 -->
-<div class="min-w-[280px] group cursor-pointer" onclick="updateExplorerView('Paris')">
-<div class="relative h-80 rounded-xl overflow-hidden mb-3">
-<div class="absolute inset-0 bg-center bg-cover transition-transform duration-500 group-hover:scale-110" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB8aQQ5myOU4colQLwRhIFoW5gplemN8LixOP7gcof7YcQoEhS1Mdkcm-4htVaVXTxq9pN5d_qd77bI2CXNOglYR_6y0fu6FmWX8_Phh4jSt26xCfETCZlHYnjv15TPoOFhSluCflvy62inKb2krV0wbeM8ilDEcObHvd8DYV8tEgWLWH4_x42SuaOEDXgY0VMr4TC-F9sZk3rUmMfRnemJwByxDw1TVxFzNc60qAzkeAeElKScLyCcDvP0BrC_v6T_aWMyZmfKKgM");'></div>
-<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-<div class="absolute bottom-4 left-4 text-white">
-<h4 class="text-xl font-bold">Paris, France</h4>
-<p class="text-sm opacity-90">Culinary Delights &amp; Landmarks</p>
-</div>
-</div>
-</div>
-</div>
-</section>
 
 <!-- Bottom Navigation (MacOS Dock Style) -->
 <div class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
@@ -408,6 +273,10 @@ html[data-magicui-theme-vt="active"]::view-transition-group(root) {
         </a>
         <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="budget_planner.html">
             <span class="material-symbols-outlined text-[24px]">payments</span>
+        </a>
+        <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-white bg-purple-heritage hover:bg-purple-dark transition-colors shadow-sm relative group" href="stitch_screens/floor_plan_table_selection.html">
+            <span class="material-symbols-outlined text-[24px]">point_of_sale</span>
+            <span class="absolute -top-10 scale-0 transition-all rounded bg-deep-charcoal text-white text-xs px-2 py-1 group-hover:scale-100">Cafe POS</span>
         </a>
         <a class="dock-item flex aspect-square cursor-pointer items-center justify-center rounded-full text-neutral-charcoal hover:bg-pale-gray dark:hover:bg-neutral-charcoal dark:text-gray-300 transition-colors" href="profile.html">
             <span class="material-symbols-outlined text-[24px]">person</span>

@@ -31,29 +31,36 @@ tailwind.config = {
 <body class="bg-background text-on-background h-screen overflow-hidden flex flex-col select-none" style="font-family:Inter,sans-serif">
 
 <!-- NAV -->
-<nav class="fixed top-0 w-full h-14 bg-primary text-on-primary flex items-center justify-between px-md z-50 shadow-md">
-  <div class="flex items-center space-x-lg mr-xl">
-    <a href="admin_dashboard.html" class="font-display-brand text-display-brand text-on-primary hover:opacity-85 transition-opacity">World International Cafe</a>
-  </div>
-  <div class="flex items-center space-x-xs h-full py-1">
-    <a class="h-full flex items-center px-4 bg-on-primary/15 rounded-lg font-bold text-label-md scale-98" href="pos_order_view_terminal.html">POS Order</a>
-    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="kitchen_display_system.html">Active Orders</a>
-    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="floor_plan_table_selection.html">Table View</a>
-    <a class="h-full flex items-center px-4 text-on-primary/80 hover:text-on-primary hover:bg-primary-fixed-dim/20 rounded-lg text-label-md transition-colors" href="admin_dashboard.html">Dashboard</a>
-  </div>
-  <div class="flex items-center space-x-md ml-auto">
-    <div id="table-badge" class="bg-surface-tint text-on-primary px-4 py-1.5 rounded-lg flex items-center gap-2 border border-on-primary/20 font-bold text-label-md">
+<nav class="fixed top-0 w-full h-16 bg-surface-container-lowest border-b border-outline-variant shadow-sm flex items-center justify-between px-md z-50">
+  <div class="flex items-center gap-4">
+    <button onclick="window.location.href='floor_plan_table_selection.html'" class="flex items-center gap-2 px-4 py-2 rounded-lg text-primary font-bold hover:bg-surface-variant transition-colors border border-outline-variant">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back to Floor Plan
+    </button>
+    <div id="table-badge" class="bg-surface-tint text-on-primary px-3 py-1.5 rounded-lg flex items-center gap-2 border border-on-primary/20 font-bold text-label-md">
       <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">table_restaurant</span>
       <span id="table-label">Walk-in</span>
     </div>
-    <button id="open-payment-btn" disabled class="bg-secondary text-on-secondary px-4 py-1.5 rounded-lg text-label-md font-bold hover:brightness-95 transition-all flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
+  </div>
+  
+  <div class="hidden md:flex flex-col items-center">
+    <span class="text-label-sm text-on-surface-variant uppercase tracking-widest">Step 2 of 4</span>
+    <span class="font-headline-md text-[18px] text-on-background font-bold">POS Terminal</span>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button id="open-payment-btn" disabled class="bg-secondary text-on-secondary px-4 py-2 rounded-lg text-label-md font-bold hover:brightness-95 transition-all flex items-center gap-1 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed">
       <span class="material-symbols-outlined text-[18px]">payments</span> Pay
+    </button>
+    <button onclick="window.location.href='kitchen_display_system.html'" class="flex items-center gap-2 px-5 py-2 rounded-lg bg-primary text-on-primary font-bold hover:brightness-110 transition-colors shadow-md">
+      Next: Kitchen Display
+      <span class="material-symbols-outlined">arrow_forward</span>
     </button>
   </div>
 </nav>
 
 <!-- MAIN -->
-<main class="flex-1 mt-14 flex flex-row w-full bg-background overflow-hidden">
+<main class="flex-1 mt-16 flex flex-row w-full bg-background overflow-hidden">
 
   <!-- LEFT: Menu -->
   <section class="w-[60%] flex flex-col h-full bg-background">
