@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hotel Rooms | World International</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="global.js"></script>
+<script src="nav.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          "purple-heritage": "#714B67",
+          "purple-dark": "#5A3C52",
+          "teal-primary": "#017E84",
+          "deep-charcoal": "#111827",
+          "neutral-charcoal": "#374151",
+          "divider-gray": "#DEE2E6",
+          "pale-gray": "#F3F4F6",
+          "gold-amber": "#FBB130",
+        },
+        fontFamily: { display: ["Caveat","cursive"], sans: ["Inter","sans-serif"] }
+      }
+    }
+  }
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; background: #f9f9ff; }
+  .room-card { transition: transform .25s ease, box-shadow .25s ease; }
+  .room-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+  .room-img { transition: transform .5s ease; }
+  .room-card:hover .room-img { transform: scale(1.05); }
+  .badge { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .star { color: #FBB130; }
+  /* Modal */
+  #booking-modal { transition: opacity .2s ease; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Page Hero -->
+<section class="relative bg-gradient-to-br from-purple-heritage to-purple-dark text-white py-16 px-6 overflow-hidden">
+  <div class="absolute inset-0 opacity-10" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80');background-size:cover;background-position:center;"></div>
+  <div class="relative max-w-5xl mx-auto text-center">
+    <p class="text-white/70 text-sm font-semibold uppercase tracking-widest mb-3">World International Hotel</p>
+    <h1 class="text-5xl font-bold leading-tight mb-4">Find Your Perfect Room</h1>
+    <p class="text-white/80 text-lg max-w-xl mx-auto">Quiet, comfortable rooms in the heart of the city. All-inclusive amenities, zero surprises at check-in.</p>
+
+    <!-- Quick Search Bar -->
+    <div class="mt-8 bg-white rounded-2xl p-4 flex flex-col md:flex-row gap-3 max-w-3xl mx-auto shadow-2xl">
+      <div class="flex-1 flex items-center gap-2 border border-divider-gray rounded-xl px-4 py-2.5">
+        <span class="material-symbols-outlined text-purple-heritage text-[20px]">calendar_today</span>
+        <div class="flex-1">
+          <label class="text-[10px] text-neutral-charcoal font-semibold uppercase tracking-wide block">Check-in</label>
+          <input id="filter-checkin" type="date" class="text-deep-charcoal text-sm font-semibold border-0 p-0 focus:ring-0 w-full"/>
+        </div>
+      </div>
+      <div class="flex-1 flex items-center gap-2 border border-divider-gray rounded-xl px-4 py-2.5">
+        <span class="material-symbols-outlined text-purple-heritage text-[20px]">event_available</span>
+        <div class="flex-1">
+          <label class="text-[10px] text-neutral-charcoal font-semibold uppercase tracking-wide block">Check-out</label>
+          <input id="filter-checkout" type="date" class="text-deep-charcoal text-sm font-semibold border-0 p-0 focus:ring-0 w-full"/>
+        </div>
+      </div>
+      <div class="flex-1 flex items-center gap-2 border border-divider-gray rounded-xl px-4 py-2.5">
+        <span class="material-symbols-outlined text-purple-heritage text-[20px]">group</span>
+        <div class="flex-1">
+          <label class="text-[10px] text-neutral-charcoal font-semibold uppercase tracking-wide block">Guests</label>
+          <select id="filter-guests" class="text-deep-charcoal text-sm font-semibold border-0 p-0 focus:ring-0 w-full bg-transparent">
+            <option>1 Guest</option><option selected>2 Guests</option><option>3 Guests</option><option>4+ Guests</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="filterRooms()" class="bg-purple-heritage text-white px-8 py-3 rounded-xl font-bold hover:bg-purple-dark transition-all shadow-md flex items-center gap-2 whitespace-nowrap">
+        <span class="material-symbols-outlined text-[18px]">search</span> Search
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Filter Chips -->
+<div class="max-w-6xl mx-auto px-6 mt-8">
+  <div class="flex items-center gap-3 flex-wrap">
+    <span class="text-sm font-semibold text-neutral-charcoal">Filter:</span>
+    <button onclick="setFilter('all')" id="chip-all" class="filter-chip px-4 py-1.5 rounded-full border border-purple-heritage bg-purple-heritage text-white text-sm font-semibold transition-all">All Rooms</button>
+    <button onclick="setFilter('standard')" id="chip-standard" class="filter-chip px-4 py-1.5 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold hover:border-purple-heritage transition-all">Standard</button>
+    <button onclick="setFilter('deluxe')" id="chip-deluxe" class="filter-chip px-4 py-1.5 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold hover:border-purple-heritage transition-all">Deluxe</button>
+    <button onclick="setFilter('suite')" id="chip-suite" class="filter-chip px-4 py-1.5 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold hover:border-purple-heritage transition-all">Suite</button>
+    <button onclick="setFilter('penthouse')" id="chip-penthouse" class="filter-chip px-4 py-1.5 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold hover:border-purple-heritage transition-all">Penthouse</button>
+  </div>
+</div>
+
+<!-- Rooms Grid -->
+<main class="max-w-6xl mx-auto px-6 py-8">
+  <div id="rooms-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+</main>
+
+<!-- BOOKING MODAL -->
+<div id="booking-modal" class="fixed inset-0 z-[9000] flex items-center justify-center bg-black/50 hidden opacity-0 p-4">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
+    <div class="bg-gradient-to-r from-purple-heritage to-purple-dark text-white px-6 py-5 flex justify-between items-center">
+      <div>
+        <h3 class="text-xl font-bold" id="modal-room-name">Room Name</h3>
+        <p class="text-white/70 text-sm mt-0.5" id="modal-room-price">₹0 / night</p>
+      </div>
+      <button onclick="closeBookingModal()" class="p-2 rounded-full hover:bg-white/10 transition-colors">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="p-6 space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wide block mb-1">Check-in</label>
+          <input id="modal-checkin" type="date" class="w-full border border-divider-gray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-heritage focus:ring-2 focus:ring-purple-heritage/20"/>
+        </div>
+        <div>
+          <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wide block mb-1">Check-out</label>
+          <input id="modal-checkout" type="date" class="w-full border border-divider-gray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-heritage focus:ring-2 focus:ring-purple-heritage/20"/>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wide block mb-1">Guests</label>
+        <select id="modal-guests" class="w-full border border-divider-gray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-heritage focus:ring-2 focus:ring-purple-heritage/20">
+          <option>1 Guest</option><option selected>2 Guests</option><option>3 Guests</option><option>4+ Guests</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-xs font-bold text-neutral-charcoal uppercase tracking-wide block mb-1">Special Requests (optional)</label>
+        <textarea id="modal-notes" rows="2" placeholder="Early check-in, extra pillows, etc." class="w-full border border-divider-gray rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-purple-heritage focus:ring-2 focus:ring-purple-heritage/20 resize-none"></textarea>
+      </div>
+      <!-- Price Summary -->
+      <div class="bg-pale-gray rounded-xl p-4 space-y-1">
+        <div class="flex justify-between text-sm text-neutral-charcoal"><span id="modal-nights-label">Nights</span><span id="modal-nights-cost">₹0</span></div>
+        <div class="flex justify-between text-sm text-neutral-charcoal"><span>Taxes (12%)</span><span id="modal-tax">₹0</span></div>
+        <div class="flex justify-between text-base font-bold text-deep-charcoal border-t border-divider-gray pt-2 mt-2"><span>Total</span><span id="modal-total">₹0</span></div>
+      </div>
+      <button id="confirm-booking-btn" onclick="confirmBooking()" class="w-full bg-purple-heritage text-white py-4 rounded-xl font-bold text-base hover:bg-purple-dark transition-all shadow-md flex items-center justify-center gap-2">
+        <span class="material-symbols-outlined">hotel</span> Confirm Booking
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS TOAST -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-deep-charcoal text-white px-6 py-3 rounded-full shadow-xl text-sm font-semibold flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">check_circle</span>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+const ROOMS = [
+  { id: 1, type: 'standard', name: 'Comfort Classic', price: 2499, capacity: 2, size: '25 sqm', bed: 'Queen Bed', view: 'Garden View', rating: 4.3, reviews: 128, amenities: ['WiFi','AC','TV','Minibar','Safe'], img: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 2, type: 'standard', name: 'Urban Retreat', price: 2999, capacity: 2, size: '28 sqm', bed: 'King Bed', view: 'City View', rating: 4.5, reviews: 94, amenities: ['WiFi','AC','TV','Minibar','Safe','Bathtub'], img: 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 3, type: 'deluxe', name: 'Deluxe Heritage', price: 4499, capacity: 2, size: '35 sqm', bed: 'King Bed', view: 'Heritage Garden', rating: 4.7, reviews: 203, amenities: ['WiFi','AC','Smart TV','Minibar','Safe','Jacuzzi','Balcony'], img: 'https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 4, type: 'deluxe', name: 'Skyline Deluxe', price: 5499, capacity: 3, size: '40 sqm', bed: 'King Bed + Sofa', view: 'City Skyline', rating: 4.8, reviews: 167, amenities: ['WiFi','AC','Smart TV','Minibar','Safe','Walk-in Shower','Balcony'], img: 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80', available: false },
+  { id: 5, type: 'suite', name: 'Royal Suite', price: 9999, capacity: 4, size: '65 sqm', bed: '2x King Bed', view: 'Panoramic City', rating: 4.9, reviews: 89, amenities: ['WiFi','AC','Smart TV','Minibar','Safe','Jacuzzi','Private Dining','Butler'], img: 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 6, type: 'suite', name: 'Executive Suite', price: 7999, capacity: 3, size: '55 sqm', bed: 'King Bed + Living', view: 'Pool & Garden', rating: 4.8, reviews: 112, amenities: ['WiFi','AC','Smart TV','Minibar','Safe','Soaking Tub','Living Room'], img: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 7, type: 'penthouse', name: 'The Penthouse', price: 24999, capacity: 6, size: '120 sqm', bed: '3x King Bed', view: '360° City View', rating: 5.0, reviews: 31, amenities: ['WiFi','AC','Home Theatre','Full Bar','Private Chef','Jacuzzi','Terrace','Concierge'], img: 'https://images.unsplash.com/photo-1560185007-cde436f6a4d0?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 8, type: 'standard', name: 'Garden Nook', price: 2199, capacity: 1, size: '22 sqm', bed: 'Double Bed', view: 'Private Garden', rating: 4.2, reviews: 76, amenities: ['WiFi','AC','TV','Tea Kettle'], img: 'https://images.unsplash.com/photo-1512918728675-ed5a9ecdebfd?auto=format&fit=crop&w=800&q=80', available: true },
+  { id: 9, type: 'deluxe', name: 'Pool View Deluxe', price: 5999, capacity: 2, size: '38 sqm', bed: 'King Bed', view: 'Pool Side', rating: 4.6, reviews: 145, amenities: ['WiFi','AC','Smart TV','Minibar','Safe','Pool Access','Balcony'], img: 'https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=800&q=80', available: true },
+];
+
+let currentFilter = 'all';
+let selectedRoom = null;
+
+function renderRooms(filter = 'all') {
+  const grid = document.getElementById('rooms-grid');
+  const filtered = filter === 'all' ? ROOMS : ROOMS.filter(r => r.type === filter);
+
+  grid.innerHTML = filtered.map(room => `
+    <div class="room-card bg-white rounded-2xl border border-divider-gray overflow-hidden shadow-sm cursor-pointer" onclick="${room.available ? `openBooking(${room.id})` : ''}">
+      <div class="relative h-52 overflow-hidden">
+        <img src="${room.img}" alt="${room.name}" class="room-img w-full h-full object-cover" loading="lazy"/>
+        <div class="absolute top-3 left-3">
+          <span class="badge px-2.5 py-1 rounded-full text-white" style="background:${typeColor(room.type)}">${room.type}</span>
+        </div>
+        <div class="absolute top-3 right-3">
+          ${!room.available ? '<span class="badge bg-red-500 text-white px-2.5 py-1 rounded-full">Sold Out</span>' : ''}
+        </div>
+        <div class="absolute bottom-3 left-3 bg-black/50 backdrop-blur text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;color:#FBB130">star</span>
+          ${room.rating} (${room.reviews})
+        </div>
+      </div>
+      <div class="p-5">
+        <div class="flex justify-between items-start mb-2">
+          <h3 class="text-lg font-bold text-deep-charcoal leading-tight">${room.name}</h3>
+          <div class="text-right">
+            <span class="text-xl font-bold text-purple-heritage">₹${room.price.toLocaleString('en-IN')}</span>
+            <span class="text-xs text-neutral-charcoal block">/night</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-3">
+          <span class="flex items-center gap-1 text-xs text-neutral-charcoal"><span class="material-symbols-outlined text-[14px]">straighten</span>${room.size}</span>
+          <span class="flex items-center gap-1 text-xs text-neutral-charcoal"><span class="material-symbols-outlined text-[14px]">bed</span>${room.bed}</span>
+          <span class="flex items-center gap-1 text-xs text-neutral-charcoal"><span class="material-symbols-outlined text-[14px]">landscape</span>${room.view}</span>
+          <span class="flex items-center gap-1 text-xs text-neutral-charcoal"><span class="material-symbols-outlined text-[14px]">group</span>Up to ${room.capacity}</span>
+        </div>
+        <div class="flex flex-wrap gap-1 mb-4">
+          ${room.amenities.slice(0,4).map(a => `<span class="text-[11px] bg-pale-gray px-2 py-0.5 rounded-full text-neutral-charcoal font-medium">${a}</span>`).join('')}
+          ${room.amenities.length > 4 ? `<span class="text-[11px] bg-pale-gray px-2 py-0.5 rounded-full text-neutral-charcoal font-medium">+${room.amenities.length - 4} more</span>` : ''}
+        </div>
+        <button class="w-full py-3 rounded-xl font-bold text-sm transition-all ${room.available ? 'bg-purple-heritage text-white hover:bg-purple-dark shadow-md' : 'bg-pale-gray text-neutral-charcoal cursor-not-allowed'}" ${!room.available ? 'disabled' : `onclick="event.stopPropagation();openBooking(${room.id})"`}>
+          ${room.available ? '🏨 Book Now' : 'Not Available'}
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function typeColor(type) {
+  return { standard: '#374151', deluxe: '#714B67', suite: '#017E84', penthouse: '#FBB130' }[type] || '#714B67';
+}
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-chip').forEach(c => {
+    c.className = 'filter-chip px-4 py-1.5 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold hover:border-purple-heritage transition-all';
+  });
+  const active = document.getElementById('chip-' + filter);
+  if (active) active.className = 'filter-chip px-4 py-1.5 rounded-full border border-purple-heritage bg-purple-heritage text-white text-sm font-semibold transition-all';
+  renderRooms(filter);
+}
+
+function filterRooms() { renderRooms(currentFilter); }
+
+// Booking Modal
+function openBooking(roomId) {
+  selectedRoom = ROOMS.find(r => r.id === roomId);
+  if (!selectedRoom) return;
+
+  document.getElementById('modal-room-name').textContent = selectedRoom.name;
+  document.getElementById('modal-room-price').textContent = `₹${selectedRoom.price.toLocaleString('en-IN')} / night`;
+
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 86400000);
+  const fmt = d => d.toISOString().split('T')[0];
+  document.getElementById('modal-checkin').value = document.getElementById('filter-checkin').value || fmt(today);
+  document.getElementById('modal-checkout').value = document.getElementById('filter-checkout').value || fmt(tomorrow);
+  document.getElementById('modal-guests').value = document.getElementById('filter-guests').value;
+
+  updatePriceSummary();
+  ['modal-checkin','modal-checkout'].forEach(id => document.getElementById(id).addEventListener('change', updatePriceSummary));
+
+  const modal = document.getElementById('booking-modal');
+  modal.classList.remove('hidden');
+  requestAnimationFrame(() => modal.classList.remove('opacity-0'));
+}
+
+function closeBookingModal() {
+  const modal = document.getElementById('booking-modal');
+  modal.classList.add('opacity-0');
+  setTimeout(() => modal.classList.add('hidden'), 200);
+}
+
+function updatePriceSummary() {
+  if (!selectedRoom) return;
+  const ci = new Date(document.getElementById('modal-checkin').value);
+  const co = new Date(document.getElementById('modal-checkout').value);
+  const nights = Math.max(1, Math.round((co - ci) / 86400000)) || 1;
+  const subtotal = selectedRoom.price * nights;
+  const tax = subtotal * 0.12;
+  const total = subtotal + tax;
+  document.getElementById('modal-nights-label').textContent = `${nights} Night${nights > 1 ? 's' : ''} × ₹${selectedRoom.price.toLocaleString('en-IN')}`;
+  document.getElementById('modal-nights-cost').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+  document.getElementById('modal-tax').textContent = `₹${Math.round(tax).toLocaleString('en-IN')}`;
+  document.getElementById('modal-total').textContent = `₹${Math.round(total).toLocaleString('en-IN')}`;
+}
+
+async function confirmBooking() {
+  const btn = document.getElementById('confirm-booking-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Processing…';
+
+  const checkin = document.getElementById('modal-checkin').value;
+  const checkout = document.getElementById('modal-checkout').value;
+  const guests = document.getElementById('modal-guests').value;
+  const notes = document.getElementById('modal-notes').value;
+
+  if (!checkin || !checkout || new Date(checkout) <= new Date(checkin)) {
+    alert('Please pick valid check-in and check-out dates.');
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined">hotel</span> Confirm Booking';
+    return;
+  }
+
+  try {
+    await window.db.bookings.add({
+      room_id: selectedRoom.id,
+      room_type: selectedRoom.name,
+      room_category: selectedRoom.type,
+      price_per_night: selectedRoom.price,
+      checkin, checkout, guests, notes,
+      status: 'Confirmed',
+      created_at: new Date().toISOString()
+    });
+
+    closeBookingModal();
+    showToast(`✅ ${selectedRoom.name} booked! Check My Trips for details.`);
+  } catch(e) {
+    alert('Booking failed: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined">hotel</span> Confirm Booking';
+  }
+}
+
+document.getElementById('booking-modal').addEventListener('click', e => { if (e.target === e.currentTarget) closeBookingModal(); });
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('translate-y-20','opacity-0');
+  setTimeout(() => t.classList.add('translate-y-20','opacity-0'), 3000);
+}
+
+// Init dates
+window.addEventListener('DOMContentLoaded', () => {
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 86400000);
+  const fmt = d => d.toISOString().split('T')[0];
+  document.getElementById('filter-checkin').value = fmt(today);
+  document.getElementById('filter-checkout').value = fmt(tomorrow);
+  renderRooms();
+});
+</script>
+</body>
+</html>

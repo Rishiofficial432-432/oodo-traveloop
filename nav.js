@@ -160,11 +160,22 @@
 
     <!-- Navigation Links -->
     <div class="wi-links">
-      <a href="${base}traveloop_dashboard.html" class="${isActive('traveloop_dashboard.html')}">
-        <span class="material-symbols-outlined">home</span>
-        <span>Hub</span>
+      <!-- Hotel Side -->
+      <a href="${base}rooms.html" class="${isActive('rooms.html')}">
+        <span class="material-symbols-outlined">hotel</span>
+        <span>Rooms</span>
       </a>
-      <a href="${base}my_trips.html" class="${isActive('my_trips.html')} ${isActive('plan_a_new_trip.html')} ${isActive('itinerary_builder.html')}">
+      <a href="${base}cafe_menu.html" class="${isActive('cafe_menu.html')}">
+        <span class="material-symbols-outlined">local_cafe</span>
+        <span>Cafe Menu</span>
+      </a>
+      <div class="wi-divider"></div>
+      <!-- Travel Side -->
+      <a href="${base}traveloop_dashboard.html" class="${isActive('traveloop_dashboard.html')}">
+        <span class="material-symbols-outlined">travel_explore</span>
+        <span>Travel Hub</span>
+      </a>
+      <a href="${base}my_trips.html" class="${isActive('my_trips.html')}">
         <span class="material-symbols-outlined">luggage</span>
         <span>My Trips</span>
       </a>
@@ -172,14 +183,11 @@
         <span class="material-symbols-outlined">explore</span>
         <span>Explore</span>
       </a>
-      <a href="${base}budget_planner.html" class="${isActive('budget_planner.html')}">
-        <span class="material-symbols-outlined">payments</span>
-        <span>Budget</span>
-      </a>
       <div class="wi-divider"></div>
-      <a href="${base}stitch_screens/floor_plan_table_selection.html" class="${isActive('floor_plan_table_selection.html')} ${isActive('pos_order_view_terminal.html')} ${isActive('kitchen_display_system.html')} ${isActive('admin_dashboard.html')}">
-        <span class="material-symbols-outlined">restaurant</span>
-        <span>Cafe POS</span>
+      <!-- Staff -->
+      <a href="${base}stitch_screens/floor_plan_table_selection.html" class="${isActive('floor_plan_table_selection.html')} ${isActive('pos_order_view_terminal.html')} ${isActive('kitchen_display_system.html')} ${isActive('admin_dashboard.html')}" title="Staff: Cafe POS">
+        <span class="material-symbols-outlined">point_of_sale</span>
+        <span>Staff POS</span>
       </a>
     </div>
 

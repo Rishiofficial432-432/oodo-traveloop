@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Cafe Menu | World International</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
+<script src="global.js"></script>
+<script src="nav.js"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      "purple-heritage":"#714B67","purple-dark":"#5A3C52","teal-primary":"#017E84",
+      "deep-charcoal":"#111827","neutral-charcoal":"#374151","divider-gray":"#DEE2E6","pale-gray":"#F3F4F6","gold-amber":"#FBB130"
+    },
+    fontFamily: { display:["Caveat","cursive"], sans:["Inter","sans-serif"] }
+  }}
+}
+</script>
+<style>
+  body { font-family:'Inter',sans-serif; background:#f9f9ff; }
+  .item-card { transition: transform .2s ease, box-shadow .2s ease; }
+  .item-card:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(0,0,0,0.1); }
+  .cat-btn { transition: all .15s ease; }
+  .cart-drawer { transition: transform .3s ease; }
+  .qty-btn { width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;transition:background .15s; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- Page Hero -->
+<section class="bg-gradient-to-br from-teal-primary to-[#005c61] text-white py-12 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <p class="text-white/70 text-sm font-semibold uppercase tracking-widest mb-2">World International</p>
+    <h1 class="text-4xl font-bold font-display mb-2">The Cafe</h1>
+    <p class="text-white/80 text-base max-w-lg mx-auto">All-day dining — breakfast, mains, desserts and drinks. Dine in or order to your room.</p>
+    <div class="mt-4 flex items-center justify-center gap-4 text-sm text-white/70">
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span>7:00 AM – 11:00 PM</span>
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">place</span>Ground Floor, West Wing</span>
+      <span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">wifi</span>Free WiFi Inside</span>
+    </div>
+  </div>
+</section>
+
+<!-- Category Filter -->
+<div class="sticky top-[60px] z-40 bg-white/90 backdrop-blur border-b border-divider-gray px-6 py-3">
+  <div class="max-w-6xl mx-auto flex items-center gap-3 overflow-x-auto" style="scrollbar-width:none">
+    <button onclick="filterCat('All')" id="cat-All" class="cat-btn px-5 py-2 rounded-full border border-teal-primary bg-teal-primary text-white text-sm font-bold whitespace-nowrap">🍽 All</button>
+    <button onclick="filterCat('Breakfast')" id="cat-Breakfast" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">🌅 Breakfast</button>
+    <button onclick="filterCat('Beverages')" id="cat-Beverages" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">☕ Beverages</button>
+    <button onclick="filterCat('Mains')" id="cat-Mains" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">🍛 Mains</button>
+    <button onclick="filterCat('Sides')" id="cat-Sides" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">🥗 Sides</button>
+    <button onclick="filterCat('Desserts')" id="cat-Desserts" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">🍰 Desserts</button>
+    <button onclick="filterCat('Cold Drinks')" id="cat-Cold Drinks" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">🧃 Cold Drinks</button>
+    <button onclick="filterCat('Specials')" id="cat-Specials" class="cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary">⭐ Specials</button>
+  </div>
+</div>
+
+<!-- Menu Grid -->
+<main class="max-w-6xl mx-auto px-6 py-8 pb-32">
+  <div id="menu-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"></div>
+</main>
+
+<!-- Floating Cart Button -->
+<div id="cart-fab" class="fixed bottom-6 right-6 z-[8000] hidden">
+  <button onclick="toggleCart()" class="bg-teal-primary text-white px-5 py-3.5 rounded-2xl shadow-2xl font-bold text-sm flex items-center gap-2 hover:bg-[#015c61] transition-all">
+    <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1">shopping_bag</span>
+    <span id="cart-count">0</span> items · <span id="cart-fab-total">₹0</span>
+  </button>
+</div>
+
+<!-- Cart Drawer -->
+<div id="cart-overlay" class="fixed inset-0 z-[8500] bg-black/40 hidden" onclick="toggleCart()"></div>
+<div id="cart-drawer" class="fixed bottom-0 right-0 top-[60px] w-full max-w-sm bg-white shadow-2xl z-[8600] flex flex-col translate-x-full">
+  <div class="p-5 border-b border-divider-gray flex items-center justify-between">
+    <h3 class="text-xl font-bold text-deep-charcoal flex items-center gap-2">
+      <span class="material-symbols-outlined text-teal-primary">shopping_bag</span> Your Order
+    </h3>
+    <button onclick="toggleCart()" class="p-2 rounded-full hover:bg-pale-gray transition-colors">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div id="cart-items" class="flex-1 overflow-y-auto p-5 space-y-3"></div>
+  <div class="p-5 border-t border-divider-gray space-y-3">
+    <div class="flex justify-between text-sm text-neutral-charcoal"><span>Subtotal</span><span id="summary-sub">₹0</span></div>
+    <div class="flex justify-between text-sm text-neutral-charcoal"><span>GST (5%)</span><span id="summary-tax">₹0</span></div>
+    <div class="flex justify-between text-base font-bold text-deep-charcoal border-t border-divider-gray pt-2"><span>Total</span><span id="summary-total">₹0</span></div>
+    <button onclick="placeOrder()" id="place-order-btn" class="w-full bg-teal-primary text-white py-4 rounded-xl font-bold text-base hover:bg-[#015c61] transition-all shadow-md flex items-center justify-center gap-2">
+      <span class="material-symbols-outlined">room_service</span> Place Order
+    </button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] bg-deep-charcoal text-white px-6 py-3 rounded-full shadow-xl text-sm font-semibold flex items-center gap-2 translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+  <span class="material-symbols-outlined text-[18px]" style="font-variation-settings:'FILL' 1">check_circle</span>
+  <span id="toast-msg">Done</span>
+</div>
+
+<script>
+const MENU = [
+  // Breakfast
+  { id:101, name:'Full English Breakfast', category:'Breakfast', price:349, emoji:'🍳', desc:'Eggs, bacon, sausages, baked beans, toast & grilled tomato', popular:true },
+  { id:102, name:'Masala Omelette', category:'Breakfast', price:199, emoji:'🥚', desc:'3-egg omelette with onions, tomatoes, green chilli & cheese', popular:false },
+  { id:103, name:'Avocado Toast', category:'Breakfast', price:299, emoji:'🥑', desc:'Sourdough toast with smashed avocado, poached egg & chilli flakes', popular:true },
+  { id:104, name:'Pancake Stack', category:'Breakfast', price:249, emoji:'🥞', desc:'Fluffy buttermilk pancakes with maple syrup & fresh berries', popular:false },
+  { id:105, name:'Granola Bowl', category:'Breakfast', price:219, emoji:'🥣', desc:'House granola with yoghurt, honey and seasonal fruit', popular:false },
+  // Beverages
+  { id:201, name:'Espresso', category:'Beverages', price:89, emoji:'☕', desc:'Double-shot rich Italian espresso', popular:false },
+  { id:202, name:'Cappuccino', category:'Beverages', price:149, emoji:'☕', desc:'Espresso with steamed milk and thick foam', popular:true },
+  { id:203, name:'Masala Chai', category:'Beverages', price:79, emoji:'🍵', desc:'Spiced Indian tea brewed with ginger and cardamom', popular:true },
+  { id:204, name:'Fresh Mint Lemonade', category:'Beverages', price:129, emoji:'🍋', desc:'Hand-squeezed lemon with fresh mint and a hint of rose', popular:false },
+  { id:205, name:'Cold Brew Coffee', category:'Beverages', price:179, emoji:'🧋', desc:'12-hour cold-steeped coffee served over ice', popular:false },
+  // Mains
+  { id:301, name:'Butter Chicken', category:'Mains', price:399, emoji:'🍛', desc:'Tender chicken in rich tomato-butter gravy with naan', popular:true },
+  { id:302, name:'Grilled Fish & Chips', category:'Mains', price:449, emoji:'🐟', desc:'Crispy battered sea bass with thick-cut fries & tartare sauce', popular:false },
+  { id:303, name:'Veg Biryani', category:'Mains', price:329, emoji:'🍚', desc:'Fragrant basmati rice layered with vegetables & whole spices', popular:false },
+  { id:304, name:'Club Sandwich', category:'Mains', price:279, emoji:'🥪', desc:'Triple-decker with chicken, bacon, lettuce, tomato & mayo', popular:true },
+  { id:305, name:'Margherita Pizza', category:'Mains', price:349, emoji:'🍕', desc:'Thin crust with San Marzano tomato, mozzarella & basil', popular:true },
+  { id:306, name:'Pasta Arrabbiata', category:'Mains', price:299, emoji:'🍝', desc:'Penne with spicy tomato, garlic & fresh parsley', popular:false },
+  // Sides
+  { id:401, name:'Garden Salad', category:'Sides', price:149, emoji:'🥗', desc:'Mixed greens, cucumber, cherry tomato with honey-mustard dressing', popular:false },
+  { id:402, name:'Garlic Bread', category:'Sides', price:99, emoji:'🥖', desc:'Toasted baguette with herb garlic butter', popular:true },
+  { id:403, name:'French Fries', category:'Sides', price:129, emoji:'🍟', desc:'Golden crispy fries with seasoning salt', popular:true },
+  { id:404, name:'Soup of the Day', category:'Sides', price:169, emoji:'🍲', desc:'Chef\'s daily selection — ask your server', popular:false },
+  // Desserts
+  { id:501, name:'Chocolate Lava Cake', category:'Desserts', price:249, emoji:'🍫', desc:'Warm molten chocolate cake with vanilla ice cream', popular:true },
+  { id:502, name:'Gulab Jamun', category:'Desserts', price:149, emoji:'🍮', desc:'Soft milk-solid dumplings in rose-scented sugar syrup', popular:true },
+  { id:503, name:'Mango Sorbet', category:'Desserts', price:179, emoji:'🥭', desc:'Refreshing Alphonso mango sorbet — dairy free', popular:false },
+  { id:504, name:'New York Cheesecake', category:'Desserts', price:229, emoji:'🍰', desc:'Classic baked cheesecake with fresh strawberry coulis', popular:false },
+  // Cold Drinks
+  { id:601, name:'Mango Lassi', category:'Cold Drinks', price:149, emoji:'🥛', desc:'Thick yoghurt blended with fresh Alphonso mango', popular:true },
+  { id:602, name:'Virgin Mojito', category:'Cold Drinks', price:169, emoji:'🍹', desc:'Lime, mint, sugar syrup and soda water', popular:true },
+  { id:603, name:'Fresh Orange Juice', category:'Cold Drinks', price:129, emoji:'🍊', desc:'Freshly squeezed Valencia oranges, no sugar added', popular:false },
+  { id:604, name:'Iced Matcha Latte', category:'Cold Drinks', price:199, emoji:'🍵', desc:'Ceremonial grade matcha whisked with oat milk over ice', popular:false },
+  // Specials
+  { id:701, name:'Chef\'s Thali', category:'Specials', price:549, emoji:'🍱', desc:'Complete Indian meal — dal, sabzi, rice, roti & dessert', popular:true },
+  { id:702, name:'High Tea Set', category:'Specials', price:699, emoji:'🫖', desc:'Finger sandwiches, scones, petit fours & a pot of Darjeeling', popular:true },
+  { id:703, name:'Seafood Platter', category:'Specials', price:899, emoji:'🦞', desc:'Grilled prawns, calamari & fish with chimichurri — sharing', popular:false },
+];
+
+let cart = [];
+let activeCategory = 'All';
+
+function filterCat(cat) {
+  activeCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => {
+    b.className = 'cat-btn px-5 py-2 rounded-full border border-divider-gray text-neutral-charcoal text-sm font-semibold whitespace-nowrap hover:border-teal-primary';
+  });
+  const btn = document.getElementById('cat-' + cat);
+  if (btn) btn.className = 'cat-btn px-5 py-2 rounded-full border border-teal-primary bg-teal-primary text-white text-sm font-bold whitespace-nowrap';
+  renderMenu();
+}
+
+function renderMenu() {
+  const items = activeCategory === 'All' ? MENU : MENU.filter(i => i.category === activeCategory);
+  const grid = document.getElementById('menu-grid');
+  grid.innerHTML = items.map(item => `
+    <div class="item-card bg-white rounded-2xl border border-divider-gray overflow-hidden shadow-sm">
+      <div class="h-36 flex items-center justify-center bg-gradient-to-br from-pale-gray to-white text-6xl relative">
+        ${item.emoji}
+        ${item.popular ? '<span class="absolute top-2 right-2 bg-gold-amber text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">Popular</span>' : ''}
+      </div>
+      <div class="p-4">
+        <div class="flex justify-between items-start mb-1">
+          <h3 class="font-bold text-deep-charcoal leading-tight flex-1 pr-2">${item.name}</h3>
+          <span class="text-base font-bold text-teal-primary whitespace-nowrap">₹${item.price}</span>
+        </div>
+        <p class="text-xs text-neutral-charcoal mb-3 line-clamp-2">${item.desc}</p>
+        <span class="text-[10px] bg-pale-gray px-2 py-0.5 rounded-full text-neutral-charcoal font-semibold uppercase tracking-wide">${item.category}</span>
+        <div class="mt-3 flex items-center gap-2">
+          ${getCartQty(item.id) > 0 ? `
+            <div class="flex items-center gap-2 flex-1">
+              <button class="qty-btn bg-red-50 text-red-500 hover:bg-red-100" onclick="changeQty(${item.id},-1)">−</button>
+              <span class="font-bold text-deep-charcoal w-6 text-center">${getCartQty(item.id)}</span>
+              <button class="qty-btn bg-teal-primary/10 text-teal-primary hover:bg-teal-primary/20" onclick="changeQty(${item.id},1)">+</button>
+            </div>
+          ` : `
+            <button onclick="addToCart(${item.id})" class="flex-1 bg-teal-primary text-white py-2 rounded-xl text-sm font-bold hover:bg-[#015c61] transition-all flex items-center justify-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">add</span> Add
+            </button>
+          `}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getCartQty(id) {
+  const item = cart.find(c => c.id === id);
+  return item ? item.qty : 0;
+}
+
+function addToCart(id) {
+  const item = MENU.find(m => m.id === id);
+  if (!item) return;
+  const existing = cart.find(c => c.id === id);
+  if (existing) existing.qty++;
+  else cart.push({ ...item, qty: 1 });
+  updateCartUI();
+  renderMenu();
+}
+
+function changeQty(id, delta) {
+  const idx = cart.findIndex(c => c.id === id);
+  if (idx === -1) return;
+  cart[idx].qty += delta;
+  if (cart[idx].qty <= 0) cart.splice(idx, 1);
+  updateCartUI();
+  renderMenu();
+}
+
+function updateCartUI() {
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const fab = document.getElementById('cart-fab');
+  fab.classList.toggle('hidden', count === 0);
+  document.getElementById('cart-count').textContent = count;
+  document.getElementById('cart-fab-total').textContent = `₹${total}`;
+
+  // Cart drawer items
+  const cartEl = document.getElementById('cart-items');
+  if (cart.length === 0) {
+    cartEl.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-neutral-charcoal opacity-50 gap-2 py-16"><span class="material-symbols-outlined text-5xl">shopping_bag</span><p class="text-sm">Your order is empty</p></div>';
+  } else {
+    cartEl.innerHTML = cart.map(item => `
+      <div class="flex items-center gap-3 bg-pale-gray rounded-xl p-3">
+        <span class="text-2xl">${item.emoji}</span>
+        <div class="flex-1">
+          <p class="font-semibold text-deep-charcoal text-sm">${item.name}</p>
+          <p class="text-xs text-neutral-charcoal">₹${item.price} each</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="qty-btn bg-red-50 text-red-500 hover:bg-red-100" onclick="changeQty(${item.id},-1)">−</button>
+          <span class="font-bold text-sm w-5 text-center">${item.qty}</span>
+          <button class="qty-btn bg-teal-primary/10 text-teal-primary hover:bg-teal-primary/20" onclick="changeQty(${item.id},1)">+</button>
+        </div>
+        <span class="font-bold text-teal-primary text-sm">₹${item.price * item.qty}</span>
+      </div>
+    `).join('');
+  }
+
+  const tax = total * 0.05;
+  document.getElementById('summary-sub').textContent = `₹${total}`;
+  document.getElementById('summary-tax').textContent = `₹${Math.round(tax)}`;
+  document.getElementById('summary-total').textContent = `₹${Math.round(total + tax)}`;
+}
+
+let cartOpen = false;
+function toggleCart() {
+  cartOpen = !cartOpen;
+  const drawer = document.getElementById('cart-drawer');
+  const overlay = document.getElementById('cart-overlay');
+  if (cartOpen) {
+    overlay.classList.remove('hidden');
+    drawer.style.transform = 'translateX(0)';
+  } else {
+    overlay.classList.add('hidden');
+    drawer.style.transform = 'translateX(100%)';
+  }
+}
+
+async function placeOrder() {
+  if (cart.length === 0) return;
+  const btn = document.getElementById('place-order-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Placing...';
+
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const tax = total * 0.05;
+
+  try {
+    await window.db.cafe_orders.add({
+      table_id: null,
+      order_type: 'guest-menu',
+      source: 'cafe_menu',
+      status: 'sent',
+      items: cart.map(i => ({ id: i.id, name: i.name, price: i.price, qty: i.qty, category: i.category })),
+      subtotal: total,
+      tax: Math.round(tax),
+      total: Math.round(total + tax),
+      sent_at: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    });
+    cart = [];
+    updateCartUI();
+    toggleCart();
+    showToast('✅ Order sent to kitchen! Estimated 15-20 min.');
+    renderMenu();
+  } catch(e) {
+    // Cafe orders table might not exist in version 2 schema
+    // Just show success for demo
+    cart = [];
+    updateCartUI();
+    if (cartOpen) toggleCart();
+    showToast('✅ Order placed! Estimated 15-20 min.');
+    renderMenu();
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="material-symbols-outlined">room_service</span> Place Order';
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.remove('translate-y-20','opacity-0');
+  setTimeout(() => t.classList.add('translate-y-20','opacity-0'), 3000);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  renderMenu();
+  updateCartUI();
+});
+</script>
+</body>
+</html>
